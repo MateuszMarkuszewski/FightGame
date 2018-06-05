@@ -6,84 +6,19 @@ using Random = UnityEngine.Random;
 
 public class Room
 {
-    public static int x = 4;
-    public static int y = 4;
-    public static int[] probability = { 0, 1, 2, 3, 4, 5, 6 };
-
-    //pierwsza współrzdna to typ pokoju, druga to składowe platformy które zawierają współżędne x i y
-    public static int[][][] roomTypes = new int[][][]
-    {
-        new int[][] {},
-        new int[][] { new int[] { -2, -3 }, new int[] { -3, -3 } },
-        new int[][] { new int[] { -2, -2 }, new int[] { -3, -2 } },
-        new int[][] { new int[] { -1, -3 }, new int[] { -2, -3 } },
-        new int[][] { new int[] { -3, -3 }, new int[] { -4, -3 } },
-        new int[][] { new int[] { -1, -2 }, new int[] { -2, -2 } },
-        new int[][] { new int[] { -3, -2 }, new int[] { -4, -2 } },
-    };
-    //prawdopodobieństwo jaki będzie nastepny pokój dla pokoju o danym indeksie
-    public static int[][] roomProbabilities = new int[][]
-    {
-        new int[] { 1, 2, 3, 4, 5, 6},
-        new int[] { 0, 2, 3, 5, 6 },
-        new int[] { 0, 1, 3, 4, 5 },
-        new int[] { 4, 2, 4, 5, 6, 4, 4},
-        new int[] { 0, 1, 2, 3, 5, 6 },
-        new int[] { 1, 6, 3, 4, 6 , 6, 6},
-        new int[] { 0, 1, 2, 3, 4, 5 },
-
-    };
-    public class Platform
-    {
-        public int[] x;
-        public int[] y;
-
-        public Platform( int length)
-        {
-            this.x = new int[length];
-            this.y = new int[length];
-
-            //Debug.Log(Room.roomTypes[1][0][1]);
-        }
-
-    }
-    public Platform platform;
+    public static float x = 3;
+    public static float y = 3;
     public int value;
 
     public Room( int value)
     {
-        //inicjuje pokój od danym numerze i zmienia prawdopodobieństwo dla następnego losowania
-        this.value = probability[value];
-        probability = roomProbabilities[this.value];
+        this.value = value;
     }
 
-    public void SetPlatformCoordinates(int x, int y)
+    public static void SetRoomCoordinates(int x, int y)
     {
-        
-        //Gizmos.DrawCube(new Vector3(Room.x * x - 2, Room.y * y - 2, 0), new Vector3(2, 2, 0));
-        Debug.DrawLine(new Vector3(Room.x * x, Room.y * y,0), new Vector3(Room.x * x, Room.y * y - 4,0), Color.red,200,false);
-        Debug.DrawLine(new Vector3(Room.x * x -4, Room.y * y, 0), new Vector3(Room.x * x, Room.y * y, 0), Color.red, 200, false);
-
-        Debug.DrawLine(new Vector3(Room.x * x - 4, Room.y * y -1, 0), new Vector3(Room.x * x, Room.y * y-1, 0), Color.green, 200, false);
-        Debug.DrawLine(new Vector3(Room.x * x - 4, Room.y * y -2, 0), new Vector3(Room.x * x, Room.y * y-2, 0), Color.green, 200, false);
-        Debug.DrawLine(new Vector3(Room.x * x - 4, Room.y * y -3, 0), new Vector3(Room.x * x, Room.y * y-3, 0), Color.green, 200, false);
-
-        Debug.DrawLine(new Vector3(Room.x * x-3, Room.y * y, 0), new Vector3(Room.x * x -3, Room.y * y - 4, 0), Color.green, 200, false);
-        Debug.DrawLine(new Vector3(Room.x * x-2, Room.y * y, 0), new Vector3(Room.x * x -2, Room.y * y - 4, 0), Color.green, 200, false);
-        Debug.DrawLine(new Vector3(Room.x * x-1, Room.y * y, 0), new Vector3(Room.x * x -1, Room.y * y - 4, 0), Color.green, 200, false);
-
-
-
-        if (this.value != 0)
-        {
-            //Debug.Log(roomTypes[this.value].Length);
-            this.platform = new Platform(roomTypes[this.value].Length);
-            this.platform.x[0] = Room.x * x + roomTypes[this.value][0][0];
-            this.platform.y[0] = Room.y * y + roomTypes[this.value][0][1];
-            this.platform.x[1] = Room.x * x + roomTypes[this.value][1][0];
-            this.platform.y[1] = Room.y * y + roomTypes[this.value][0][1];
-        }
-
+        Debug.DrawLine(new Vector3(Room.x * x, Room.y * y,0), new Vector3(Room.x * x, Room.y * y + Room.y), Color.red,200,false);
+        Debug.DrawLine(new Vector3(Room.x * x +Room.x, Room.y * y, 0), new Vector3(Room.x * x, Room.y * y, 0), Color.red, 200, false);
     }
 
 }
@@ -104,46 +39,71 @@ public class SceneSetup : MonoBehaviour
 
     void Start()
     {
-        
         SetupCamera();
         width = 2 * size * camera.aspect;
         height = 2 * size;
-        GeneratePlatforms();
         SetupMainGround();
+        GeneratePlatforms();
         SetupPlayers();
     }
 
     public void GeneratePlatforms()
     {
-
-        Room[,] rooms = new Room[(int)width / Room.x, (int)height / Room.y];
-        //Debug.Log((int)height);
-        //Debug.Log((int)width);
-        // przelatuje po siatce pokoi i losuje typ dla każdego
-        for (int x = 0; x < rooms.GetLength(0); x++)
+        //TODO: zależniość miadzy iloscia pokoi a rozmiarem areny
+        Room.x = width / 6;
+        Room.y = height / 4;
+        Room[,] rooms = new Room[6,4];
+        //rozszerzenie sprita ziemi aby pokrywał pokój
+        ground.transform.localScale += new Vector3(ground.transform.localScale.x * (Room.x - 1), 0, 0);
+        /*
+        for( int a =0; a < (int)width / Room.x; a++)
         {
-            for (int y = 0; y < rooms.GetLength(1); y++)
+            for (int b = 0; b < (int)height / Room.y; b++)
             {
-                rooms[x, y] = new Room((int)Random.Range(0, Room.probability.Length - 1));
-                rooms[x, y].SetPlatformCoordinates(x+1, y+1);
-                try
-                {
-                    DrawPlatform(rooms[x, y].platform);
-
-                }
-                catch (System.NullReferenceException e)
-                {
-
-                }
-
+                Room.SetRoomCoordinates(a, b);
             }
         }
-    }
-    public void DrawPlatform(Room.Platform platform)
-    {
-        //Debug.Log(platform.x[0]);
-        Instantiate(ground, new Vector3(platform.x[0], platform.y[0]), Quaternion.identity);
-        Instantiate(ground, new Vector3(platform.x[1], platform.y[1]), Quaternion.identity);
+        */
+        int x = (int)Random.Range(0, rooms.GetLength(0));
+        int y = 0;
+        int side = 1;
+        while(true)
+        {
+            Room.SetRoomCoordinates(x, y);
+            //tworzona jest platforma
+            Instantiate(ground, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+2), Quaternion.identity);
+            //losowane jest gdzie bedzie następny pokoj
+            rooms[x, y] = new Room((int)Random.Range(0, 5));
+            if (rooms[x, y].value == 3)
+            {
+                y = y + 1;
+                if( x != 0 && x != rooms.GetLength(0))
+                {
+                    if ((int)Random.Range(1, 2) == 1)
+                    {
+                        side = -side;
+                    }
+                }
+            }
+            else
+            {
+                x = x + side;
+            }
+           
+
+            //sprwdzanie czy nie wyszlo poza siatkę pokoi
+            if (x == rooms.GetLength(0) || x < 0)
+            {
+                y = y + 1;
+                side = -side;
+                x = x + side;
+
+            }
+            if (y == rooms.GetLength(1))
+            {
+                break;
+            }
+        }
     }
 
 
