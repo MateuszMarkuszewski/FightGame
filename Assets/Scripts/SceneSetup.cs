@@ -30,6 +30,8 @@ public class SceneSetup : MonoBehaviour
     public GameObject ground;
     public GameObject wallLeft;
     public GameObject wallRight;
+    public GameObject ceiling;
+    public GameObject platform;
     private Camera camera;
     public GameObject player1;
 
@@ -52,9 +54,9 @@ public class SceneSetup : MonoBehaviour
         //TODO: zależniość miadzy iloscia pokoi a rozmiarem areny
         Room.x = width / 6;
         Room.y = height / 4;
-        Room[,] rooms = new Room[6,4];
-        //rozszerzenie sprita ziemi aby pokrywał pokój
-        ground.transform.localScale += new Vector3(ground.transform.localScale.x * (Room.x - 1), 0, 0);
+        Room[,] rooms = new Room[6,3];
+        //przeskalowanie objektu platformy aby pokrywał pokój
+        platform.transform.localScale += new Vector3(platform.transform.localScale.x * (Room.x - 1), 0, 0);
         /*
         for( int a =0; a < (int)width / Room.x; a++)
         {
@@ -71,7 +73,7 @@ public class SceneSetup : MonoBehaviour
         {
             Room.SetRoomCoordinates(x, y);
             //tworzona jest platforma
-            Instantiate(ground, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+2), Quaternion.identity);
+            Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+2), Quaternion.identity);
             //losowane jest gdzie bedzie następny pokoj
             rooms[x, y] = new Room((int)Random.Range(0, 5));
             if (rooms[x, y].value == 3)
@@ -109,20 +111,26 @@ public class SceneSetup : MonoBehaviour
 
     public void SetupMainGround()
     {
-        //TODO: sufit?
         //Tworzy podłogę i ściany   
-        for (float y = 0f; y < (2 * size) +1  ; y++)
+        float y;
+        float x;
+        for (y = 0f; y < (2 * size) +1  ; y++)
         {
             Instantiate(wallLeft, new Vector3(0f, y), Quaternion.identity);
         }
-        float x = 2 * size * camera.aspect;
-        for (float y = 0f; y < (2 * size) + 1; y++)
+        x = 2 * size * camera.aspect;
+        for (y = 0f; y < (2 * size) + 1; y++)
         {
             Instantiate(wallRight, new Vector3(x, y), Quaternion.identity);
         }
-        for (x = 0f; x < 2 * size * camera.aspect + 1; x++)
+        for (x = 0f; x < 2 * size * camera.aspect; x++)
         {
             Instantiate(ground, new Vector3(x, 0f), Quaternion.identity);
+        }
+        y = (2 * size) + 1;
+        for ( x=0 ; x < 2 * size * camera.aspect; x++)
+        {
+            Instantiate(ceiling, new Vector3(x, y), Quaternion.identity);
         }
     }
 
