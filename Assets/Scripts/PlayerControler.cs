@@ -37,6 +37,8 @@ public class PlayerControler : MonoBehaviour {
         anim = GetComponent<Animator>();
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
+
+        Debug.Log(rgdBody);
     }
 
     void Update () {
@@ -47,12 +49,12 @@ public class PlayerControler : MonoBehaviour {
         onTheWall = Physics2D.OverlapCircle(wallTester.position, radius, layersToTest);
         float horizontalMove = ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0));
         rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
-
+        /*
         if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
         {
             rgdBody.velocity = new Vector2(horizontalMove * 10 * heroSpeed, rgdBody.velocity.y);
         }
-
+        */
         ///atak
         if (Input.GetKeyDown(attack))
         {   
