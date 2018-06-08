@@ -26,6 +26,7 @@ public class PlayerControler : MonoBehaviour {
     bool dirToRight = true;
     Rigidbody2D rgdBody;
     ComboManager comboManager;
+    Rigidbody2D[] bodys;
 
     private float radius = 0.1f;
     private bool onTheGround;
@@ -37,8 +38,9 @@ public class PlayerControler : MonoBehaviour {
         anim = GetComponent<Animator>();
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
+        bodys = GetComponentsInChildren<Rigidbody2D>();
 
-        Debug.Log(rgdBody);
+        Debug.Log(bodys[0]);
     }
 
     void Update () {
