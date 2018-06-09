@@ -8,6 +8,7 @@ public class PlayerControler : MonoBehaviour {
     public float heroSpeed;
     public float jumpForce;
     public int throwSpeed;
+    private bool ragdoll = true;
     //klawisze
     public KeyCode left;
     public KeyCode right;
