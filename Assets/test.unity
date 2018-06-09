@@ -122,7 +122,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2800163}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_leg_R_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,10 +221,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 191178834}
-  - component: {fileID: 191178835}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_torso_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -247,26 +246,6 @@ Transform:
   m_Father: {fileID: 1946805659}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.422001}
---- !u!50 &191178835
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 191178833}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &206330060
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,9 +385,9 @@ GameObject:
   - component: {fileID: 403164206}
   - component: {fileID: 403164207}
   - component: {fileID: 403164208}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_head_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -564,9 +543,9 @@ GameObject:
   - component: {fileID: 413439314}
   - component: {fileID: 413439313}
   - component: {fileID: 413439315}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_wrist_r_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -704,7 +683,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 2.0013762, y: -3.0576549}
-  m_ConnectedAnchor: {x: 2.0013769, y: -3.0576549}
+  m_ConnectedAnchor: {x: 2.0013754, y: -3.0576544}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -726,9 +705,9 @@ GameObject:
   - component: {fileID: 498480568}
   - component: {fileID: 498480567}
   - component: {fileID: 498480569}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_boot_l_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -869,7 +848,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -1.5566239, y: -4.280718}
-  m_ConnectedAnchor: {x: -1.5566233, y: -4.280718}
+  m_ConnectedAnchor: {x: -1.5566247, y: -4.2807174}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -972,9 +951,9 @@ GameObject:
   - component: {fileID: 502653074}
   - component: {fileID: 502653073}
   - component: {fileID: 502653075}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_shoulder_r_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1124,12 +1103,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
+  m_ConnectedRigidBody: {fileID: 826435723}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 1.1952648, y: -0.6671253}
-  m_ConnectedAnchor: {x: 3.0592523, y: 1.3641361}
+  m_ConnectedAnchor: {x: 1.1952641, y: -0.66712475}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1149,9 +1128,9 @@ GameObject:
   - component: {fileID: 535564265}
   - component: {fileID: 535564266}
   - component: {fileID: 535564267}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_hair_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1348,9 +1327,9 @@ GameObject:
   - component: {fileID: 547788084}
   - component: {fileID: 547788083}
   - component: {fileID: 547788085}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_leg_l_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1495,7 +1474,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -1.3898382, y: -3.1688426}
-  m_ConnectedAnchor: {x: -1.3898376, y: -3.1688426}
+  m_ConnectedAnchor: {x: -1.389839, y: -3.168842}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1517,9 +1496,9 @@ GameObject:
   - component: {fileID: 623948680}
   - component: {fileID: 623948679}
   - component: {fileID: 623948681}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_leg_r_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1665,7 +1644,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.80610937, y: -3.1688426}
-  m_ConnectedAnchor: {x: 0.80610996, y: -3.1688426}
+  m_ConnectedAnchor: {x: 0.8061086, y: -3.168842}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1683,7 +1662,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 635004442}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_leg_L_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1715,7 +1694,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 711456581}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_wrist_R_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1750,9 +1729,9 @@ GameObject:
   - component: {fileID: 721481200}
   - component: {fileID: 721481199}
   - component: {fileID: 721481201}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_wrist_l_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1893,7 +1872,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -2.5017178, y: -3.0020611}
-  m_ConnectedAnchor: {x: -0.5517169, y: -0.90206146}
+  m_ConnectedAnchor: {x: -0.55171835, y: -0.9020608}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1912,7 +1891,7 @@ GameObject:
   m_Component:
   - component: {fileID: 730552839}
   - component: {fileID: 730552840}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_face_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1991,6 +1970,7 @@ GameObject:
   - component: {fileID: 781036270}
   - component: {fileID: 781036268}
   - component: {fileID: 781036271}
+  - component: {fileID: 781036272}
   m_Layer: 8
   m_Name: Rogue_05
   m_TagString: Player
@@ -2032,7 +2012,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 781036267}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.01, y: 0.73, z: 0}
+  m_LocalPosition: {x: 4.67, y: 1.37, z: 0}
   m_LocalScale: {x: 0.17265391, y: 0.1726539, z: 0.1726539}
   m_Children:
   - {fileID: 1472069867}
@@ -2061,7 +2041,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!50 &781036271
+--- !u!70 &781036271
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 781036267}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.7155074, y: 3.5914755}
+  m_Size: {x: 4.622048, y: 8.540016}
+  m_Direction: 0
+--- !u!50 &781036272
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -2071,7 +2066,7 @@ Rigidbody2D:
   m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 1
+  m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
@@ -2080,7 +2075,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!1 &826435719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2092,9 +2087,10 @@ GameObject:
   - component: {fileID: 826435720}
   - component: {fileID: 826435721}
   - component: {fileID: 826435722}
-  m_Layer: 8
+  - component: {fileID: 826435723}
+  m_Layer: 11
   m_Name: Rogue_torso_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2246,6 +2242,26 @@ PolygonCollider2D:
       - {x: 0.64, y: -3.1799998}
       - {x: 0.78, y: -3.12}
       - {x: 0.96, y: -3.08}
+--- !u!50 &826435723
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 826435719}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &924930441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2259,9 +2275,9 @@ GameObject:
   - component: {fileID: 924930445}
   - component: {fileID: 924930444}
   - component: {fileID: 924930446}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_boot_r_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2400,7 +2416,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 1.25086, y: -4.058343}
-  m_ConnectedAnchor: {x: 1.2508607, y: -4.058343}
+  m_ConnectedAnchor: {x: 1.2508593, y: -4.058343}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2565,7 +2581,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1111999376}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_elbow_R_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2599,9 +2615,9 @@ GameObject:
   - component: {fileID: 1122960883}
   - component: {fileID: 1122960884}
   - component: {fileID: 1122960886}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_shoulder_l_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2733,7 +2749,7 @@ GameObject:
   - component: {fileID: 1133026437}
   - component: {fileID: 1133026438}
   - component: {fileID: 1133026439}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_elbow_L_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2790,7 +2806,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.439999, y: -1.4600002}
+  m_ConnectedAnchor: {x: -0.44000039, y: -1.4600009}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -3031,9 +3047,9 @@ GameObject:
   - component: {fileID: 1409780226}
   - component: {fileID: 1409780225}
   - component: {fileID: 1409780227}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_elbow_r_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3179,7 +3195,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 1.6122179, y: -2.0569673}
-  m_ConnectedAnchor: {x: 1.6122185, y: -2.0569673}
+  m_ConnectedAnchor: {x: 1.6122172, y: -2.0569673}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -3199,9 +3215,9 @@ GameObject:
   - component: {fileID: 1462175549}
   - component: {fileID: 1462175550}
   - component: {fileID: 1462175551}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_elbow_l_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3348,9 +3364,9 @@ GameObject:
   - component: {fileID: 1534562678}
   - component: {fileID: 1534562679}
   - component: {fileID: 1534562680}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_pelvis_05
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3531,12 +3547,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
+  m_ConnectedRigidBody: {fileID: 826435723}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -0.027796833, y: -2.1403587}
-  m_ConnectedAnchor: {x: 2.8480859, y: 1.1097766}
+  m_ConnectedAnchor: {x: -0.02779761, y: -2.1403587}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -3610,7 +3626,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1739674543}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_boot_R_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3760,7 +3776,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1875600157}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_wrist_L_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3791,7 +3807,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1895250320}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_boot_L_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3822,9 +3838,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1946805659}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_pelvis_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3926,9 +3942,9 @@ GameObject:
   - component: {fileID: 2051999351}
   - component: {fileID: 2051999350}
   - component: {fileID: 2051999352}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_head_01
-  m_TagString: Untagged
+  m_TagString: Rig
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3970,389 +3986,389 @@ CompositeCollider2D:
   - m_Collider: {fileID: 403164208}
     m_ColliderPaths:
     - - X: 2158176
-        Y: 103591
+        Y: 103593
       - X: 2503484
-        Y: 431633
+        Y: 431636
       - X: 2676138
-        Y: 656083
+        Y: 656086
       - X: 2831526
-        Y: 1053187
+        Y: 1053190
       - X: 2883322
-        Y: 1260372
+        Y: 1260374
       - X: 2900588
-        Y: 1381230
+        Y: 1381232
       - X: 2917853
-        Y: 1795599
+        Y: 1795602
       - X: 2935119
-        Y: 2279030
+        Y: 2279033
       - X: 2986915
-        Y: 3107769
+        Y: 3107771
       - X: 2986915
-        Y: 3504873
+        Y: 3504875
       - X: 2969649
-        Y: 3677527
+        Y: 3677529
       - X: 2935119
-        Y: 3988304
+        Y: 3988306
       - X: 2831526
-        Y: 4333612
+        Y: 4333614
       - X: 2607076
-        Y: 4765247
+        Y: 4765249
       - X: 2451688
-        Y: 5024227
+        Y: 5024230
       - X: 2158176
-        Y: 5335004
+        Y: 5335006
       - X: 1830134
-        Y: 5559454
+        Y: 5559457
       - X: 1346702
-        Y: 5801170
+        Y: 5801172
       - X: 880537
-        Y: 5939293
+        Y: 5939295
       - X: 690618
-        Y: 5973824
+        Y: 5973826
       - X: 310779
-        Y: 6008354
+        Y: 6008357
       - X: -915063
-        Y: 6008354
+        Y: 6008357
       - X: -1122248
-        Y: 5991089
+        Y: 5991091
       - X: -1363963
-        Y: 5956558
+        Y: 5956561
       - X: -1450290
-        Y: 5939293
+        Y: 5939295
       - X: -1674740
-        Y: 5887497
+        Y: 5887499
       - X: -2089109
-        Y: 5732108
+        Y: 5732110
       - X: -2503479
-        Y: 5524924
+        Y: 5524926
       - X: -2727929
-        Y: 5369535
+        Y: 5369538
       - X: -2952379
-        Y: 5145085
+        Y: 5145087
       - X: -3228625
-        Y: 4730716
+        Y: 4730718
       - X: -3418544
-        Y: 4333612
+        Y: 4333614
       - X: -3453075
-        Y: 4230019
+        Y: 4230022
       - X: -3539402
-        Y: 3694792
+        Y: 3694794
       - X: -3556667
-        Y: 3418546
+        Y: 3418548
       - X: -3556667
-        Y: 3228626
+        Y: 3228629
       - X: -3522137
-        Y: 2572542
+        Y: 2572544
       - X: -3470341
-        Y: 1864661
+        Y: 1864663
       - X: -3366749
-        Y: 1294903
+        Y: 1294905
       - X: -3280421
-        Y: 1087718
+        Y: 1087721
       - X: -3194095
-        Y: 897799
+        Y: 897801
       - X: -3004175
-        Y: 517960
+        Y: 517963
       - X: -2900583
-        Y: 362572
+        Y: 362574
       - X: -2727929
-        Y: 172653
+        Y: 172655
       - X: -2486214
-        Y: 0
+        Y: 1
       - X: -2261763
-        Y: -120858
+        Y: -120856
       - X: -1743802
-        Y: -276247
+        Y: -276244
       - X: -1553882
-        Y: -310777
+        Y: -310775
       - X: -1053186
-        Y: -362574
+        Y: -362571
       - X: -362570
-        Y: -379839
+        Y: -379837
       - X: 897802
-        Y: -379839
+        Y: -379837
       - X: 1208579
-        Y: -328043
+        Y: -328040
       - X: 1605683
-        Y: -207185
+        Y: -207183
       - X: 1950991
-        Y: -51797
+        Y: -51794
   - m_Collider: {fileID: 535564267}
     m_ColliderPaths:
     - - X: -2676133
-        Y: 1864661
+        Y: 1864663
       - X: -2624337
-        Y: 2071845
+        Y: 2071848
       - X: -2641602
-        Y: 2399888
+        Y: 2399890
       - X: -2727929
-        Y: 2796992
+        Y: 2796994
       - X: -2745194
-        Y: 3211361
+        Y: 3211363
       - X: -2658867
-        Y: 3384015
+        Y: 3384018
       - X: -2693398
-        Y: 3608465
+        Y: 3608468
       - X: -2503479
-        Y: 3625730
+        Y: 3625733
       - X: -2123640
-        Y: 3677527
+        Y: 3677529
       - X: -1899190
-        Y: 3815650
+        Y: 3815652
       - X: -1657475
-        Y: 3936508
+        Y: 3936510
       - X: -1467555
-        Y: 3936508
+        Y: 3936510
       - X: -1381228
-        Y: 3988304
+        Y: 3988306
       - X: -1294901
-        Y: 4143692
+        Y: 4143695
       - X: -1208574
-        Y: 4091896
+        Y: 4091898
       - X: -431632
-        Y: 3919242
+        Y: 3919245
       - X: -224447
-        Y: 3936508
+        Y: 3936510
       - X: -86324
-        Y: 3988304
+        Y: 3988306
       - X: 587025
-        Y: 3971038
+        Y: 3971040
       - X: 759679
-        Y: 4005569
+        Y: 4005571
       - X: 984129
-        Y: 4109161
+        Y: 4109164
       - X: 1191314
-        Y: 4160958
+        Y: 4160960
       - X: 1346702
-        Y: 4230019
+        Y: 4230022
       - X: 1433029
-        Y: 4195488
+        Y: 4195491
       - X: 1795603
-        Y: 3971038
+        Y: 3971040
       - X: 2037318
-        Y: 3867446
+        Y: 3867448
       - X: 2348095
-        Y: 3884711
+        Y: 3884714
       - X: 2434422
-        Y: 3936508
+        Y: 3936510
       - X: 2607076
-        Y: 3867446
+        Y: 3867448
       - X: 2693403
-        Y: 3729323
+        Y: 3729325
       - X: 2710668
-        Y: 3418546
+        Y: 3418548
       - X: 2745199
-        Y: 3366750
+        Y: 3366752
       - X: 2762465
-        Y: 2866053
+        Y: 2866056
       - X: 2814261
-        Y: 2382623
+        Y: 2382625
       - X: 2900588
-        Y: 2330826
+        Y: 2330829
       - X: 3107772
-        Y: 2641603
+        Y: 2641606
       - X: 3142303
-        Y: 2883319
+        Y: 2883321
       - X: 3142303
-        Y: 4022835
+        Y: 4022837
       - X: 3125038
-        Y: 4109161
+        Y: 4109164
       - X: 3090507
-        Y: 4230019
+        Y: 4230022
       - X: 3004180
-        Y: 4506266
+        Y: 4506268
       - X: 2796995
-        Y: 5041493
+        Y: 5041495
       - X: 2710668
-        Y: 5231412
+        Y: 5231414
       - X: 2641607
-        Y: 5300474
+        Y: 5300476
       - X: 2589811
-        Y: 5300474
+        Y: 5300476
       - X: 2468953
-        Y: 5542189
+        Y: 5542191
       - X: 2279034
-        Y: 5732108
+        Y: 5732110
       - X: 2071849
-        Y: 5904762
+        Y: 5904765
       - X: 1640214
-        Y: 6198274
+        Y: 6198276
       - X: 1260376
-        Y: 6353662
+        Y: 6353665
       - X: 656087
-        Y: 6405458
+        Y: 6405461
       - X: 241717
-        Y: 6491785
+        Y: 6491787
       - X: -138120
-        Y: 6526316
+        Y: 6526319
       - X: -483428
-        Y: 6509050
+        Y: 6509053
       - X: -587020
-        Y: 6422723
+        Y: 6422726
       - X: -776940
-        Y: 6509050
+        Y: 6509053
       - X: -984124
-        Y: 6647174
+        Y: 6647176
       - X: -1139513
-        Y: 6698970
+        Y: 6698972
       - X: -1398494
-        Y: 7061543
+        Y: 7061546
       - X: -1605678
-        Y: 7251463
+        Y: 7251465
       - X: -1864659
-        Y: 7372320
+        Y: 7372322
       - X: -2468948
-        Y: 7372320
+        Y: 7372322
       - X: -2883317
-        Y: 7355055
+        Y: 7355057
       - X: -3263156
-        Y: 7234197
+        Y: 7234199
       - X: -3608464
-        Y: 7044278
+        Y: 7044280
       - X: -3936506
-        Y: 6750766
+        Y: 6750769
       - X: -3901976
-        Y: 6698970
+        Y: 6698972
       - X: -3332218
-        Y: 6319132
+        Y: 6319134
       - X: -3125033
-        Y: 6232805
+        Y: 6232807
       - X: -3263156
-        Y: 6163743
+        Y: 6163746
       - X: -3159564
-        Y: 6008354
+        Y: 6008357
       - X: -2762460
-        Y: 5904762
+        Y: 5904765
       - X: -2486214
-        Y: 5904762
+        Y: 5904765
       - X: -2727929
-        Y: 5801170
+        Y: 5801172
       - X: -3038706
-        Y: 5507658
+        Y: 5507661
       - X: -3245891
-        Y: 5386801
+        Y: 5386803
       - X: -3435810
-        Y: 5145085
+        Y: 5145087
       - X: -3556667
-        Y: 4886104
+        Y: 4886106
       - X: -3591199
-        Y: 4402673
+        Y: 4402676
       - X: -3677525
-        Y: 4074631
+        Y: 4074633
       - X: -3781118
-        Y: 3867446
+        Y: 3867448
       - X: -3815648
-        Y: 3746588
+        Y: 3746591
       - X: -3832914
-        Y: 3159565
+        Y: 3159567
       - X: -3729322
-        Y: 2779727
+        Y: 2779729
       - X: -3953772
-        Y: 2538011
+        Y: 2538013
       - X: -4022833
-        Y: 2348092
+        Y: 2348094
       - X: -4022833
-        Y: 2054580
+        Y: 2054582
       - X: -3971037
-        Y: 1933722
+        Y: 1933725
       - X: -3901976
-        Y: 1830130
+        Y: 1830132
       - X: -3815648
-        Y: 1726538
+        Y: 1726540
       - X: -3591199
-        Y: 1622945
+        Y: 1622948
       - X: -3349483
-        Y: 1622945
+        Y: 1622948
       - X: -3228625
-        Y: 1674742
+        Y: 1674744
       - X: -2866052
-        Y: 1812865
+        Y: 1812867
       - X: -2745194
-        Y: 1795599
+        Y: 1795602
   m_CompositePaths:
     m_Paths:
-    - - {x: 0.1208579, y: -0.0328043}
-      - {x: 0.1605683, y: -0.0207185}
-      - {x: 0.1950991, y: -0.0051797}
-      - {x: 0.2158176, y: 0.0103591}
-      - {x: 0.2503484, y: 0.0431633}
-      - {x: 0.2676138, y: 0.0656083}
-      - {x: 0.2831526, y: 0.1053187}
-      - {x: 0.2883322, y: 0.1260372}
-      - {x: 0.2900588, y: 0.138123}
-      - {x: 0.2917853, y: 0.1795599}
-      - {x: 0.2935119, y: 0.22790301}
-      - {x: 0.2942263, y: 0.2393339}
-      - {x: 0.31077722, y: 0.2641603}
-      - {x: 0.3142303, y: 0.2883319}
-      - {x: 0.3142303, y: 0.40228352}
-      - {x: 0.3125038, y: 0.4109161}
-      - {x: 0.3090507, y: 0.42300192}
-      - {x: 0.300418, y: 0.4506266}
-      - {x: 0.2796995, y: 0.5041493}
-      - {x: 0.2710668, y: 0.5231412}
-      - {x: 0.2641607, y: 0.5300474}
-      - {x: 0.2589811, y: 0.5300474}
-      - {x: 0.2468953, y: 0.5542189}
-      - {x: 0.2279034, y: 0.57321084}
-      - {x: 0.2071849, y: 0.5904762}
-      - {x: 0.1640214, y: 0.6198274}
-      - {x: 0.1260376, y: 0.6353662}
-      - {x: 0.0656087, y: 0.6405458}
-      - {x: 0.0241717, y: 0.6491785}
-      - {x: -0.013812, y: 0.6526316}
-      - {x: -0.0483428, y: 0.650905}
-      - {x: -0.058702, y: 0.6422723}
-      - {x: -0.077694, y: 0.650905}
-      - {x: -0.0984124, y: 0.66471744}
-      - {x: -0.1139513, y: 0.669897}
-      - {x: -0.1398494, y: 0.7061543}
-      - {x: -0.1605678, y: 0.7251463}
-      - {x: -0.1864659, y: 0.737232}
-      - {x: -0.2468948, y: 0.737232}
-      - {x: -0.28833172, y: 0.7355055}
-      - {x: -0.3263156, y: 0.7234197}
-      - {x: -0.3608464, y: 0.7044278}
-      - {x: -0.3936506, y: 0.6750766}
-      - {x: -0.3901976, y: 0.669897}
-      - {x: -0.3332218, y: 0.6319132}
-      - {x: -0.3125033, y: 0.6232805}
-      - {x: -0.3263156, y: 0.6163743}
-      - {x: -0.3159564, y: 0.6008354}
-      - {x: -0.276246, y: 0.5904762}
-      - {x: -0.2486214, y: 0.5904762}
-      - {x: -0.2727929, y: 0.580117}
-      - {x: -0.30387062, y: 0.5507658}
-      - {x: -0.3245891, y: 0.5386801}
-      - {x: -0.343581, y: 0.5145085}
-      - {x: -0.3556667, y: 0.48861042}
-      - {x: -0.3591199, y: 0.4402673}
-      - {x: -0.3677525, y: 0.4074631}
-      - {x: -0.3781118, y: 0.38674462}
-      - {x: -0.3815648, y: 0.3746588}
-      - {x: -0.3832914, y: 0.3159565}
-      - {x: -0.3729322, y: 0.2779727}
-      - {x: -0.39537722, y: 0.2538011}
-      - {x: -0.4022833, y: 0.2348092}
-      - {x: -0.4022833, y: 0.205458}
-      - {x: -0.3971037, y: 0.1933722}
-      - {x: -0.3901976, y: 0.183013}
-      - {x: -0.3815648, y: 0.17265381}
-      - {x: -0.3591199, y: 0.1622945}
-      - {x: -0.3426393, y: 0.1622945}
-      - {x: -0.3366749, y: 0.1294903}
-      - {x: -0.3280421, y: 0.1087718}
-      - {x: -0.3194095, y: 0.0897799}
-      - {x: -0.3004175, y: 0.051796}
-      - {x: -0.2900583, y: 0.0362572}
-      - {x: -0.2727929, y: 0.0172653}
-      - {x: -0.2486214, y: 0}
-      - {x: -0.2261763, y: -0.0120858}
-      - {x: -0.1743802, y: -0.0276247}
-      - {x: -0.1553882, y: -0.0310777}
-      - {x: -0.1053186, y: -0.0362574}
-      - {x: -0.036257, y: -0.0379839}
-      - {x: 0.089780204, y: -0.0379839}
+    - - {x: 0.1208579, y: -0.032804}
+      - {x: 0.1605683, y: -0.0207183}
+      - {x: 0.1950991, y: -0.0051794}
+      - {x: 0.2158176, y: 0.0103593}
+      - {x: 0.2503484, y: 0.0431636}
+      - {x: 0.2676138, y: 0.0656086}
+      - {x: 0.2831526, y: 0.105319}
+      - {x: 0.2883322, y: 0.1260374}
+      - {x: 0.2900588, y: 0.1381232}
+      - {x: 0.2917853, y: 0.1795602}
+      - {x: 0.2935119, y: 0.2279033}
+      - {x: 0.2942263, y: 0.2393342}
+      - {x: 0.31077722, y: 0.2641606}
+      - {x: 0.3142303, y: 0.2883321}
+      - {x: 0.3142303, y: 0.4022837}
+      - {x: 0.3125038, y: 0.41091642}
+      - {x: 0.3090507, y: 0.4230022}
+      - {x: 0.300418, y: 0.4506268}
+      - {x: 0.2796995, y: 0.5041495}
+      - {x: 0.2710668, y: 0.5231414}
+      - {x: 0.2641607, y: 0.5300476}
+      - {x: 0.2589811, y: 0.5300476}
+      - {x: 0.2468953, y: 0.5542191}
+      - {x: 0.2279034, y: 0.573211}
+      - {x: 0.2071849, y: 0.5904765}
+      - {x: 0.1640214, y: 0.6198276}
+      - {x: 0.1260376, y: 0.6353665}
+      - {x: 0.0656087, y: 0.6405461}
+      - {x: 0.0241717, y: 0.6491787}
+      - {x: -0.013812, y: 0.6526319}
+      - {x: -0.0483428, y: 0.6509053}
+      - {x: -0.058702, y: 0.6422726}
+      - {x: -0.077694, y: 0.6509053}
+      - {x: -0.0984124, y: 0.6647176}
+      - {x: -0.1139513, y: 0.6698972}
+      - {x: -0.1398494, y: 0.7061546}
+      - {x: -0.1605678, y: 0.72514653}
+      - {x: -0.1864659, y: 0.7372322}
+      - {x: -0.2468948, y: 0.7372322}
+      - {x: -0.28833172, y: 0.7355057}
+      - {x: -0.3263156, y: 0.7234199}
+      - {x: -0.3608464, y: 0.704428}
+      - {x: -0.3936506, y: 0.6750769}
+      - {x: -0.3901976, y: 0.6698972}
+      - {x: -0.3332218, y: 0.6319134}
+      - {x: -0.3125033, y: 0.6232807}
+      - {x: -0.3263156, y: 0.6163746}
+      - {x: -0.3159564, y: 0.6008357}
+      - {x: -0.276246, y: 0.5904765}
+      - {x: -0.2486214, y: 0.5904765}
+      - {x: -0.2727929, y: 0.5801172}
+      - {x: -0.30387062, y: 0.5507661}
+      - {x: -0.3245891, y: 0.5386803}
+      - {x: -0.343581, y: 0.5145087}
+      - {x: -0.3556667, y: 0.4886106}
+      - {x: -0.3591199, y: 0.4402676}
+      - {x: -0.3677525, y: 0.4074633}
+      - {x: -0.3781118, y: 0.3867448}
+      - {x: -0.3815648, y: 0.3746591}
+      - {x: -0.3832914, y: 0.3159567}
+      - {x: -0.3729322, y: 0.2779729}
+      - {x: -0.39537722, y: 0.25380132}
+      - {x: -0.4022833, y: 0.2348094}
+      - {x: -0.4022833, y: 0.20545821}
+      - {x: -0.3971037, y: 0.1933725}
+      - {x: -0.3901976, y: 0.1830132}
+      - {x: -0.3815648, y: 0.172654}
+      - {x: -0.3591199, y: 0.1622948}
+      - {x: -0.3426393, y: 0.1622948}
+      - {x: -0.3366749, y: 0.1294905}
+      - {x: -0.3280421, y: 0.1087721}
+      - {x: -0.3194095, y: 0.0897801}
+      - {x: -0.3004175, y: 0.051796302}
+      - {x: -0.2900583, y: 0.0362574}
+      - {x: -0.2727929, y: 0.0172655}
+      - {x: -0.2486214, y: 0.0000001}
+      - {x: -0.2261763, y: -0.0120856}
+      - {x: -0.1743802, y: -0.0276244}
+      - {x: -0.1553882, y: -0.0310775}
+      - {x: -0.1053186, y: -0.0362571}
+      - {x: -0.036257, y: -0.0379837}
+      - {x: 0.089780204, y: -0.0379837}
   m_VertexDistance: 0.0005
 --- !u!50 &2051999351
 Rigidbody2D:
@@ -4388,7 +4404,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 2.8666973, y: 1.3273826}
+  m_ConnectedAnchor: {x: 4.526697, y: 1.9673824}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -4406,7 +4422,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2128470403}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_shoulder_R_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4440,7 +4456,7 @@ GameObject:
   - component: {fileID: 2134094651}
   - component: {fileID: 2134094652}
   - component: {fileID: 2134094653}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Rogue_shoulder_L_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4492,12 +4508,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 191178835}
+  m_ConnectedRigidBody: {fileID: 826435723}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -1.6200013, y: 2.1799998}
+  m_ConnectedAnchor: {x: -1.5099999, y: -0.6399996}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0

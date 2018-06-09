@@ -128,4 +128,14 @@ public class PlayerControler : MonoBehaviour {
     {
         weapon = w;
     }
-}
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Rig")
+        {
+            Debug.Log("ignore");
+            Physics2D.IgnoreCollision(gameObject.GetComponent<CapsuleCollider2D>(), collision.collider);
+        }
+    }
+
+    }
