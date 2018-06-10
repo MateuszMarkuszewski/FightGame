@@ -8,7 +8,7 @@ public class PlayerControler : MonoBehaviour {
     public float heroSpeed;
     public float jumpForce;
     public int throwSpeed;
-    private bool ragdoll = true;
+    private bool ragdoll = false;
     //klawisze
     public KeyCode left;
     public KeyCode right;
@@ -59,10 +59,28 @@ public class PlayerControler : MonoBehaviour {
         ///atak
         if (Input.GetKeyDown(attack))
         {
-            anim.enabled = false;
-            foreach(Rigidbody2D rig in rigs){
-                rig.bodyType = RigidbodyType2D.Dynamic;
+            if(ragdoll == false)
+            {
+                anim.enabled = false;
+                rgdBody.bodyType = RigidbodyType2D.Static;
+                foreach (Rigidbody2D rig in rigs)
+                {
+                    rig.bodyType = RigidbodyType2D.Dynamic;
+                }
+                ragdoll = true;
             }
+            else if(ragdoll == true)
+            {
+                foreach (Rigidbody2D rig in rigs)
+                {
+                    rig.bodyType = RigidbodyType2D.Kinematic;
+                }
+                rgdBody.bodyType = RigidbodyType2D.Dynamic;
+                anim.enabled = true;
+                
+                ragdoll = false;
+            }
+
           //  anim.SetTrigger("attack");
         }
 /// skakanie

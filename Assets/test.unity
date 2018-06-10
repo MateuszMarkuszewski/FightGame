@@ -122,6 +122,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2800163}
+  - component: {fileID: 2800164}
+  - component: {fileID: 2800165}
   m_Layer: 11
   m_Name: Rogue_leg_R_01
   m_TagString: Untagged
@@ -145,6 +147,49 @@ Transform:
   m_Father: {fileID: 1946805659}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 1.5012417}
+--- !u!50 &2800164
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2800162}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!233 &2800165
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2800162}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 1946805660}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0.90999955, y: -0.7499997}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &39293851
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +266,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 191178834}
+  - component: {fileID: 191178835}
+  - component: {fileID: 191178836}
   m_Layer: 11
   m_Name: Rogue_torso_01
   m_TagString: Rig
@@ -246,6 +293,49 @@ Transform:
   m_Father: {fileID: 1946805659}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -14.422001}
+--- !u!50 &191178835
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 191178833}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!233 &191178836
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 191178833}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 1946805660}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0.099999584, y: -0.42999923}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &206330060
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,12 +768,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 1409780225}
+  m_ConnectedRigidBody: {fileID: 1111999378}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 2.0013762, y: -3.0576549}
-  m_ConnectedAnchor: {x: 2.0013754, y: -3.0576544}
+  m_ConnectedAnchor: {x: 0.23137608, y: -0.8876538}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -843,12 +933,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 547788083}
+  m_ConnectedRigidBody: {fileID: 635004443}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -1.5566239, y: -4.280718}
-  m_ConnectedAnchor: {x: -1.5566247, y: -4.2807174}
+  m_ConnectedAnchor: {x: -0.21662526, y: -1.1107169}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -949,8 +1039,6 @@ GameObject:
   - component: {fileID: 502653071}
   - component: {fileID: 502653072}
   - component: {fileID: 502653074}
-  - component: {fileID: 502653073}
-  - component: {fileID: 502653075}
   m_Layer: 11
   m_Name: Rogue_shoulder_r_05
   m_TagString: Rig
@@ -1018,26 +1106,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!50 &502653073
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 502653070}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!60 &502653074
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1094,29 +1162,6 @@ PolygonCollider2D:
       - {x: 1.86, y: -2.2}
       - {x: 1.87, y: -2.26}
       - {x: 1.91, y: -2.26}
---- !u!233 &502653075
-HingeJoint2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 502653070}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 826435723}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 1.1952648, y: -0.6671253}
-  m_ConnectedAnchor: {x: 1.1952641, y: -0.66712475}
-  m_UseMotor: 0
-  m_Motor:
-    m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
-  m_UseLimits: 1
-  m_AngleLimits:
-    m_LowerAngle: -90
-    m_UpperAngle: 90
 --- !u!1 &535564264
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,8 +1370,6 @@ GameObject:
   - component: {fileID: 547788081}
   - component: {fileID: 547788082}
   - component: {fileID: 547788084}
-  - component: {fileID: 547788083}
-  - component: {fileID: 547788085}
   m_Layer: 11
   m_Name: Rogue_leg_l_01
   m_TagString: Rig
@@ -1394,26 +1437,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!50 &547788083
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 547788080}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!60 &547788084
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1460,29 +1483,6 @@ PolygonCollider2D:
       - {x: -1.41, y: -4.5299997}
       - {x: -1.18, y: -4.44}
       - {x: -1.1, y: -4.3399997}
---- !u!233 &547788085
-HingeJoint2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 547788080}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 1534562678}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: -1.3898382, y: -3.1688426}
-  m_ConnectedAnchor: {x: -1.389839, y: -3.168842}
-  m_UseMotor: 0
-  m_Motor:
-    m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
-  m_UseLimits: 1
-  m_AngleLimits:
-    m_LowerAngle: 0
-    m_UpperAngle: 120
 --- !u!1 &623948676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,8 +1494,6 @@ GameObject:
   - component: {fileID: 623948677}
   - component: {fileID: 623948678}
   - component: {fileID: 623948680}
-  - component: {fileID: 623948679}
-  - component: {fileID: 623948681}
   m_Layer: 11
   m_Name: Rogue_leg_r_01
   m_TagString: Rig
@@ -1563,26 +1561,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!50 &623948679
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 623948676}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!60 &623948680
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1630,29 +1608,6 @@ PolygonCollider2D:
       - {x: 1.4399999, y: -4.49}
       - {x: 1.66, y: -4.3199997}
       - {x: 1.7099999, y: -4.23}
---- !u!233 &623948681
-HingeJoint2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 623948676}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 1534562678}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 0.80610937, y: -3.1688426}
-  m_ConnectedAnchor: {x: 0.8061086, y: -3.168842}
-  m_UseMotor: 0
-  m_Motor:
-    m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
-  m_UseLimits: 1
-  m_AngleLimits:
-    m_LowerAngle: 0
-    m_UpperAngle: 120
 --- !u!1 &635004441
 GameObject:
   m_ObjectHideFlags: 0
@@ -1662,6 +1617,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 635004442}
+  - component: {fileID: 635004443}
+  - component: {fileID: 635004444}
   m_Layer: 11
   m_Name: Rogue_leg_L_01
   m_TagString: Untagged
@@ -1685,6 +1642,49 @@ Transform:
   m_Father: {fileID: 1946805659}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -1.7863822}
+--- !u!50 &635004443
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 635004441}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!233 &635004444
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 635004441}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 1946805660}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: -1.3499999, y: -0.77999985}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &711456580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2087,7 +2087,6 @@ GameObject:
   - component: {fileID: 826435720}
   - component: {fileID: 826435721}
   - component: {fileID: 826435722}
-  - component: {fileID: 826435723}
   m_Layer: 11
   m_Name: Rogue_torso_05
   m_TagString: Rig
@@ -2242,26 +2241,6 @@ PolygonCollider2D:
       - {x: 0.64, y: -3.1799998}
       - {x: 0.78, y: -3.12}
       - {x: 0.96, y: -3.08}
---- !u!50 &826435723
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 826435719}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &924930441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2411,12 +2390,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 1534562678}
+  m_ConnectedRigidBody: {fileID: 2800164}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 1.25086, y: -4.058343}
-  m_ConnectedAnchor: {x: 1.2508593, y: -4.058343}
+  m_ConnectedAnchor: {x: 0.3308592, y: -0.91834235}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2581,6 +2560,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1111999376}
+  - component: {fileID: 1111999378}
+  - component: {fileID: 1111999377}
   m_Layer: 11
   m_Name: Rogue_elbow_R_01
   m_TagString: Untagged
@@ -2604,6 +2585,49 @@ Transform:
   m_Father: {fileID: 2128470403}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 58.597687}
+--- !u!233 &1111999377
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1111999375}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 2128470404}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 0.51999897, y: -1.62}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
+--- !u!50 &1111999378
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1111999375}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1122960882
 GameObject:
   m_ObjectHideFlags: 0
@@ -3045,8 +3069,6 @@ GameObject:
   - component: {fileID: 1409780223}
   - component: {fileID: 1409780224}
   - component: {fileID: 1409780226}
-  - component: {fileID: 1409780225}
-  - component: {fileID: 1409780227}
   m_Layer: 11
   m_Name: Rogue_elbow_r_05
   m_TagString: Rig
@@ -3114,26 +3136,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!50 &1409780225
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1409780222}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!60 &1409780226
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3181,29 +3183,6 @@ PolygonCollider2D:
       - {x: 2.05, y: -3.36}
       - {x: 2.25, y: -3.1899998}
       - {x: 2.29, y: -3.1299999}
---- !u!233 &1409780227
-HingeJoint2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1409780222}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 502653073}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 1.6122179, y: -2.0569673}
-  m_ConnectedAnchor: {x: 1.6122172, y: -2.0569673}
-  m_UseMotor: 0
-  m_Motor:
-    m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
-  m_UseLimits: 1
-  m_AngleLimits:
-    m_LowerAngle: -90
-    m_UpperAngle: 90
 --- !u!1 &1462175548
 GameObject:
   m_ObjectHideFlags: 0
@@ -3361,9 +3340,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1534562676}
   - component: {fileID: 1534562677}
-  - component: {fileID: 1534562678}
   - component: {fileID: 1534562679}
-  - component: {fileID: 1534562680}
   m_Layer: 11
   m_Name: Rogue_pelvis_05
   m_TagString: Rig
@@ -3431,26 +3408,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!50 &1534562678
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1534562675}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!60 &1534562679
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3538,29 +3495,6 @@ PolygonCollider2D:
       - {x: 0.12, y: -4.31}
       - {x: 0.47, y: -4.31}
       - {x: 0.7, y: -4.29}
---- !u!233 &1534562680
-HingeJoint2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1534562675}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 826435723}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: -0.027796833, y: -2.1403587}
-  m_ConnectedAnchor: {x: -0.02779761, y: -2.1403587}
-  m_UseMotor: 0
-  m_Motor:
-    m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
-  m_UseLimits: 1
-  m_AngleLimits:
-    m_LowerAngle: -20
-    m_UpperAngle: 20
 --- !u!1 &1626491492
 GameObject:
   m_ObjectHideFlags: 0
@@ -3838,6 +3772,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1946805659}
+  - component: {fileID: 1946805660}
   m_Layer: 11
   m_Name: Rogue_pelvis_01
   m_TagString: Rig
@@ -3863,6 +3798,26 @@ Transform:
   m_Father: {fileID: 781036269}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!50 &1946805660
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1946805658}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2051130846
 GameObject:
   m_ObjectHideFlags: 0
@@ -4399,12 +4354,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
+  m_ConnectedRigidBody: {fileID: 191178835}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 4.526697, y: 1.9673824}
+  m_ConnectedAnchor: {x: -0.030001532, y: 1.9399992}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -4422,6 +4377,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2128470403}
+  - component: {fileID: 2128470404}
+  - component: {fileID: 2128470405}
   m_Layer: 11
   m_Name: Rogue_shoulder_R_01
   m_TagString: Untagged
@@ -4445,6 +4402,49 @@ Transform:
   m_Father: {fileID: 191178834}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 70.203}
+--- !u!50 &2128470404
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2128470402}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!233 &2128470405
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2128470402}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 191178835}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: 1.1400002, y: 2.2699995}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359
 --- !u!1 &2134094650
 GameObject:
   m_ObjectHideFlags: 0
@@ -4508,12 +4508,12 @@ HingeJoint2D:
   m_Enabled: 1
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 826435723}
+  m_ConnectedRigidBody: {fileID: 191178835}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -1.5099999, y: -0.6399996}
+  m_ConnectedAnchor: {x: -1.6199999, y: 2.1800003}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
