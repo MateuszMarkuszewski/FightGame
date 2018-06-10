@@ -27,7 +27,7 @@ public class PlayerControler : MonoBehaviour {
     bool dirToRight = true;
     Rigidbody2D rgdBody;
     ComboManager comboManager;
-    Rigidbody2D[] bodys;
+    Rigidbody2D[] rigs;
 
     private float radius = 0.1f;
     private bool onTheGround;
@@ -39,9 +39,7 @@ public class PlayerControler : MonoBehaviour {
         anim = GetComponent<Animator>();
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
-        bodys = GetComponentsInChildren<Rigidbody2D>();
-
-        Debug.Log(bodys[0]);
+        rigs = GetComponentsInChildren<Rigidbody2D>();
     }
 
     void Update () {
@@ -60,8 +58,12 @@ public class PlayerControler : MonoBehaviour {
         */
         ///atak
         if (Input.GetKeyDown(attack))
-        {   
-            anim.SetTrigger("attack");
+        {
+            anim.enabled = false;
+            foreach(Rigidbody2D rig in rigs){
+                rig.bodyType = RigidbodyType2D.Dynamic;
+            }
+          //  anim.SetTrigger("attack");
         }
 /// skakanie
         if(Input.GetKeyDown(jump) && (onTheGround || onTheWall))
@@ -129,13 +131,4 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Rig")
-        {
-            Debug.Log("ignore");
-            Physics2D.IgnoreCollision(gameObject.GetComponent<CapsuleCollider2D>(), collision.collider);
-        }
-    }
-
-    }
+}
