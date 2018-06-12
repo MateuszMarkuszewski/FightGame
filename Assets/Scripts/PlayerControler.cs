@@ -40,6 +40,7 @@ public class PlayerControler : MonoBehaviour {
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
         rigs = GetComponentsInChildren<Rigidbody2D>();
+
     }
 
     void Update () {
@@ -59,30 +60,33 @@ public class PlayerControler : MonoBehaviour {
         ///atak
         if (Input.GetKeyDown(attack))
         {
-            if(ragdoll == false)
-            {
-                anim.enabled = false;
-                rgdBody.bodyType = RigidbodyType2D.Static;
-                foreach (Rigidbody2D rig in rigs)
-                {
-                    rig.bodyType = RigidbodyType2D.Dynamic;
-                }
-                ragdoll = true;
-            }
-            else if(ragdoll == true)
-            {
-                foreach (Rigidbody2D rig in rigs)
-                {
-                    rig.bodyType = RigidbodyType2D.Kinematic;
-                }
-                rgdBody.bodyType = RigidbodyType2D.Dynamic;
-                anim.enabled = true;
-                
-                ragdoll = false;
-            }
+        
+        //StartCoroutine(StandUp(new Vector3(0f, 0f, 0f), new Vector3(10f, 10f, 0f), 10f));
+        
+                    if (ragdoll == false)
+                    {
+                        anim.enabled = false;
+                        rgdBody.bodyType = RigidbodyType2D.Kinematic;
+                        foreach (Rigidbody2D rig in rigs)
+                        {
+                            rig.bodyType = RigidbodyType2D.Dynamic;
+                        }
+                        ragdoll = true;
+                    }
+                    else if(ragdoll == true)
+                    {
+                        foreach (Rigidbody2D rig in rigs)
+                        {
+                            rig.bodyType = RigidbodyType2D.Kinematic;
+                        }
+                        rgdBody.bodyType = RigidbodyType2D.Dynamic;
+                        anim.enabled = true;
 
-          //  anim.SetTrigger("attack");
+                        ragdoll = false;
+                    }
+            //  anim.SetTrigger("attack");
         }
+        
 /// skakanie
         if(Input.GetKeyDown(jump) && (onTheGround || onTheWall))
         {
@@ -149,4 +153,15 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
+    IEnumerator StandUp(Vector3 source, Vector3 target, float overTime, GameObject childObject)
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + overTime)
+        {
+            childObject.transform.position = Vector3.Lerp(source, target, (Time.time - startTime) / overTime);
+            yield return null;
+        }
+        childObject.transform.position = target;
+    }
+    
 }
