@@ -34,12 +34,35 @@ public class PlayerControler : MonoBehaviour {
     private bool onTheWall;
     private GameObject weapon;
 
+    public struct Limb
+    {
+        public Vector3 orgPosition;
+        public Transform ik;
+
+        public Limb(Transform ik)
+        {
+            this.ik = ik;
+            this.orgPosition = ik.localPosition;
+        }
+    }
+    public Limb[] limbs;
+
     void Start ()
     {
         anim = GetComponent<Animator>();
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
         rigs = GetComponentsInChildren<Rigidbody2D>();
+        Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
+        limbs = new Limb[iks.Length];
+        for(int i=0; i<iks.Length; i++)
+        {
+            limbs[i] = new Limb(iks[i]);
+        }
+        foreach(Limb i in limbs)
+        {
+            Debug.Log(i.ik);
+        }
 
     }
 
@@ -60,9 +83,7 @@ public class PlayerControler : MonoBehaviour {
         ///atak
         if (Input.GetKeyDown(attack))
         {
-        
-        //StartCoroutine(StandUp(new Vector3(0f, 0f, 0f), new Vector3(10f, 10f, 0f), 10f));
-        
+                
                     if (ragdoll == false)
                     {
                         anim.enabled = false;
@@ -77,11 +98,19 @@ public class PlayerControler : MonoBehaviour {
                     {
                         foreach (Rigidbody2D rig in rigs)
                         {
+                            rig.bodyType = RigidbodyType2D.Static;
                             rig.bodyType = RigidbodyType2D.Kinematic;
-                        }
-                        rgdBody.bodyType = RigidbodyType2D.Dynamic;
-                        anim.enabled = true;
 
+                        }
+                        foreach(Limb limb in limbs)
+                        {
+                             StartCoroutine(StandUp(limb.ik.localPosition, limb.orgPosition, 0.3f, limb.ik));
+
+                        }
+                    rgdBody.bodyType = RigidbodyType2D.Dynamic;
+                        
+                        //anim.enabled = true;
+                        
                         ragdoll = false;
                     }
             //  anim.SetTrigger("attack");
@@ -153,15 +182,15 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
-    IEnumerator StandUp(Vector3 source, Vector3 target, float overTime, GameObject childObject)
+    IEnumerator StandUp(Vector3 source, Vector3 target, float overTime, Transform childObject)
     {
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
-            childObject.transform.position = Vector3.Lerp(source, target, (Time.time - startTime) / overTime);
+            childObject.localPosition = Vector3.Lerp(source, target, (Time.time - startTime) / overTime);
             yield return null;
         }
-        childObject.transform.position = target;
+        childObject.localPosition = target;
     }
     
 }
