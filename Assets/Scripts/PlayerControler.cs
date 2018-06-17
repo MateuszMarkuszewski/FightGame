@@ -53,6 +53,8 @@ public class PlayerControler : MonoBehaviour {
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
         rigs = GetComponentsInChildren<Rigidbody2D>();
+
+        //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
         Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
         limbs = new Limb[iks.Length];
         for(int i=0; i<iks.Length; i++)
@@ -63,10 +65,15 @@ public class PlayerControler : MonoBehaviour {
         {
             Debug.Log(i.ik);
         }
-
     }
 
     void Update () {
+        if( ragdoll == true)
+        {
+            transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
+            Debug.Log(limbs[1].ik);
+            Debug.Log(limbs[1].ik.position);
+        }
         //czy postać dotyka ziemi
         onTheGround = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
         //onTheWall = (Physics2D.OverlapBox(wallTester.position, new Vector2(0.9f, 0.0f), 0.0f, layersToTest) && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)));
@@ -80,40 +87,11 @@ public class PlayerControler : MonoBehaviour {
             rgdBody.velocity = new Vector2(horizontalMove * 10 * heroSpeed, rgdBody.velocity.y);
         }
         */
-        ///atak
+///atak
         if (Input.GetKeyDown(attack))
         {
-                
-                    if (ragdoll == false)
-                    {
-                        anim.enabled = false;
-                        rgdBody.bodyType = RigidbodyType2D.Kinematic;
-                        foreach (Rigidbody2D rig in rigs)
-                        {
-                            rig.bodyType = RigidbodyType2D.Dynamic;
-                        }
-                        ragdoll = true;
-                    }
-                    else if(ragdoll == true)
-                    {
-                        foreach (Rigidbody2D rig in rigs)
-                        {
-                            rig.bodyType = RigidbodyType2D.Static;
-                            rig.bodyType = RigidbodyType2D.Kinematic;
-
-                        }
-                        foreach(Limb limb in limbs)
-                        {
-                             StartCoroutine(StandUp(limb.ik.localPosition, limb.orgPosition, 0.3f, limb.ik));
-
-                        }
-                    rgdBody.bodyType = RigidbodyType2D.Dynamic;
-                        
-                        //anim.enabled = true;
-                        
-                        ragdoll = false;
-                    }
-            //  anim.SetTrigger("attack");
+            ChangeState();
+            //anim.SetTrigger("attack");
         }
         
 /// skakanie
@@ -182,15 +160,67 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
-    IEnumerator StandUp(Vector3 source, Vector3 target, float overTime, Transform childObject)
+    IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject)
     {
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
         {
-            childObject.localPosition = Vector3.Lerp(source, target, (Time.time - startTime) / overTime);
+            childObject.ik.localPosition = Vector3.Lerp(source, childObject.orgPosition, (Time.time - startTime) / overTime);
             yield return null;
         }
-        childObject.localPosition = target;
     }
-    
+
+    IEnumerator StandUp(Limb[] limbs)
+    {
+        //TODO: bardziej naturalnie
+        //podnoszenie kręgosłupa w pierwszej kolejnosci
+        foreach( Limb limb in limbs)
+        {
+            if(limb.ik.name == "Spine")
+            {
+                yield return StartCoroutine(MoveToOrgPosition(limb.ik.localPosition,0.3f,limb));
+            }
+        }
+        foreach (Limb limb in limbs)
+        {
+            StartCoroutine(MoveToOrgPosition(limb.ik.localPosition, 0.3f, limb));
+        }
+    }
+
+    public void ChangeState()
+    {
+        //zmiana stanu postaci z ragdoll do normalnego i odwrotnie
+        if (ragdoll == false)
+        {
+            
+            anim.enabled = false;
+            rgdBody.bodyType = RigidbodyType2D.Kinematic;
+            foreach (Rigidbody2D rig in rigs)
+            {
+                rig.bodyType = RigidbodyType2D.Dynamic;
+            }
+            limbs[0].ik.parent = null;
+            ragdoll = true;
+        }
+        else if (ragdoll == true)
+        {
+            //zmieniam najpierw na static żeby zatrzymać siły działające na objekty
+            limbs[0].ik.SetParent(gameObject.transform);
+
+            foreach (Rigidbody2D rig in rigs)
+            {
+                rig.bodyType = RigidbodyType2D.Static;
+                rig.bodyType = RigidbodyType2D.Kinematic;
+            }
+
+            StartCoroutine(StandUp(limbs));
+
+            rgdBody.bodyType = RigidbodyType2D.Dynamic;
+
+            anim.enabled = true;
+
+            ragdoll = false;
+        }
+    }
+
 }
