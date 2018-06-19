@@ -46,7 +46,7 @@ public class PlayerControler : MonoBehaviour {
         }
     }
     public Limb[] limbs;
-    class ComplateCoroutines { public int num=0; }
+    class ComplateCoroutines { public int num = 0; }
 
     void Start ()
     {
