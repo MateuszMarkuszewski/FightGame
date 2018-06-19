@@ -46,6 +46,7 @@ public class PlayerControler : MonoBehaviour {
         }
     }
     public Limb[] limbs;
+    class ComplateCoroutines { public int num=0; }
 
     void Start ()
     {
@@ -71,8 +72,7 @@ public class PlayerControler : MonoBehaviour {
         if( ragdoll == true)
         {
             transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
-            Debug.Log(limbs[1].ik);
-            Debug.Log(limbs[1].ik.position);
+
         }
         //czy postać dotyka ziemi
         onTheGround = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
@@ -146,6 +146,7 @@ public class PlayerControler : MonoBehaviour {
     //rzut podniesioną bronią
     void Throw()
     {
+        anim.SetTrigger("throw");
         weapon.SetActive(true);
         transform.Find(weapon.name).parent = null;
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);
@@ -160,7 +161,7 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
-    IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject)
+    IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
         float startTime = Time.time;
         while (Time.time < startTime + overTime)
@@ -168,24 +169,33 @@ public class PlayerControler : MonoBehaviour {
             childObject.ik.localPosition = Vector3.Lerp(source, childObject.orgPosition, (Time.time - startTime) / overTime);
             yield return null;
         }
+        complated.num++;
     }
 
     IEnumerator StandUp(Limb[] limbs)
     {
+        ComplateCoroutines complated = new ComplateCoroutines();
         //TODO: bardziej naturalnie
+        //TODO:Ienumerator zeby nie powtrzało akcji
         //podnoszenie kręgosłupa w pierwszej kolejnosci
-        foreach( Limb limb in limbs)
+        foreach (Limb limb in limbs)
         {
             if(limb.ik.name == "Spine")
             {
-                yield return StartCoroutine(MoveToOrgPosition(limb.ik.localPosition,0.3f,limb));
+                yield return StartCoroutine(MoveToOrgPosition(limb.ik.localPosition, 0.3f, limb, complated));
             }
         }
         foreach (Limb limb in limbs)
         {
-            StartCoroutine(MoveToOrgPosition(limb.ik.localPosition, 0.3f, limb));
+            StartCoroutine(MoveToOrgPosition(limb.ik.localPosition, 0.3f, limb, complated));
         }
+        while (complated.num<=limbs.Length)
+        {
+            yield return null;
+        }
+        anim.enabled = true;
     }
+
 
     public void ChangeState()
     {
@@ -217,7 +227,7 @@ public class PlayerControler : MonoBehaviour {
 
             rgdBody.bodyType = RigidbodyType2D.Dynamic;
 
-            anim.enabled = true;
+            //anim.enabled = true;
 
             ragdoll = false;
         }
