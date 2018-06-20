@@ -90,8 +90,8 @@ public class PlayerControler : MonoBehaviour {
 ///atak
         if (Input.GetKeyDown(attack))
         {
-            ChangeState();
-            //anim.SetTrigger("attack");
+            Debug.Log(weapon.name + "-anim");
+            anim.SetTrigger(weapon.name + "-anim");
         }
         
 /// skakanie
