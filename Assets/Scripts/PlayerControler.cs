@@ -161,6 +161,13 @@ public class PlayerControler : MonoBehaviour {
         weapon = w;
     }
 
+    void ChangeHitbox()
+    {
+
+    }
+
+
+    ///////////////////////////////////////////////////////ragdoll
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
         float startTime = Time.time;
