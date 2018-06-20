@@ -91,7 +91,7 @@ public class PlayerControler : MonoBehaviour {
         if (Input.GetKeyDown(attack))
         {
             Debug.Log(weapon.name + "-anim");
-            anim.SetTrigger(weapon.name + "-anim");
+            anim.SetTrigger(weapon.name + "-anim1");
         }
         
 /// skakanie

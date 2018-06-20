@@ -320,8 +320,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponOnGround: {fileID: 2138154414}
-  PickUpPos: {x: 0.2363121, y: 0.1128717, z: -0.03466797}
-  PickUpRot: {x: 0, y: 0, z: -1.764}
+  PickUpPos: {x: 0.236, y: -0.121, z: 0.03466797}
+  PickUpRot: {x: 0, y: 0, z: -177.355}
 --- !u!1 &65674137
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,7 +1213,6 @@ GameObject:
   - component: {fileID: 487816426}
   - component: {fileID: 487816428}
   - component: {fileID: 487816427}
-  - component: {fileID: 487816429}
   m_Layer: 13
   m_Name: New bone
   m_TagString: Untagged
@@ -1270,31 +1269,6 @@ MonoBehaviour:
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1982764188}
   m_AttachedIK: {fileID: 0}
---- !u!61 &487816429
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 487816425}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.00037711114, y: -0.002013117}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.31196386, y: 0.15464076}
-  m_EdgeRadius: 0
 --- !u!1 &498480564
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,7 +1425,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -1.5566239, y: -4.280718}
-  m_ConnectedAnchor: {x: -0.21662526, y: -1.1107175}
+  m_ConnectedAnchor: {x: -0.21662423, y: -1.1107175}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1700,14 +1674,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 513338253}
-  m_LocalRotation: {x: 0, y: 0, z: 0.95288235, w: 0.30334005}
+  m_LocalRotation: {x: 0, y: 0, z: 0.9528992, w: 0.3032872}
   m_LocalPosition: {x: 0.32846096, y: 0.29148972, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1011981344}
   m_Father: {fileID: 987381286}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 144.68301}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 144.69}
 --- !u!114 &513338255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1720,7 +1694,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.24000007
+  m_Length: 0.2400003
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1011981344}
   m_AttachedIK: {fileID: 1389874029}
@@ -2488,7 +2462,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -1.3499999, y: -0.78000057}
+  m_ConnectedAnchor: {x: -1.3500003, y: -0.78000057}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -3059,7 +3033,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 781036267}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.07, y: 1.51, z: 0}
+  m_LocalPosition: {x: 1.21, y: 1.54, z: 0}
   m_LocalScale: {x: 0.17265391, y: 0.1726539, z: 0.1726539}
   m_Children:
   - {fileID: 1472069867}
@@ -3347,14 +3321,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 816363631}
-  m_LocalRotation: {x: 0, y: 0, z: -0.9999646, w: 0.008414244}
+  m_LocalRotation: {x: 0, y: 0, z: -0.9999647, w: 0.008402324}
   m_LocalPosition: {x: 0.04382764, y: -0.16156027, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 572359868}
   m_Father: {fileID: 1949060506}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -179.03601}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -179.037}
 --- !u!114 &816363633
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3662,7 +3636,7 @@ MonoBehaviour:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1219606609}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.9969614, w: 0.07789719}
+      solverRotation: {x: 0, y: 0, z: 0.99696034, w: 0.0779105}
       defaultLocalRotation: {x: 0, y: 0, z: 0.9923764, w: 0.12324459}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1818222345}
@@ -3671,7 +3645,7 @@ MonoBehaviour:
       defaultLocalRotation: {x: 0, y: 0, z: 0.035098355, w: 0.99938387}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: 3.433, y: 1.4580002, z: 0.03466797}
+    targetPosition: {x: 4.9329996, y: 1.4680002, z: 0.03466797}
     flip: 1
 --- !u!50 &835697045
 Rigidbody2D:
@@ -4179,7 +4153,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 1.25086, y: -4.058343}
-  m_ConnectedAnchor: {x: 0.3308592, y: -0.91834307}
+  m_ConnectedAnchor: {x: 0.3308599, y: -0.91834307}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -4379,7 +4353,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 987381285}
-  m_LocalRotation: {x: 0, y: 0, z: -0.01238651, w: 0.99992335}
+  m_LocalRotation: {x: 0, y: 0, z: -0.012426429, w: 0.9999228}
   m_LocalPosition: {x: 0.19000027, y: 0.000000059604645, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4388,7 +4362,7 @@ Transform:
   - {fileID: 513338254}
   m_Father: {fileID: 1949060506}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -1.419}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -1.424}
 --- !u!114 &987381287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4401,7 +4375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.3800084
+  m_Length: 0.38000813
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1964963091}
   m_AttachedIK: {fileID: 1038948711}
@@ -4531,7 +4505,7 @@ MonoBehaviour:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 816363632}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.9999646, w: 0.008414244}
+      solverRotation: {x: 0, y: 0, z: -0.9999647, w: 0.008402324}
       defaultLocalRotation: {x: 0, y: 0, z: -0.9871525, w: 0.15978083}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 572359868}
@@ -4540,7 +4514,7 @@ MonoBehaviour:
       defaultLocalRotation: {x: 0, y: 0, z: -0.071846515, w: 0.9974158}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: 3.8370001, y: 1.4490001, z: 0.03466797}
+    targetPosition: {x: 5.337, y: 1.4590001, z: 0.03466797}
     flip: 1
 --- !u!50 &996847684
 Rigidbody2D:
@@ -4635,13 +4609,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1011981343}
-  m_LocalRotation: {x: 0, y: 0, z: 0.43586114, w: 0.9000139}
+  m_LocalRotation: {x: 0, y: 0, z: 0.4357912, w: 0.90004784}
   m_LocalPosition: {x: 0.24000007, y: -0.00000008940697, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 513338254}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 51.680004}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 51.671}
 --- !u!114 &1011981345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4898,21 +4872,21 @@ MonoBehaviour:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1949060506}
       solverPosition: {x: -0.00000005960465, y: -3.5527137e-15, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.7018804, w: 0.71229494}
+      solverRotation: {x: 0, y: 0, z: 0.7018901, w: 0.7122856}
       defaultLocalRotation: {x: 0, y: 0, z: 0.70710677, w: 0.7071069}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 987381286}
-      solverPosition: {x: 0.18997966, y: -0.0027982611, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.01238651, w: 0.99992335}
+      solverPosition: {x: 0.18997972, y: -0.0027931589, z: 0}
+      solverRotation: {x: 0, y: 0, z: -0.012426429, w: 0.9999228}
       defaultLocalRotation: {x: 0, y: 0, z: -0.000012607185, w: 1}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1964963091}
-      solverPosition: {x: 0.5696917, y: -0.017805334, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.029597806, w: -0.999562}
+      solverPosition: {x: 0.56969076, y: -0.017820343, z: 0}
+      solverRotation: {x: 0, y: 0, z: 0.02957361, w: -0.9995626}
       defaultLocalRotation: {x: 0, y: 0, z: -0.0017583967, w: -0.9999985}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: 3.7450001, y: 2.903, z: 0.03466797}
+    targetPosition: {x: 5.245, y: 2.913, z: 0.03466797}
     iterations: 10
     damping: 0.8
 --- !u!50 &1038948712
@@ -5129,7 +5103,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.51999897, y: -1.6199994}
+  m_ConnectedAnchor: {x: 0.5199996, y: -1.6200007}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -5360,7 +5334,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.44000039, y: -1.4600002}
+  m_ConnectedAnchor: {x: -0.4399997, y: -1.4600002}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -5811,14 +5785,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1219606608}
-  m_LocalRotation: {x: 0, y: 0, z: 0.9969614, w: 0.07789719}
+  m_LocalRotation: {x: 0, y: 0, z: 0.9969604, w: 0.077910505}
   m_LocalPosition: {x: 0.043827076, y: 0.17210305, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1818222345}
   m_Father: {fileID: 1949060506}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 171.065}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 171.063}
 --- !u!114 &1219606610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5831,7 +5805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.20251983
+  m_Length: 0.20251998
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1818222345}
   m_AttachedIK: {fileID: 835697044}
@@ -6046,16 +6020,16 @@ MonoBehaviour:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 513338254}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.95288235, w: 0.30334005}
+      solverRotation: {x: 0, y: 0, z: 0.9528992, w: 0.3032872}
       defaultLocalRotation: {x: 0, y: 0, z: 0.9842693, w: 0.17667487}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1011981344}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.43586114, w: 0.9000139}
+      solverRotation: {x: 0, y: 0, z: 0.43579116, w: 0.9000478}
       defaultLocalRotation: {x: 0, y: 0, z: 0.011716772, w: 0.9999314}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: 3.313, y: 1.9120002, z: 0.03466797}
+    targetPosition: {x: 4.8129997, y: 1.9220002, z: 0.03466797}
     flip: 0
 --- !u!4 &1389874030
 Transform:
@@ -6290,7 +6264,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1413119687}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.68, y: 2.43, z: 0.03466797}
+  m_LocalPosition: {x: 5.18, y: 2.44, z: 0.03466797}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 264893197}
@@ -6756,14 +6730,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1557928095}
-  m_LocalRotation: {x: 0, y: 0, z: -0.9984877, w: 0.054975748}
+  m_LocalRotation: {x: 0, y: 0, z: -0.25737998, w: 0.96631026}
   m_LocalPosition: {x: 0.3448116, y: -0.24310124, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1826477696}
   m_Father: {fileID: 987381286}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -173.697}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -29.829}
 --- !u!114 &1557928097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6776,7 +6750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.26139486
+  m_Length: 0.26139498
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1826477696}
   m_AttachedIK: {fileID: 1559482041}
@@ -6874,7 +6848,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1559482039}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.416, y: -0.623, z: 0}
+  m_LocalPosition: {x: 0.306, y: 0.298, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 12450852}
@@ -6906,16 +6880,16 @@ MonoBehaviour:
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1557928096}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: -0.9984877, w: 0.054975748}
+      solverRotation: {x: 0, y: 0, z: -0.25737998, w: 0.96631026}
       defaultLocalRotation: {x: 0, y: 0, z: -0.99076873, w: 0.1355635}
     - m_Bone: {fileID: 0}
       m_BoneTransform: {fileID: 1826477696}
       solverPosition: {x: 0, y: 0, z: 0}
-      solverRotation: {x: 0, y: 0, z: 0.26904508, w: 0.96312755}
+      solverRotation: {x: 0, y: 0, z: 0.4404193, w: 0.8977922}
       defaultLocalRotation: {x: 0, y: 0, z: -0.019544458, w: 0.99980897}
     m_Weight: 1
     m_RestoreDefaultPose: 1
-    targetPosition: {x: 4.096, y: 1.8750001, z: 0.03466797}
+    targetPosition: {x: 5.486, y: 2.8060002, z: 0.03466797}
     flip: 0
 --- !u!50 &1559482042
 Rigidbody2D:
@@ -7510,13 +7484,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1826477695}
-  m_LocalRotation: {x: 0, y: 0, z: 0.2690451, w: 0.9631276}
+  m_LocalRotation: {x: 0, y: 0, z: 0.4404193, w: 0.8977922}
   m_LocalPosition: {x: 0.26139486, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1557928096}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 31.215002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 52.261}
 --- !u!114 &1826477697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8159,7 +8133,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1949060505}
-  m_LocalRotation: {x: 0, y: 0, z: 0.70188034, w: 0.7122949}
+  m_LocalRotation: {x: 0, y: 0, z: 0.70188993, w: 0.7122854}
   m_LocalPosition: {x: -0.006043911, y: -0.6830272, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8168,7 +8142,7 @@ Transform:
   - {fileID: 1219606609}
   m_Father: {fileID: 20113588}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 89.157005}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 89.158005}
 --- !u!114 &1949060507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8181,7 +8155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.19000034
+  m_Length: 0.19000027
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 987381286}
   m_AttachedIK: {fileID: 1038948711}
@@ -8356,13 +8330,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1964963090}
-  m_LocalRotation: {x: 0, y: 0, z: 0.029597802, w: -0.9995619}
+  m_LocalRotation: {x: 0, y: 0, z: 0.02957361, w: -0.9995626}
   m_LocalPosition: {x: 0.38000825, y: 7.4604145e-10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 987381286}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.3920002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -3.3890002}
 --- !u!114 &1964963092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8447,7 +8421,6 @@ GameObject:
   - component: {fileID: 1982764188}
   - component: {fileID: 1982764190}
   - component: {fileID: 1982764189}
-  - component: {fileID: 1982764191}
   m_Layer: 13
   m_Name: New bone
   m_TagString: Untagged
@@ -8504,31 +8477,6 @@ MonoBehaviour:
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1014370900}
   m_AttachedIK: {fileID: 0}
---- !u!61 &1982764191
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1982764187}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.096667424, y: 0.006929457}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.19112459, y: 0.17187512}
-  m_EdgeRadius: 0
 --- !u!1 &2027702702
 GameObject:
   m_ObjectHideFlags: 0
@@ -8717,390 +8665,390 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 403164208}
     m_ColliderPaths:
-    - - X: 2158173
+    - - X: 2158176
         Y: 103591
-      - X: 2503481
+      - X: 2503484
         Y: 431633
-      - X: 2676135
+      - X: 2676138
         Y: 656083
-      - X: 2831524
+      - X: 2831526
         Y: 1053187
-      - X: 2883320
+      - X: 2883322
         Y: 1260372
-      - X: 2900585
+      - X: 2900588
         Y: 1381230
-      - X: 2917851
+      - X: 2917853
         Y: 1795599
-      - X: 2935116
+      - X: 2935119
         Y: 2279030
-      - X: 2986912
+      - X: 2986915
         Y: 3107769
-      - X: 2986912
+      - X: 2986915
         Y: 3504873
-      - X: 2969647
+      - X: 2969649
         Y: 3677527
-      - X: 2935116
+      - X: 2935119
         Y: 3988304
-      - X: 2831524
+      - X: 2831526
         Y: 4333612
-      - X: 2607073
+      - X: 2607076
         Y: 4765247
-      - X: 2451685
+      - X: 2451688
         Y: 5024227
-      - X: 2158173
+      - X: 2158176
         Y: 5335004
-      - X: 1830131
+      - X: 1830134
         Y: 5559454
-      - X: 1346700
+      - X: 1346702
         Y: 5801170
-      - X: 880534
+      - X: 880537
         Y: 5939293
-      - X: 690615
+      - X: 690618
         Y: 5973824
-      - X: 310776
+      - X: 310779
         Y: 6008354
-      - X: -915065
+      - X: -915063
         Y: 6008354
-      - X: -1122250
+      - X: -1122248
         Y: 5991089
-      - X: -1363965
+      - X: -1363963
         Y: 5956558
-      - X: -1450292
+      - X: -1450290
         Y: 5939293
-      - X: -1674743
+      - X: -1674740
         Y: 5887497
-      - X: -2089112
+      - X: -2089109
         Y: 5732108
-      - X: -2503481
+      - X: -2503479
         Y: 5524924
-      - X: -2727931
+      - X: -2727929
         Y: 5369535
-      - X: -2952382
+      - X: -2952379
         Y: 5145085
-      - X: -3228628
+      - X: -3228625
         Y: 4730716
-      - X: -3418547
+      - X: -3418544
         Y: 4333612
-      - X: -3453078
+      - X: -3453075
         Y: 4230019
-      - X: -3539404
+      - X: -3539402
         Y: 3694792
-      - X: -3556670
+      - X: -3556667
         Y: 3418546
-      - X: -3556670
+      - X: -3556667
         Y: 3228626
-      - X: -3522139
+      - X: -3522137
         Y: 2572542
-      - X: -3470343
+      - X: -3470341
         Y: 1864661
-      - X: -3366751
+      - X: -3366749
         Y: 1294903
-      - X: -3280424
+      - X: -3280421
         Y: 1087718
-      - X: -3194097
+      - X: -3194095
         Y: 897799
-      - X: -3004177
+      - X: -3004175
         Y: 517960
-      - X: -2900585
+      - X: -2900583
         Y: 362572
-      - X: -2727931
+      - X: -2727929
         Y: 172653
-      - X: -2486216
+      - X: -2486214
         Y: 0
-      - X: -2261766
+      - X: -2261763
         Y: -120858
-      - X: -1743804
+      - X: -1743802
         Y: -276247
-      - X: -1553885
+      - X: -1553882
         Y: -310777
-      - X: -1053188
+      - X: -1053186
         Y: -362574
-      - X: -362573
+      - X: -362570
         Y: -379839
-      - X: 897800
+      - X: 897802
         Y: -379839
-      - X: 1208577
+      - X: 1208579
         Y: -328043
-      - X: 1605681
+      - X: 1605683
         Y: -207185
-      - X: 1950989
+      - X: 1950991
         Y: -51797
   - m_Collider: {fileID: 535564267}
     m_ColliderPaths:
-    - - X: -2676135
+    - - X: -2676133
         Y: 1864661
-      - X: -2624339
+      - X: -2624337
         Y: 2071845
-      - X: -2641604
+      - X: -2641602
         Y: 2399888
-      - X: -2727931
+      - X: -2727929
         Y: 2796992
-      - X: -2745197
+      - X: -2745194
         Y: 3211361
-      - X: -2658870
+      - X: -2658867
         Y: 3384015
-      - X: -2693401
+      - X: -2693398
         Y: 3608465
-      - X: -2503481
+      - X: -2503479
         Y: 3625730
-      - X: -2123643
+      - X: -2123640
         Y: 3677527
-      - X: -1899193
+      - X: -1899190
         Y: 3815650
-      - X: -1657477
+      - X: -1657475
         Y: 3936508
-      - X: -1467558
+      - X: -1467555
         Y: 3936508
-      - X: -1381231
+      - X: -1381228
         Y: 3988304
-      - X: -1294904
+      - X: -1294901
         Y: 4143692
-      - X: -1208577
+      - X: -1208574
         Y: 4091896
-      - X: -431634
+      - X: -431632
         Y: 3919242
-      - X: -224450
+      - X: -224447
         Y: 3936508
-      - X: -86327
+      - X: -86324
         Y: 3988304
-      - X: 587023
+      - X: 587025
         Y: 3971038
-      - X: 759677
+      - X: 759679
         Y: 4005569
-      - X: 984127
+      - X: 984129
         Y: 4109161
-      - X: 1191311
+      - X: 1191314
         Y: 4160958
-      - X: 1346700
+      - X: 1346702
         Y: 4230019
-      - X: 1433027
+      - X: 1433029
         Y: 4195488
-      - X: 1795600
+      - X: 1795603
         Y: 3971038
-      - X: 2037316
+      - X: 2037318
         Y: 3867446
-      - X: 2348093
+      - X: 2348095
         Y: 3884711
-      - X: 2434420
+      - X: 2434422
         Y: 3936508
-      - X: 2607073
+      - X: 2607076
         Y: 3867446
-      - X: 2693401
+      - X: 2693403
         Y: 3729323
-      - X: 2710666
+      - X: 2710668
         Y: 3418546
-      - X: 2745196
+      - X: 2745199
         Y: 3366750
-      - X: 2762462
+      - X: 2762465
         Y: 2866053
-      - X: 2814258
+      - X: 2814261
         Y: 2382623
-      - X: 2900585
+      - X: 2900588
         Y: 2330826
-      - X: 3107770
+      - X: 3107772
         Y: 2641603
-      - X: 3142300
+      - X: 3142303
         Y: 2883319
-      - X: 3142300
+      - X: 3142303
         Y: 4022835
-      - X: 3125035
+      - X: 3125038
         Y: 4109161
-      - X: 3090505
+      - X: 3090507
         Y: 4230019
-      - X: 3004177
+      - X: 3004180
         Y: 4506266
-      - X: 2796993
+      - X: 2796995
         Y: 5041493
-      - X: 2710666
+      - X: 2710668
         Y: 5231412
-      - X: 2641605
+      - X: 2641607
         Y: 5300474
-      - X: 2589808
+      - X: 2589811
         Y: 5300474
-      - X: 2468951
+      - X: 2468953
         Y: 5542189
-      - X: 2279031
+      - X: 2279034
         Y: 5732108
-      - X: 2071846
+      - X: 2071849
         Y: 5904762
-      - X: 1640212
+      - X: 1640214
         Y: 6198274
-      - X: 1260373
+      - X: 1260376
         Y: 6353662
-      - X: 656084
+      - X: 656087
         Y: 6405458
-      - X: 241715
+      - X: 241717
         Y: 6491785
-      - X: -138123
+      - X: -138120
         Y: 6526316
-      - X: -483431
+      - X: -483428
         Y: 6509050
-      - X: -587023
+      - X: -587020
         Y: 6422723
-      - X: -776942
+      - X: -776940
         Y: 6509050
-      - X: -984127
+      - X: -984124
         Y: 6647174
-      - X: -1139515
+      - X: -1139513
         Y: 6698970
-      - X: -1398496
+      - X: -1398494
         Y: 7061543
-      - X: -1605681
+      - X: -1605678
         Y: 7251463
-      - X: -1864662
+      - X: -1864659
         Y: 7372320
-      - X: -2468951
+      - X: -2468948
         Y: 7372320
-      - X: -2883320
+      - X: -2883317
         Y: 7355055
-      - X: -3263158
+      - X: -3263156
         Y: 7234197
-      - X: -3608467
+      - X: -3608464
         Y: 7044278
-      - X: -3936509
+      - X: -3936506
         Y: 6750766
-      - X: -3901978
+      - X: -3901976
         Y: 6698970
-      - X: -3332220
+      - X: -3332218
         Y: 6319132
-      - X: -3125035
+      - X: -3125033
         Y: 6232805
-      - X: -3263158
+      - X: -3263156
         Y: 6163743
-      - X: -3159566
+      - X: -3159564
         Y: 6008354
-      - X: -2762462
+      - X: -2762460
         Y: 5904762
-      - X: -2486216
+      - X: -2486214
         Y: 5904762
-      - X: -2727931
+      - X: -2727929
         Y: 5801170
-      - X: -3038708
+      - X: -3038706
         Y: 5507658
-      - X: -3245893
+      - X: -3245891
         Y: 5386801
-      - X: -3435812
+      - X: -3435810
         Y: 5145085
-      - X: -3556670
+      - X: -3556667
         Y: 4886104
-      - X: -3591201
+      - X: -3591199
         Y: 4402673
-      - X: -3677528
+      - X: -3677525
         Y: 4074631
-      - X: -3781120
+      - X: -3781118
         Y: 3867446
-      - X: -3815651
+      - X: -3815648
         Y: 3746588
-      - X: -3832916
+      - X: -3832914
         Y: 3159565
-      - X: -3729324
+      - X: -3729322
         Y: 2779727
-      - X: -3953774
+      - X: -3953772
         Y: 2538011
-      - X: -4022836
+      - X: -4022833
         Y: 2348092
-      - X: -4022836
+      - X: -4022833
         Y: 2054580
-      - X: -3971040
+      - X: -3971037
         Y: 1933722
-      - X: -3901978
+      - X: -3901976
         Y: 1830130
-      - X: -3815651
+      - X: -3815648
         Y: 1726538
-      - X: -3591201
+      - X: -3591199
         Y: 1622945
-      - X: -3349486
+      - X: -3349483
         Y: 1622945
-      - X: -3228628
+      - X: -3228625
         Y: 1674742
-      - X: -2866054
+      - X: -2866052
         Y: 1812865
-      - X: -2745197
+      - X: -2745194
         Y: 1795599
   m_CompositePaths:
     m_Paths:
-    - - {x: 0.1208577, y: -0.0328043}
-      - {x: 0.1605681, y: -0.0207185}
-      - {x: 0.1950989, y: -0.0051797}
-      - {x: 0.2158173, y: 0.0103591}
-      - {x: 0.2503481, y: 0.0431633}
-      - {x: 0.2676135, y: 0.0656083}
-      - {x: 0.2831524, y: 0.1053187}
-      - {x: 0.28833202, y: 0.1260372}
-      - {x: 0.2900585, y: 0.138123}
-      - {x: 0.2917851, y: 0.1795599}
-      - {x: 0.2935116, y: 0.22790301}
-      - {x: 0.294226, y: 0.2393339}
-      - {x: 0.310777, y: 0.2641603}
-      - {x: 0.31423, y: 0.2883319}
-      - {x: 0.31423, y: 0.40228352}
-      - {x: 0.31250352, y: 0.4109161}
-      - {x: 0.3090505, y: 0.42300192}
-      - {x: 0.3004177, y: 0.4506266}
-      - {x: 0.2796993, y: 0.5041493}
-      - {x: 0.2710666, y: 0.5231412}
-      - {x: 0.2641605, y: 0.5300474}
-      - {x: 0.2589808, y: 0.5300474}
-      - {x: 0.2468951, y: 0.5542189}
-      - {x: 0.2279031, y: 0.57321084}
-      - {x: 0.2071846, y: 0.5904762}
-      - {x: 0.16402121, y: 0.6198274}
-      - {x: 0.1260373, y: 0.6353662}
-      - {x: 0.0656084, y: 0.6405458}
-      - {x: 0.0241715, y: 0.6491785}
-      - {x: -0.0138123, y: 0.6526316}
-      - {x: -0.0483431, y: 0.650905}
-      - {x: -0.0587023, y: 0.6422723}
-      - {x: -0.0776942, y: 0.650905}
-      - {x: -0.0984127, y: 0.66471744}
-      - {x: -0.113951504, y: 0.669897}
-      - {x: -0.1398496, y: 0.7061543}
-      - {x: -0.1605681, y: 0.7251463}
-      - {x: -0.1864662, y: 0.737232}
-      - {x: -0.2468951, y: 0.737232}
-      - {x: -0.28833202, y: 0.7355055}
-      - {x: -0.3263158, y: 0.7234197}
-      - {x: -0.3608467, y: 0.7044278}
-      - {x: -0.39365092, y: 0.6750766}
-      - {x: -0.3901978, y: 0.669897}
-      - {x: -0.333222, y: 0.6319132}
-      - {x: -0.31250352, y: 0.6232805}
-      - {x: -0.3263158, y: 0.6163743}
-      - {x: -0.3159566, y: 0.6008354}
-      - {x: -0.2762462, y: 0.5904762}
-      - {x: -0.2486216, y: 0.5904762}
-      - {x: -0.2727931, y: 0.580117}
-      - {x: -0.3038708, y: 0.5507658}
-      - {x: -0.3245893, y: 0.5386801}
-      - {x: -0.3435812, y: 0.5145085}
-      - {x: -0.355667, y: 0.48861042}
-      - {x: -0.3591201, y: 0.4402673}
-      - {x: -0.3677528, y: 0.4074631}
-      - {x: -0.37811202, y: 0.38674462}
-      - {x: -0.3815651, y: 0.3746588}
-      - {x: -0.3832916, y: 0.3159565}
-      - {x: -0.3729324, y: 0.2779727}
-      - {x: -0.3953774, y: 0.2538011}
-      - {x: -0.4022836, y: 0.2348092}
-      - {x: -0.4022836, y: 0.205458}
-      - {x: -0.397104, y: 0.1933722}
-      - {x: -0.3901978, y: 0.183013}
-      - {x: -0.3815651, y: 0.17265381}
-      - {x: -0.3591201, y: 0.1622945}
-      - {x: -0.3426395, y: 0.1622945}
-      - {x: -0.3366751, y: 0.1294903}
-      - {x: -0.32804242, y: 0.1087718}
-      - {x: -0.3194097, y: 0.0897799}
-      - {x: -0.3004177, y: 0.051796}
-      - {x: -0.2900585, y: 0.0362572}
-      - {x: -0.2727931, y: 0.0172653}
-      - {x: -0.2486216, y: 0}
-      - {x: -0.2261766, y: -0.0120858}
-      - {x: -0.1743804, y: -0.0276247}
-      - {x: -0.1553885, y: -0.0310777}
-      - {x: -0.1053188, y: -0.0362574}
-      - {x: -0.0362573, y: -0.0379839}
-      - {x: 0.08978, y: -0.0379839}
+    - - {x: 0.1208579, y: -0.0328043}
+      - {x: 0.1605683, y: -0.0207185}
+      - {x: 0.1950991, y: -0.0051797}
+      - {x: 0.2158176, y: 0.0103591}
+      - {x: 0.2503484, y: 0.0431633}
+      - {x: 0.2676138, y: 0.0656083}
+      - {x: 0.2831526, y: 0.1053187}
+      - {x: 0.2883322, y: 0.1260372}
+      - {x: 0.2900588, y: 0.138123}
+      - {x: 0.2917853, y: 0.1795599}
+      - {x: 0.2935119, y: 0.22790301}
+      - {x: 0.2942263, y: 0.2393339}
+      - {x: 0.31077722, y: 0.2641603}
+      - {x: 0.3142303, y: 0.2883319}
+      - {x: 0.3142303, y: 0.40228352}
+      - {x: 0.3125038, y: 0.4109161}
+      - {x: 0.3090507, y: 0.42300192}
+      - {x: 0.300418, y: 0.4506266}
+      - {x: 0.2796995, y: 0.5041493}
+      - {x: 0.2710668, y: 0.5231412}
+      - {x: 0.2641607, y: 0.5300474}
+      - {x: 0.2589811, y: 0.5300474}
+      - {x: 0.2468953, y: 0.5542189}
+      - {x: 0.2279034, y: 0.57321084}
+      - {x: 0.2071849, y: 0.5904762}
+      - {x: 0.1640214, y: 0.6198274}
+      - {x: 0.1260376, y: 0.6353662}
+      - {x: 0.0656087, y: 0.6405458}
+      - {x: 0.0241717, y: 0.6491785}
+      - {x: -0.013812, y: 0.6526316}
+      - {x: -0.0483428, y: 0.650905}
+      - {x: -0.058702, y: 0.6422723}
+      - {x: -0.077694, y: 0.650905}
+      - {x: -0.0984124, y: 0.66471744}
+      - {x: -0.1139513, y: 0.669897}
+      - {x: -0.1398494, y: 0.7061543}
+      - {x: -0.1605678, y: 0.7251463}
+      - {x: -0.1864659, y: 0.737232}
+      - {x: -0.2468948, y: 0.737232}
+      - {x: -0.28833172, y: 0.7355055}
+      - {x: -0.3263156, y: 0.7234197}
+      - {x: -0.3608464, y: 0.7044278}
+      - {x: -0.3936506, y: 0.6750766}
+      - {x: -0.3901976, y: 0.669897}
+      - {x: -0.3332218, y: 0.6319132}
+      - {x: -0.3125033, y: 0.6232805}
+      - {x: -0.3263156, y: 0.6163743}
+      - {x: -0.3159564, y: 0.6008354}
+      - {x: -0.276246, y: 0.5904762}
+      - {x: -0.2486214, y: 0.5904762}
+      - {x: -0.2727929, y: 0.580117}
+      - {x: -0.30387062, y: 0.5507658}
+      - {x: -0.3245891, y: 0.5386801}
+      - {x: -0.343581, y: 0.5145085}
+      - {x: -0.3556667, y: 0.48861042}
+      - {x: -0.3591199, y: 0.4402673}
+      - {x: -0.3677525, y: 0.4074631}
+      - {x: -0.3781118, y: 0.38674462}
+      - {x: -0.3815648, y: 0.3746588}
+      - {x: -0.3832914, y: 0.3159565}
+      - {x: -0.3729322, y: 0.2779727}
+      - {x: -0.39537722, y: 0.2538011}
+      - {x: -0.4022833, y: 0.2348092}
+      - {x: -0.4022833, y: 0.205458}
+      - {x: -0.3971037, y: 0.1933722}
+      - {x: -0.3901976, y: 0.183013}
+      - {x: -0.3815648, y: 0.17265381}
+      - {x: -0.3591199, y: 0.1622945}
+      - {x: -0.3426393, y: 0.1622945}
+      - {x: -0.3366749, y: 0.1294903}
+      - {x: -0.3280421, y: 0.1087718}
+      - {x: -0.3194095, y: 0.0897799}
+      - {x: -0.3004175, y: 0.051796}
+      - {x: -0.2900583, y: 0.0362572}
+      - {x: -0.2727929, y: 0.0172653}
+      - {x: -0.2486214, y: 0}
+      - {x: -0.2261763, y: -0.0120858}
+      - {x: -0.1743802, y: -0.0276247}
+      - {x: -0.1553882, y: -0.0310777}
+      - {x: -0.1053186, y: -0.0362574}
+      - {x: -0.036257, y: -0.0379839}
+      - {x: 0.089780204, y: -0.0379839}
   m_VertexDistance: 0.0005
 --- !u!50 &2051999351
 Rigidbody2D:
@@ -9136,7 +9084,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.030001532, y: 1.9399998}
+  m_ConnectedAnchor: {x: -0.029999461, y: 1.9399998}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -9279,7 +9227,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 1.1400002, y: 2.2699988}
+  m_ConnectedAnchor: {x: 1.1400002, y: 2.2700002}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
