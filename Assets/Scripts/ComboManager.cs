@@ -4,34 +4,45 @@ using UnityEngine;
 
 public class ComboManager : MonoBehaviour {
 
-    private bool ClickedOnce = false;
+    private bool clickedOnce = false;
     private float startTime;
-    private float stopTime;
     private float minComboTime = 0.05f;
     private float maxComboTime = 0.2f;
 
+    private bool startCombo = false;
+    private float startComboTime;
+
     public bool DoubleClick(KeyCode key)
     {
-        if (!ClickedOnce && Input.GetKeyDown(key))
+        if (!clickedOnce && Input.GetKeyDown(key))
         {
             startTime = Time.time;
-            ClickedOnce = true;
+            clickedOnce = true;
         }
-        if (ClickedOnce && Input.GetKeyDown(key))
+        if (clickedOnce && Input.GetKeyDown(key))
         {
             if ((Time.time - startTime) > minComboTime && (Time.time-startTime) < maxComboTime)
             {
-                ClickedOnce = false;
+                clickedOnce = false;
                 Debug.Log("doubleclick");
                 return true;
             }
             else if ((Time.time - startTime) > maxComboTime)
             {
-                ClickedOnce = false;
+                clickedOnce = false;
             }
         }
         
         return false;
     }
-
+    public int Step(int currentStep, int maxStep)
+    {
+        if (((Time.time - startComboTime) < maxComboTime) && currentStep + 1 <= maxStep)
+        {
+            startComboTime = Time.time;
+            return currentStep + 1;
+        }
+        startComboTime = Time.time;
+        return 1;
+    }
 }

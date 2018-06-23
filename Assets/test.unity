@@ -1694,7 +1694,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.2400003
+  m_Length: 0.23999989
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1011981344}
   m_AttachedIK: {fileID: 1389874029}
@@ -3341,7 +3341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.2019926
+  m_Length: 0.20199269
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 572359868}
   m_AttachedIK: {fileID: 996847683}
@@ -5805,7 +5805,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.20251998
+  m_Length: 0.20251982
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1818222345}
   m_AttachedIK: {fileID: 835697044}
@@ -6250,6 +6250,7 @@ GameObject:
   - component: {fileID: 1413119689}
   - component: {fileID: 1413119692}
   - component: {fileID: 1413119693}
+  - component: {fileID: 1413119694}
   m_Layer: 8
   m_Name: Rouge
   m_TagString: Player
@@ -6363,6 +6364,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34a1ed9f16bd9b046ba70cc404889acb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1413119694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413119687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fc06dd8b13ed2a4dbe622dbecb0948d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1462175548
@@ -6750,7 +6762,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Length: 0.26139498
+  m_Length: 0.2613946
   m_Child: {fileID: 0}
   m_ChildTransform: {fileID: 1826477696}
   m_AttachedIK: {fileID: 1559482041}
@@ -9537,4 +9549,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ac92d286c6e7ba4d827cf00cd0ff6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxcombo: 3
   dmg: 30

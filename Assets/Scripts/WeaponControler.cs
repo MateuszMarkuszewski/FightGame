@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class WeaponControler : MonoBehaviour {
 
+    public int maxcombo;
     public int dmg;
     private Rigidbody2D rgdBody;
 

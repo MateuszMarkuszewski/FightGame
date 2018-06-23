@@ -32,8 +32,14 @@ public class PlayerControler : MonoBehaviour {
     private float radius = 0.1f;
     private bool onTheGround;
     private bool onTheWall;
-    private GameObject weapon;
 
+    //zmienne służące do ataków
+    private GameObject weapon;
+    private int combo = 1;
+    private int maxcombo = 2;
+
+    //struktura przechowująca kości i ik 
+    //używana przy podnoszeniu postaci
     public struct Limb
     {
         public Vector3 orgPosition;
@@ -46,6 +52,7 @@ public class PlayerControler : MonoBehaviour {
         }
     }
     public Limb[] limbs;
+
     class ComplateCoroutines { public int num = 0; }
 
     void Start ()
@@ -90,12 +97,14 @@ public class PlayerControler : MonoBehaviour {
 ///atak
         if (Input.GetKeyDown(attack))
         {
-            Debug.Log(weapon.name + "-anim");
-            anim.SetTrigger(weapon.name + "-anim1");
+           
+            combo = comboManager.Step(combo, maxcombo);
+            Debug.Log(weapon.name + "-anim" + combo);
+            anim.SetTrigger(weapon.name + "-anim"+combo);
         }
-        
-/// skakanie
-        if(Input.GetKeyDown(jump) && (onTheGround || onTheWall))
+
+        /// skakanie
+        if (Input.GetKeyDown(jump) && (onTheGround || onTheWall))
         {
             rgdBody.AddForce(new Vector2(0f, jumpForce));
             anim.SetTrigger("jump");
@@ -159,6 +168,7 @@ public class PlayerControler : MonoBehaviour {
     void TakeWeapon(GameObject w)
     {
         weapon = w;
+        maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
     }
 
     void ChangeHitbox()
