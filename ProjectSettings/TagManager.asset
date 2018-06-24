@@ -16,16 +16,16 @@ TagManager:
   - UI
   - 
   - 
-  - Character
+  - 
   - Ground
   - Weapon
-  - Rig
   - Hitbox
-  - Rope
+  - Character
+  - RigP1
   - 
   - 
-  - 
-  - 
+  - RigP2
+  - CharacterP2
   - 
   - 
   - 

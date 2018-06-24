@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ public class PlayerControler : MonoBehaviour {
     private bool onTheWall;
 
     //zmienne służące do ataków
-    private GameObject weapon;
+    private GameObject weapon = null;
     private int combo = 1;
     private int maxcombo = 2;
 
@@ -97,10 +98,16 @@ public class PlayerControler : MonoBehaviour {
 ///atak
         if (Input.GetKeyDown(attack))
         {
-           
             combo = comboManager.Step(combo, maxcombo);
-            Debug.Log(weapon.name + "-anim" + combo);
-            anim.SetTrigger(weapon.name + "-anim"+combo);
+            try
+            {
+                Debug.Log(weapon.name + "-anim" + combo);
+                anim.SetTrigger(weapon.name + "-anim" + combo);
+            }
+            catch (NullReferenceException)
+            {
+                anim.SetTrigger("NoWeapon-anim" + combo);
+            }
         }
 
         /// skakanie
@@ -156,8 +163,7 @@ public class PlayerControler : MonoBehaviour {
     void Throw()
     {
         anim.SetTrigger("throw");
-        weapon.SetActive(true);
-        transform.Find(weapon.name).parent = null;
+        DropWeapon();
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);
         weapon.transform.position = throwPoint.transform.position;
         weapon.GetComponent<Rigidbody2D>().velocity = new Vector2(throwSpeed * transform.localScale.x, 0);
@@ -167,13 +173,24 @@ public class PlayerControler : MonoBehaviour {
 
     void TakeWeapon(GameObject w)
     {
-        weapon = w;
-        maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
+        if(weapon == null)
+        {
+            weapon = w;
+            weapon.SendMessage("HandleWeapon", gameObject.transform);
+            maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
+            anim.Rebind();
+        }
+
+        
     }
 
-    void ChangeHitbox()
+    void DropWeapon()
     {
-
+        weapon.GetComponent<Collider2D>().enabled = true;
+        transform.Find(weapon.name).parent = null;
+        maxcombo = 2;
+        weapon.layer = 10;
+        //anim.Rebind();
     }
 
 

@@ -6,13 +6,7 @@ public class AttackCollider : MonoBehaviour
 {   
     //skrypt przypisywany hitboxom. zadaje obrażenia
     public int dmg;
-
-    void Start()
-    {
-
-    }
-    
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Untagget")
         {
@@ -21,8 +15,9 @@ public class AttackCollider : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
+            Debug.Log("attack collision name = " + collision.gameObject.tag);
+
             collision.gameObject.SendMessage("DealDamage", dmg);
         }
-    }   
-
+    }
 }
