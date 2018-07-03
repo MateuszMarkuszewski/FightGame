@@ -16,23 +16,9 @@ public class WeaponPickUp : MonoBehaviour {
         
         //Debug.Log("pickup collision name = " + col.gameObject.tag);
        // Debug.Log("----------");
-
         if (col.gameObject.tag == "Player")
-        {
-            
-            col.gameObject.SendMessage("TakeWeapon", weaponOnGround);
-            /*
-            //weaponOnGround.transform.Find("AttackCollider").gameObject.SetActive(true);
-            weaponOnGround.transform.Find("PickUpTrigger").gameObject.SetActive(false);
-            weaponOnGround.GetComponent<Collider2D>().enabled = false;
-            weaponOnGround.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
-            //umieszczenie broni np. w rekach
-            weaponOnGround.transform.SetParent(col.transform.Find("Skeleton/Pelvis/Torso/R_arm_1/R_arm_2").transform);
-            weaponOnGround.transform.localPosition = PickUpPos;
-            weaponOnGround.transform.localEulerAngles = PickUpRot;
-
-            weaponOnGround.transform.Find("AttackCollider").gameObject.layer = weaponOnGround.transform.parent.gameObject.layer;
-            */
+        {      
+            col.gameObject.SendMessage("TakeWeapon", weaponOnGround);  
         }
     }
 }

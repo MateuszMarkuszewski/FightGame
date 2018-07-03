@@ -21,7 +21,6 @@ public class PlayerControler : MonoBehaviour {
     public KeyCode throwWeapon;
     //testery
     public Transform groundTester;
-    public Transform wallTester;
     public LayerMask layersToTest;
     public Transform throwPoint;
     private float horizontalMove;
@@ -85,15 +84,8 @@ public class PlayerControler : MonoBehaviour {
         if(ragdoll == true)
         {
             transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
-
         }
-        //czy postać dotyka ziemi
-        //onTheWall = (Physics2D.OverlapBox(wallTester.position, new Vector2(0.9f, 0.0f), 0.0f, layersToTest) && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)));
-        //onTheWall = Physics2D.OverlapBox(wallTester.position, new Vector2(0.9f, 0.0f), 0.0f, layersToTest);
-        onTheWall = Physics2D.OverlapCircle(wallTester.position, radius, layersToTest);
-
-
-
+        
         /*
         if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
         {
@@ -106,6 +98,7 @@ public class PlayerControler : MonoBehaviour {
         {
             horizontalMove = ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0));
             anim.SetFloat("speed", Mathf.Abs(horizontalMove));
+
             ///atak
             if (Input.GetKeyDown(attack))
             {
@@ -135,7 +128,6 @@ public class PlayerControler : MonoBehaviour {
                 Throw();
             }
             rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
-
         }
         //postać w powierzu
         else
@@ -160,7 +152,7 @@ public class PlayerControler : MonoBehaviour {
         ///sprawdza czy postac zyje
         if (health <= 0)
         {
-            gameObject.SetActive(false);
+            ChangeState();
         }
     }
     
@@ -168,13 +160,20 @@ public class PlayerControler : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Wall" && !IsGrounded())
         {
+            anim.SetBool("wallstay",true);
             if (Input.GetKeyDown(jump))
             {
+                anim.SetBool("wallstay", false);
                 Debug.Log("jump");
                 horizontalMove = collision.contacts[0].normal.x;
                 rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
                 anim.SetTrigger("jump");
+
             }
+        }
+        else
+        {
+            anim.SetBool("wallstay",false);
         }
         if (collision.gameObject.tag == "Platform")
         {
@@ -191,7 +190,7 @@ public class PlayerControler : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         Physics2D.IgnoreCollision(coll1, coll2, false);
     }
-
+    //czy postać dotyka ziemi
     bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
@@ -217,13 +216,11 @@ public class PlayerControler : MonoBehaviour {
     //rzut podniesioną bronią
     void Throw()
     {
-        anim.SetTrigger("throw");
-        DropWeapon();
-        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);
-        weapon.transform.position = throwPoint.transform.position;
+        anim.SetTrigger("throw");   
+        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);   
         weapon.GetComponent<Rigidbody2D>().velocity = new Vector2(throwSpeed * transform.localScale.x, 0);
-       //weapon.GetComponent<Rigidbody2D>().AddForceAtPosition(new Vector2(throwSpeed * transform.localScale.x, 0), throwPoint.transform.position, ForceMode2D.Impulse);
-        weapon = null;
+        DropWeapon();
+        //weapon.GetComponent<Rigidbody2D>().AddForceAtPosition(new Vector2(throwSpeed * transform.localScale.x, 0), throwPoint.transform.position, ForceMode2D.Impulse);
     }
 
     //funkcja wywolywana przez PickUpControler przy zetknieciu z postacią
@@ -235,16 +232,23 @@ public class PlayerControler : MonoBehaviour {
             weapon.SendMessage("HandleWeapon", gameObject.transform);
             maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
             anim.Rebind();
+            anim.SetBool(weapon.name, true);
+            anim.SetBool("NoWeapon", false);
         }    
     }
 
     //gameobject broni jest odczepiana od rodzica 
     void DropWeapon()
-    {
+    {   
+        weapon.transform.parent = null;
+        weapon.transform.position = throwPoint.transform.position;
         weapon.GetComponent<Collider2D>().enabled = true;
-        transform.Find(weapon.name).parent = null;
+        weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         maxcombo = 2;
         weapon.layer = 10;
+        anim.SetBool(weapon.name, false);
+        anim.SetBool("NoWeapon", true);
+        weapon = null;
         //anim.Rebind();
     }
 
