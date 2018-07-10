@@ -33,7 +33,10 @@ public class SceneSetup : MonoBehaviour
     public GameObject ceiling;
     public GameObject platform;
     private Camera camera;
+    public GameObject background;
     public GameObject player1;
+    public GameObject player2;
+    
 
     private float width;
     private float height;
@@ -44,9 +47,19 @@ public class SceneSetup : MonoBehaviour
         SetupCamera();
         width = 2 * size * camera.aspect;
         height = 2 * size;
+        SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
         SetupPlayers();
+
+        
+    }
+
+    public void SetBackgroundSize()
+    {
+        SpriteRenderer sr = background.GetComponent<SpriteRenderer>();
+        background.transform.localScale = new Vector3((height / Screen.height * Screen.width) / sr.sprite.bounds.size.x, height / sr.sprite.bounds.size.y, 10f);
+        background.transform.position = new Vector3(size * camera.aspect, size, 20f);
     }
 
     public void GeneratePlatforms()
@@ -73,7 +86,7 @@ public class SceneSetup : MonoBehaviour
         {
             Room.SetRoomCoordinates(x, y);
             //tworzona jest platforma
-            Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+2), Quaternion.identity);
+            Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+Room.y), Quaternion.identity);
             //losowane jest gdzie bedzie następny pokoj
             rooms[x, y] = new Room((int)Random.Range(0, 5));
             if (rooms[x, y].value == 3)

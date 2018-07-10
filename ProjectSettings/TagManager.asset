@@ -28,7 +28,7 @@ TagManager:
   - 
   - RigP2
   - CharacterP2
-  - 
+  - Background
   - 
   - 
   - 
@@ -43,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1371943901
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

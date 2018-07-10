@@ -16,13 +16,12 @@ public class WeaponControler : MonoBehaviour {
     //gdy rzucona/upuszczona broń dotknie coś innego niż gracz to można ją podnieść i nie zadaje obrażeń
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Untagged")
+        if (col.gameObject.tag == "Untagged" || col.gameObject.tag == "Platform")
         {
             gameObject.GetComponent<Rigidbody2D>().Sleep();
-            transform.Find("AttackCollider").gameObject.SetActive(false);
+            //transform.Find("AttackCollider").gameObject.SetActive(false);
             transform.Find("PickUpTrigger").gameObject.SetActive(true);
         }
-
     }
     void HandleWeapon(Transform player)
     {

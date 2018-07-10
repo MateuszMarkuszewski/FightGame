@@ -23,6 +23,7 @@ public class PlayerControler : MonoBehaviour {
     public Transform groundTester;
     public LayerMask layersToTest;
     public Transform throwPoint;
+    public TrailRenderer[] trailEffect;
     private float horizontalMove;
 
     public int health;
@@ -36,6 +37,7 @@ public class PlayerControler : MonoBehaviour {
     private float radius = 0.1f;
     private bool onTheGround;
     private bool onTheWall;
+    private bool keysEnable = true;
 
     //zmienne służące do ataków
     private GameObject weapon = null;
@@ -78,6 +80,41 @@ public class PlayerControler : MonoBehaviour {
             Debug.Log(i.ik);
         }
     }
+    private void FixedUpdate()
+    {
+        if (Input.GetKeyDown(attack) && keysEnable && horizontalMove != 0)
+        {
+            //rgdBody.velocity = new Vector2(10f, 0f);
+            StartCoroutine(Dash(0.1f, horizontalMove));
+            StartCoroutine(DisableKeys());
+            //rgdBody.AddForce(new Vector2( 20000f, 0f), ForceMode2D.Impulse);
+
+        }
+    }
+
+    IEnumerator Dash(float dashTime, float way)
+    {
+        foreach( TrailRenderer trail in trailEffect)
+        {
+            trail.Clear();
+            trail.gameObject.SetActive(true);
+        }
+        while(0 <= dashTime)
+        {
+            dashTime -= Time.deltaTime;
+
+            rgdBody.velocity = new Vector2(way * 30f, 0f);
+            Debug.Log(dashTime);
+
+            yield return null;
+        }
+        foreach (TrailRenderer trail in trailEffect)
+        {
+            trail.gameObject.SetActive(false);
+        }
+        rgdBody.velocity = new Vector2(0f, 0f);
+    }
+
 
     void Update () {
 
@@ -85,58 +122,72 @@ public class PlayerControler : MonoBehaviour {
         {
             transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
         }
-        
+
         /*
         if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
         {
             rgdBody.velocity = new Vector2(horizontalMove * 10 * heroSpeed, rgdBody.velocity.y);
         }
         */
-
+        IsGrounded();
         //postać na ziemi
-        if (IsGrounded() || rgdBody.velocity.y == 0)
+        if (!anim.GetBool("InAir"))
         {
-            horizontalMove = ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0));
+            horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
             anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
             ///atak
-            if (Input.GetKeyDown(attack))
+            if (Input.GetKeyDown(attack) && keysEnable)
             {
-                combo = comboManager.Step(combo, maxcombo);
-                try
-                {
-                    Debug.Log(weapon.name + "-anim" + combo);
-                    anim.SetTrigger(weapon.name + "-anim" + combo);
-                }
-                catch (NullReferenceException)
-                {
-                    anim.SetTrigger("NoWeapon-anim" + combo);
+                if (horizontalMove == 0)
+                { 
+                    combo = comboManager.Step(combo, maxcombo);
+                    try
+                    {
+                        Debug.Log(weapon.name + "-anim" + combo);
+                        anim.SetTrigger(weapon.name + "-anim" + combo);
+                    }
+                    catch (NullReferenceException)
+                    {
+                        anim.SetTrigger("NoWeapon-anim" + combo);
+                    }
                 }
             }
 
             /// skakanie
-            if (Input.GetKeyDown(jump))
+            if (Input.GetKeyDown(jump) && keysEnable)
             {
-                rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
-                //rgdBody.AddForce(new Vector2(0f, jumpForce));
-                anim.SetTrigger("jump");
+                Jump();
             }
        
             ///rzut bronią
-            if (Input.GetKeyDown(throwWeapon) && (weapon != null))
-            {
-                Throw();
-            }
+            
             rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
         }
         //postać w powierzu
         else
         {
+            //odbijanie sie od platformy
+            if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
+            {
+                horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
+                Jump();
+            }
+            //stała predkosc w locie
             rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
+            //atak z powietrza
+            if (Input.GetKeyDown(attack) && keysEnable)
+            {
+                AirAttack();
+            }
         }
-        //rgdBody.AddForce(new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y));
         //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
         //Debug.Log(rgdBody.velocity);
+
+        if (Input.GetKeyDown(throwWeapon) && (weapon != null) && keysEnable)
+        {
+            Throw();
+        }
 
 
         /// odwracanie sprita postaci w lewo
@@ -158,7 +209,7 @@ public class PlayerControler : MonoBehaviour {
     
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Wall" && !IsGrounded())
+        if (collision.gameObject.tag == "Wall" && anim.GetBool("InAir"))
         {
             anim.SetBool("wallstay",true);
             if (Input.GetKeyDown(jump))
@@ -166,23 +217,29 @@ public class PlayerControler : MonoBehaviour {
                 anim.SetBool("wallstay", false);
                 Debug.Log("jump");
                 horizontalMove = collision.contacts[0].normal.x;
-                rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
-                anim.SetTrigger("jump");
-
+                Jump();
             }
         }
         else
         {
             anim.SetBool("wallstay",false);
         }
+        //schodzenie z platformy
         if (collision.gameObject.tag == "Platform")
         {
-            if (Input.GetKeyDown(down))
+            if (Input.GetKeyDown(down) && keysEnable)
             {
                 Physics2D.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider2D>());
                 StartCoroutine(ReturnCollision(collision.collider, gameObject.GetComponent<Collider2D>()));
             }
         }
+    }
+
+    IEnumerator DisableKeys()
+    {
+        keysEnable = false;
+        yield return new WaitForSeconds(1f);
+        keysEnable = true;
     }
 
     IEnumerator ReturnCollision(Collider2D coll1, Collider2D coll2)
@@ -191,9 +248,15 @@ public class PlayerControler : MonoBehaviour {
         Physics2D.IgnoreCollision(coll1, coll2, false);
     }
     //czy postać dotyka ziemi
-    bool IsGrounded()
+    void IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
+        if(Physics2D.OverlapCircle(groundTester.position, radius, layersToTest) && anim.GetBool("InAir") && rgdBody.velocity.y == 0)
+        {
+            anim.SetBool("InAir", false);
+        }else if(!Physics2D.OverlapCircle(groundTester.position, radius, layersToTest) && !anim.GetBool("InAir"))
+        {
+            anim.SetBool("InAir", true);
+        }
     }
 
     /// w objekcie postaci zmienia wartosc Transform>Scale>x aby odwrócić sprite w drugą stronę
@@ -213,14 +276,25 @@ public class PlayerControler : MonoBehaviour {
         Debug.Log(health);
     }
 
+    void Jump()
+    {
+        rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
+        anim.SetTrigger("jump");
+    }
+
     //rzut podniesioną bronią
     void Throw()
     {
-        anim.SetTrigger("throw");   
-        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);   
-        weapon.GetComponent<Rigidbody2D>().velocity = new Vector2(throwSpeed * transform.localScale.x, 0);
+        anim.SetTrigger("throw");         
+    }
+
+    //event wywoływany przez animacje
+    void ThrowEvent(float angle)
+    {
         DropWeapon();
-        //weapon.GetComponent<Rigidbody2D>().AddForceAtPosition(new Vector2(throwSpeed * transform.localScale.x, 0), throwPoint.transform.position, ForceMode2D.Impulse);
+        weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
+        weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
+        DistachWeapon();
     }
 
     //funkcja wywolywana przez PickUpControler przy zetknieciu z postacią
@@ -239,19 +313,26 @@ public class PlayerControler : MonoBehaviour {
 
     //gameobject broni jest odczepiana od rodzica 
     void DropWeapon()
-    {   
+    {
         weapon.transform.parent = null;
+        anim.Rebind();
         weapon.transform.position = throwPoint.transform.position;
+        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         maxcombo = 2;
-        weapon.layer = 10;
-        anim.SetBool(weapon.name, false);
-        anim.SetBool("NoWeapon", true);
+        weapon.layer = 10; 
+    }
+    void DistachWeapon()
+    {
         weapon = null;
-        //anim.Rebind();
     }
 
+    void AirAttack()
+    {
+        //anim.SetTrigger("AirAttack");
+        rgdBody.velocity = new Vector2(0f,-20f);
+    }
 
     ///////////////////////////////////////////////////////ragdoll
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
