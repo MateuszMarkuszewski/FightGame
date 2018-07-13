@@ -82,11 +82,19 @@ public class PlayerControler : MonoBehaviour {
     }
     private void FixedUpdate()
     {
+
+        /*
+        if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
+        {
+            Debug.Log("dash");
+            StartCoroutine(Dash(0.1f, dirToRight ? 1 : -1));
+            StartCoroutine(DisableKeys(0.1f));
+        }*/
+        
         if (Input.GetKeyDown(attack) && keysEnable && horizontalMove != 0)
         {
             //rgdBody.velocity = new Vector2(10f, 0f);
-            StartCoroutine(Dash(0.1f, horizontalMove));
-            StartCoroutine(DisableKeys());
+ 
             //rgdBody.AddForce(new Vector2( 20000f, 0f), ForceMode2D.Impulse);
 
         }
@@ -94,18 +102,19 @@ public class PlayerControler : MonoBehaviour {
 
     IEnumerator Dash(float dashTime, float way)
     {
-        foreach( TrailRenderer trail in trailEffect)
+        StartCoroutine(DisableKeys(dashTime));
+        foreach ( TrailRenderer trail in trailEffect)
         {
             trail.Clear();
             trail.gameObject.SetActive(true);
         }
+        Debug.Log("dash");
+        anim.SetBool("dash", true);
+        horizontalMove = way;
         while(0 <= dashTime)
         {
             dashTime -= Time.deltaTime;
-
             rgdBody.velocity = new Vector2(way * 30f, 0f);
-            Debug.Log(dashTime);
-
             yield return null;
         }
         foreach (TrailRenderer trail in trailEffect)
@@ -113,6 +122,7 @@ public class PlayerControler : MonoBehaviour {
             trail.gameObject.SetActive(false);
         }
         rgdBody.velocity = new Vector2(0f, 0f);
+        anim.SetBool("dash", false);
     }
 
 
@@ -123,12 +133,15 @@ public class PlayerControler : MonoBehaviour {
             transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
         }
 
-        /*
-        if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
+        if (comboManager.DoubleClick(left))
         {
-            rgdBody.velocity = new Vector2(horizontalMove * 10 * heroSpeed, rgdBody.velocity.y);
+            StartCoroutine(Dash(0.1f, -1));
         }
-        */
+        if (comboManager.DoubleClick(right))
+        {
+            StartCoroutine(Dash(0.1f, 1));
+        }
+
         IsGrounded();
         //postać na ziemi
         if (!anim.GetBool("InAir"))
@@ -137,21 +150,20 @@ public class PlayerControler : MonoBehaviour {
             anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
             ///atak
-            if (Input.GetKeyDown(attack) && keysEnable)
+            if (Input.GetKeyDown(attack))
             {
-                if (horizontalMove == 0)
-                { 
+
                     combo = comboManager.Step(combo, maxcombo);
                     try
                     {
-                        Debug.Log(weapon.name + "-anim" + combo);
-                        anim.SetTrigger(weapon.name + "-anim" + combo);
+                        Debug.Log(weapon.name + "-attack" + combo);
+                        anim.SetTrigger(weapon.name + "-attack" + combo);
                     }
                     catch (NullReferenceException)
                     {
-                        anim.SetTrigger("NoWeapon-anim" + combo);
+                        anim.SetTrigger("NoWeapon-attack" + combo);
                     }
-                }
+                
             }
 
             /// skakanie
@@ -178,7 +190,7 @@ public class PlayerControler : MonoBehaviour {
             //atak z powietrza
             if (Input.GetKeyDown(attack) && keysEnable)
             {
-                AirAttack();
+                DropAttack();
             }
         }
         //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
@@ -206,7 +218,16 @@ public class PlayerControler : MonoBehaviour {
             ChangeState();
         }
     }
-    
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        //podnoszenie broni
+        if (weapon == null && Input.GetKeyDown(throwWeapon) && collision.tag == "Interaction")
+        {
+
+        }
+    }
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Wall" && anim.GetBool("InAir"))
@@ -235,10 +256,10 @@ public class PlayerControler : MonoBehaviour {
         }
     }
 
-    IEnumerator DisableKeys()
+    IEnumerator DisableKeys(float time)
     {
         keysEnable = false;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(time);
         keysEnable = true;
     }
 
@@ -285,6 +306,7 @@ public class PlayerControler : MonoBehaviour {
     //rzut podniesioną bronią
     void Throw()
     {
+        Debug.Log("throw");
         anim.SetTrigger("throw");         
     }
 
@@ -328,11 +350,12 @@ public class PlayerControler : MonoBehaviour {
         weapon = null;
     }
 
-    void AirAttack()
+    void DropAttack()
     {
-        //anim.SetTrigger("AirAttack");
+        anim.SetTrigger("dropAttack");
         rgdBody.velocity = new Vector2(0f,-20f);
     }
+
 
     ///////////////////////////////////////////////////////ragdoll
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)

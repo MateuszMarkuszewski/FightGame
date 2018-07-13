@@ -6,22 +6,19 @@ public class ComboManager : MonoBehaviour {
 
     private bool clickedOnce = false;
     private float startTime;
-    private float minComboTime = 0.05f;
-    private float maxComboTime = 0.2f;
+    private float minComboTime = 0.1f;
+    private float maxComboTime = 0.5f;
 
     private bool startCombo = false;
     private float startComboTime;
+    private KeyCode checkedKey;
 
     public bool DoubleClick(KeyCode key)
     {
-        if (!clickedOnce && Input.GetKeyDown(key))
+
+        if (clickedOnce && Input.GetKeyDown(key) && (key == checkedKey))
         {
-            startTime = Time.time;
-            clickedOnce = true;
-        }
-        if (clickedOnce && Input.GetKeyDown(key))
-        {
-            if ((Time.time - startTime) > minComboTime && (Time.time-startTime) < maxComboTime)
+            if ((Time.time - startTime) < maxComboTime)
             {
                 clickedOnce = false;
                 Debug.Log("doubleclick");
@@ -32,9 +29,17 @@ public class ComboManager : MonoBehaviour {
                 clickedOnce = false;
             }
         }
-        
+        if (!clickedOnce && Input.GetKeyDown(key))
+        {
+            
+            checkedKey = key;
+            startTime = Time.time;
+            clickedOnce = true;
+        }
+            
         return false;
     }
+
     public int Step(int currentStep, int maxStep)
     {
         if (((Time.time - startComboTime) < maxComboTime) && currentStep + 1 <= maxStep)

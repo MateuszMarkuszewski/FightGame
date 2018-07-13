@@ -9,6 +9,7 @@ TagManager:
   - Rig
   - Wall
   - Platform
+  - Interaction
   layers:
   - Default
   - TransparentFX
