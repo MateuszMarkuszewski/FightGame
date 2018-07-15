@@ -16,8 +16,8 @@ public class AttackCollider : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Debug.Log("attack collision name = " + collision.gameObject.tag);
-
             collision.gameObject.SendMessage("DealDamage", dmg);
+            SendMessageUpwards("DecreaseDurability", 1);
         }
     }
 }

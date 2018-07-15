@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //TODO: rgdbody.getPoint do AI
 
@@ -26,7 +27,10 @@ public class PlayerControler : MonoBehaviour {
     public TrailRenderer[] trailEffect;
     private float horizontalMove;
 
-    public int health;
+    public int maxHealth;
+    private int currentHealth;
+    public Image healthBar;
+    public Image weaponDurability;
 
     Animator anim;
     bool dirToRight = true;
@@ -63,6 +67,7 @@ public class PlayerControler : MonoBehaviour {
     
     void Start ()
     {
+        currentHealth = maxHealth;
         anim = GetComponent<Animator>();
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
@@ -213,7 +218,7 @@ public class PlayerControler : MonoBehaviour {
             Flip();
         }
         ///sprawdza czy postac zyje
-        if (health <= 0)
+        if (currentHealth <= 0)
         {
             ChangeState();
         }
@@ -293,9 +298,10 @@ public class PlayerControler : MonoBehaviour {
     //zmniejsza HP
     void DealDamage(int dmg)
     {
-        health = health - dmg;
+        currentHealth = currentHealth - dmg;
+        healthBar.fillAmount = currentHealth / maxHealth;
         Debug.Log(gameObject.name);
-        Debug.Log(health);
+        Debug.Log(currentHealth);
     }
 
     void Jump()
@@ -315,6 +321,7 @@ public class PlayerControler : MonoBehaviour {
     void ThrowEvent(float angle)
     {
         DropWeapon();
+        weapon.SendMessage("ClearUI");
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
@@ -327,6 +334,8 @@ public class PlayerControler : MonoBehaviour {
         if(weapon == null)
         {
             weapon = w;
+            weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
+            weaponDurability.gameObject.SetActive(true);
             weapon.SendMessage("HandleWeapon", gameObject.transform);
             maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
             anim.Rebind();
@@ -338,6 +347,7 @@ public class PlayerControler : MonoBehaviour {
     //gameobject broni jest odczepiana od rodzica 
     void DropWeapon()
     {
+        weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
         anim.Rebind();
         weapon.transform.position = throwPoint.transform.position;     
