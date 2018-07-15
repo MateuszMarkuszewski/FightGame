@@ -18,7 +18,7 @@ public class WeaponPickUp : MonoBehaviour {
        // Debug.Log("----------");
         if (col.gameObject.tag == "Player")
         {      
-            col.gameObject.SendMessage("TakeWeapon", weaponOnGround);  
+           // col.gameObject.SendMessage("TakeWeapon", weaponOnGround);  
         }
     }
 }

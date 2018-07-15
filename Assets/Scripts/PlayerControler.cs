@@ -60,7 +60,7 @@ public class PlayerControler : MonoBehaviour {
     public Limb[] limbs;
 
     class ComplateCoroutines { public int num = 0; }
-
+    
     void Start ()
     {
         anim = GetComponent<Animator>();
@@ -150,7 +150,7 @@ public class PlayerControler : MonoBehaviour {
             anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
             ///atak
-            if (Input.GetKeyDown(attack))
+            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon))
             {
 
                     combo = comboManager.Step(combo, maxcombo);
@@ -188,7 +188,7 @@ public class PlayerControler : MonoBehaviour {
             //stała predkosc w locie
             rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
             //atak z powietrza
-            if (Input.GetKeyDown(attack) && keysEnable)
+            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
             {
                 DropAttack();
             }
@@ -196,7 +196,7 @@ public class PlayerControler : MonoBehaviour {
         //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
         //Debug.Log(rgdBody.velocity);
 
-        if (Input.GetKeyDown(throwWeapon) && (weapon != null) && keysEnable)
+        if (Input.GetKeyDown(throwWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
         {
             Throw();
         }
@@ -221,10 +221,10 @@ public class PlayerControler : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        //podnoszenie broni
-        if (weapon == null && Input.GetKeyDown(throwWeapon) && collision.tag == "Interaction")
+        //podnoszenie broni, czeka na kolizje z PickUpTrigger
+        if (weapon == null && Input.GetKeyDown(throwWeapon) && !Input.GetKeyDown(attack) && collision.gameObject.tag == "Interaction")
         {
-
+            TakeWeapon(collision.transform.parent.gameObject);
         }
     }
 
@@ -268,6 +268,7 @@ public class PlayerControler : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         Physics2D.IgnoreCollision(coll1, coll2, false);
     }
+
     //czy postać dotyka ziemi
     void IsGrounded()
     {
@@ -315,6 +316,7 @@ public class PlayerControler : MonoBehaviour {
     {
         DropWeapon();
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
+        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
         DistachWeapon();
     }
@@ -338,8 +340,7 @@ public class PlayerControler : MonoBehaviour {
     {
         weapon.transform.parent = null;
         anim.Rebind();
-        weapon.transform.position = throwPoint.transform.position;
-        weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90f);
+        weapon.transform.position = throwPoint.transform.position;     
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         maxcombo = 2;

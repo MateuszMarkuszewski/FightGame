@@ -11,19 +11,19 @@ public class WeaponControler : MonoBehaviour {
     public Vector3 PickUpRot;
 
     void Start () {
-
     }
     //gdy rzucona/upuszczona broń dotknie coś innego niż gracz to można ją podnieść i nie zadaje obrażeń
     void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.tag == "Untagged" || col.gameObject.tag == "Platform")
         {
+            gameObject.layer = 10;
             gameObject.GetComponent<Rigidbody2D>().Sleep();
-            //transform.Find("AttackCollider").gameObject.SetActive(false);
+            transform.Find("AttackCollider").gameObject.SetActive(false);
             transform.Find("PickUpTrigger").gameObject.SetActive(true);
         }
     }
-    void HandleWeapon(Transform player)
+    void HandleWeapon(Transform player, Transform holdingRig)
     {
         //this.transform.Find("AttackCollider").gameObject.SetActive(true);
         this.transform.Find("PickUpTrigger").gameObject.SetActive(false);
