@@ -2248,7 +2248,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 574531372}
   m_LocalRotation: {x: -0, y: -0, z: 0.3938169, w: 0.9191889}
-  m_LocalPosition: {x: 5.057, y: 2.032, z: 0}
+  m_LocalPosition: {x: 3, y: 2.6, z: 0}
   m_LocalScale: {x: 0.4717073, y: 0.6143093, z: 0.35517415}
   m_Children:
   - {fileID: 155874033}
@@ -2307,6 +2307,7 @@ MonoBehaviour:
   pickUpTrigger: {fileID: 155874032}
   maxDurability: 20
   durabilityImage: {fileID: 0}
+  weaponImage: {fileID: 0}
   PickUpPos: {x: 0.348, y: -0.212, z: -0.03466797}
   PickUpRot: {x: 0, y: 0, z: -184.426}
 --- !u!1 &578282088
@@ -2502,7 +2503,7 @@ MonoBehaviour:
   - {fileID: 1266625212}
   maxHealth: 300
   healthBar: {fileID: 1697321040}
-  weaponDurability: {fileID: 0}
+  weaponDurability: {fileID: 1489203168}
 --- !u!4 &628456960
 Transform:
   m_ObjectHideFlags: 0
@@ -4909,7 +4910,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1489203167
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4947,7 +4948,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d9d955207cd9bf24ca00ed292731333f, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 3
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -6822,5 +6823,6 @@ MonoBehaviour:
   pickUpTrigger: {fileID: 39293851}
   maxDurability: 20
   durabilityImage: {fileID: 0}
+  weaponImage: {fileID: 0}
   PickUpPos: {x: 0.33, y: -0.2, z: 0.03466797}
   PickUpRot: {x: 0, y: 0, z: -177.355}
