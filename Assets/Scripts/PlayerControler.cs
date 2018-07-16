@@ -27,8 +27,8 @@ public class PlayerControler : MonoBehaviour {
     public TrailRenderer[] trailEffect;
     private float horizontalMove;
 
-    public int maxHealth;
-    private int currentHealth;
+    public float maxHealth;
+    private float currentHealth;
     public Image healthBar;
     public Image weaponDurability;
 
@@ -220,6 +220,7 @@ public class PlayerControler : MonoBehaviour {
         ///sprawdza czy postac zyje
         if (currentHealth <= 0)
         {
+            if(weapon!=null)DropWeapon();
             ChangeState();
         }
     }
@@ -302,6 +303,11 @@ public class PlayerControler : MonoBehaviour {
         healthBar.fillAmount = currentHealth / maxHealth;
         Debug.Log(gameObject.name);
         Debug.Log(currentHealth);
+    }
+
+    IEnumerator AdjustRedBar()
+    {
+        yield return new WaitForSeconds(0.5f);
     }
 
     void Jump()

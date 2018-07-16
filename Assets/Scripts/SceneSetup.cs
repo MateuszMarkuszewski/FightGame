@@ -37,10 +37,8 @@ public class SceneSetup : MonoBehaviour
     public GameObject player1;
     public GameObject player2;
     
-
     private float width;
     private float height;
-
 
     void Start()
     {
@@ -64,10 +62,10 @@ public class SceneSetup : MonoBehaviour
 
     public void GeneratePlatforms()
     {
-        //TODO: zależniość miadzy iloscia pokoi a rozmiarem areny
-        Room.x = width / 6;
-        Room.y = height / 4;
-        Room[,] rooms = new Room[6,3];
+        //ustalanie ilosci pokoi
+        Room.x = width / size;
+        Room.y = height / (2*size/3);
+        Room[,] rooms = new Room[(int)size,(int)(2*size/3)-1];
         //przeskalowanie objektu platformy aby pokrywał pokój
         platform.transform.localScale += new Vector3(platform.transform.localScale.x * (Room.x - 1), 0, 0);
         /*
