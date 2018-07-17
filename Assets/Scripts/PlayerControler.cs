@@ -42,6 +42,7 @@ public class PlayerControler : MonoBehaviour {
     private bool onTheGround;
     private bool onTheWall;
     private bool keysEnable = true;
+    private bool attackEnable = true;
 
     //zmienne służące do ataków
     private GameObject weapon = null;
@@ -155,19 +156,18 @@ public class PlayerControler : MonoBehaviour {
             anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
             ///atak
-            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon))
-            {
-
-                    combo = comboManager.Step(combo, maxcombo);
-                    try
-                    {
-                        Debug.Log(weapon.name + "-attack" + combo);
-                        anim.SetTrigger(weapon.name + "-attack" + combo);
-                    }
-                    catch (NullReferenceException)
-                    {
-                        anim.SetTrigger("NoWeapon-attack" + combo);
-                    }
+            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && attackEnable)
+            {                
+                combo = comboManager.Step(combo, maxcombo);
+                if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
+                try
+                {                    
+                    anim.SetTrigger(weapon.name + "-attack" + combo);
+                }
+                catch (NullReferenceException)
+                {
+                    anim.SetTrigger("NoWeapon-attack" + combo);
+                }
                 
             }
 
@@ -177,7 +177,6 @@ public class PlayerControler : MonoBehaviour {
                 Jump();
             }
        
-            ///rzut bronią
             
             rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
         }
@@ -266,7 +265,14 @@ public class PlayerControler : MonoBehaviour {
     {
         keysEnable = false;
         yield return new WaitForSeconds(time);
-        keysEnable = true;
+        keysEnable = true;     
+    }
+
+    IEnumerator DisableAttack(float time)
+    {
+        attackEnable = false;
+        yield return new WaitForSeconds(time);
+        attackEnable = true;
     }
 
     IEnumerator ReturnCollision(Collider2D coll1, Collider2D coll2)
@@ -305,11 +311,6 @@ public class PlayerControler : MonoBehaviour {
         Debug.Log(currentHealth);
     }
 
-    IEnumerator AdjustRedBar()
-    {
-        yield return new WaitForSeconds(0.5f);
-    }
-
     void Jump()
     {
         rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
@@ -341,6 +342,7 @@ public class PlayerControler : MonoBehaviour {
         {
             weapon = w;
             weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
+            weapon.GetComponent<WeaponControler>().player = gameObject;
             weaponDurability.gameObject.SetActive(true);
             weapon.SendMessage("HandleWeapon", gameObject.transform);
             maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
@@ -362,6 +364,7 @@ public class PlayerControler : MonoBehaviour {
         maxcombo = 2;
         weapon.layer = 10; 
     }
+
     void DistachWeapon()
     {
         weapon = null;

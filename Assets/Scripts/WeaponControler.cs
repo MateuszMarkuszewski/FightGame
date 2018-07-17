@@ -10,6 +10,7 @@ public class WeaponControler : MonoBehaviour {
     public GameObject attackCollider;
     public GameObject pickUpTrigger;
 
+    public float restTimeAfterCombo;
     public float maxDurability;
     private float durability;
     public Image durabilityImage;
@@ -17,6 +18,9 @@ public class WeaponControler : MonoBehaviour {
 
     public Vector3 PickUpPos;
     public Vector3 PickUpRot;
+
+    public GameObject player;
+    public GameObject sceneMenager;
 
     void Start ()
     {
@@ -31,14 +35,11 @@ public class WeaponControler : MonoBehaviour {
 
     void AlphaUI()
     {
-        
         durabilityImage.color = new Color(255f,255f,255f, durability/maxDurability);
     }
 
     void ClearUI()
     {
-        //durabilityImage.GetComponent<Image>().color = new Color(255, 255, 255, 255);
-
         durabilityImage = null;
     }
 
@@ -47,9 +48,9 @@ public class WeaponControler : MonoBehaviour {
     {
         if (col.gameObject.tag == "Untagged" || col.gameObject.tag == "Platform")
         {
-            DecreaseDurability(5);
+            //DecreaseDurability(5);
             gameObject.layer = 10;
-            gameObject.GetComponent<Rigidbody2D>().Sleep();
+            //gameObject.GetComponent<Rigidbody2D>().Sleep();
             attackCollider.SetActive(false);
             pickUpTrigger.SetActive(true);
         }
@@ -72,6 +73,8 @@ public class WeaponControler : MonoBehaviour {
     {
         if(durability <= 0)
         {
+            sceneMenager.SendMessage("DecreaseWeaponNum");
+            player.SendMessage("DropWeapon");
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();
@@ -80,12 +83,5 @@ public class WeaponControler : MonoBehaviour {
     {
         durability -= value;
         Debug.Log(durability);
-    }
-
-    void Throw(bool dirToRight, float angle)
-    {
-        GetComponent<Rigidbody2D>().AddForce(new Vector2(200 * transform.localScale.x, angle), ForceMode2D.Impulse);
-        transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
-        transform.Find("AttackCollider").gameObject.SetActive(true);
     }
 }

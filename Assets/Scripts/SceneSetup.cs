@@ -39,6 +39,12 @@ public class SceneSetup : MonoBehaviour
     
     private float width;
     private float height;
+    private Room[,] rooms;
+
+    public GameObject[] weapons;
+    public int maxWeaponsNum;
+    private int currentWeaponNum = 0;
+    private float[] weaponProbability;
 
     void Start()
     {
@@ -48,9 +54,72 @@ public class SceneSetup : MonoBehaviour
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
-        SetupPlayers();
+        //SetupPlayers();
+        CalculateProbability();
 
+
+        DropWeapon(weapons[0]);
+        DropWeapon(weapons[1]);
+
+        StartCoroutine(WeaponDropMenager());
+    }
+
+    private void Update()
+    {
         
+    }
+    private void DecreaseWeaponNum()
+    {
+        currentWeaponNum--;
+    }
+
+    IEnumerator WeaponDropMenager()
+    {
+        
+        while (true)
+        {
+            Debug.Log("loop");
+            while (currentWeaponNum == maxWeaponsNum)
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(1f);
+
+            RandomWeapon(Random.value);          
+        }
+    }
+
+    private void RandomWeapon(float number)
+    {
+        float probability = 0;
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            probability += weaponProbability[i];
+            if (probability >= number)
+            {
+                Debug.Log(weapons[i]);
+                DropWeapon(weapons[i]);
+                break;
+            }
+        }
+    }
+    
+    //
+    private void CalculateProbability()
+    {
+        weaponProbability = new float[weapons.Length];
+        for( int i = 0; i < weapons.Length; i++)
+        {
+            weaponProbability[i] = size / weapons[i].GetComponentInChildren<AttackCollider>().dmg  / weapons.Length;
+            Debug.Log(weapons[i] + " " + weaponProbability[i]);
+        }
+    }
+
+    public void DropWeapon(GameObject weapon)
+    {
+        int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1))};
+        Instantiate(weapon, new Vector3(room[0]* Room.x + (Room.x / 2f), room[1] * Room.y + 2), Quaternion.identity).name = weapon.name;
+        currentWeaponNum++;
     }
 
     public void SetBackgroundSize()
@@ -65,7 +134,7 @@ public class SceneSetup : MonoBehaviour
         //ustalanie ilosci pokoi
         Room.x = width / size;
         Room.y = height / (2*size/3);
-        Room[,] rooms = new Room[(int)size,(int)(2*size/3)-1];
+        rooms = new Room[(int)size,(int)(2*size/3)-1];
         //przeskalowanie objektu platformy aby pokrywał pokój
         platform.transform.localScale += new Vector3(platform.transform.localScale.x * (Room.x - 1), 0, 0);
         /*
