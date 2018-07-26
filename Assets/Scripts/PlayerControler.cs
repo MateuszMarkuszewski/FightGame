@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class PlayerControler : MonoBehaviour {
 
+    public bool AI = false;
     //fizyka postaci
     public float heroSpeed;
     public float jumpForce;
@@ -106,30 +107,7 @@ public class PlayerControler : MonoBehaviour {
         }
     }
 
-    IEnumerator Dash(float dashTime, float way)
-    {
-        StartCoroutine(DisableKeys(dashTime));
-        foreach ( TrailRenderer trail in trailEffect)
-        {
-            trail.Clear();
-            trail.gameObject.SetActive(true);
-        }
-        Debug.Log("dash");
-        anim.SetBool("dash", true);
-        horizontalMove = way;
-        while(0 <= dashTime)
-        {
-            dashTime -= Time.deltaTime;
-            rgdBody.velocity = new Vector2(way * 30f, 0f);
-            yield return null;
-        }
-        foreach (TrailRenderer trail in trailEffect)
-        {
-            trail.gameObject.SetActive(false);
-        }
-        rgdBody.velocity = new Vector2(0f, 0f);
-        anim.SetBool("dash", false);
-    }
+
 
 
     void Update () {
@@ -149,60 +127,55 @@ public class PlayerControler : MonoBehaviour {
         }
 
         IsGrounded();
-        //postać na ziemi
-        if (!anim.GetBool("InAir"))
+        if(AI == false)
         {
-            horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
-            anim.SetFloat("speed", Mathf.Abs(horizontalMove));
-
-            ///atak
-            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && attackEnable)
-            {                
-                combo = comboManager.Step(combo, maxcombo);
-                if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
-                try
-                {                    
-                    anim.SetTrigger(weapon.name + "-attack" + combo);
-                }
-                catch (NullReferenceException)
-                {
-                    anim.SetTrigger("NoWeapon-attack" + combo);
-                }
-                
-            }
-
-            /// skakanie
-            if (Input.GetKeyDown(jump) && keysEnable)
-            {
-                Jump();
-            }
-       
-            
-            rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
-        }
-        //postać w powierzu
-        else
-        {
-            //odbijanie sie od platformy
-            if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
+            //postać na ziemi
+            if (!anim.GetBool("InAir"))
             {
                 horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
-                Jump();
-            }
-            //stała predkosc w locie
-            rgdBody.velocity = new Vector2(horizontalMove * heroSpeed, rgdBody.velocity.y);
-            //atak z powietrza
-            if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
-            {
-                DropAttack();
-            }
-        }
-        //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
-        //Debug.Log(rgdBody.velocity);
+                anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
-        if (Input.GetKeyDown(throwWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
-        {
-            Throw();
+                ///atak
+                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && attackEnable)
+                {
+                    BasicAttack();
+                }
+
+                /// skakanie
+                if (Input.GetKeyDown(jump) && keysEnable)
+                {
+                    Jump();
+                }
+
+
+                Move(horizontalMove);
+            }
+            //postać w powierzu
+            else
+            {
+                //odbijanie sie od platformy
+                if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
+                {
+                    horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
+                    Jump();
+                }
+
+                //stała predkosc w locie
+                Move(horizontalMove);
+
+                //atak z powietrza
+                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
+                {
+                    DropAttack();
+                }
+            }
+            //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
+            //Debug.Log(rgdBody.velocity);
+
+            if (Input.GetKeyDown(throwWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
+            {
+                Throw();
+            }
         }
 
 
@@ -223,6 +196,112 @@ public class PlayerControler : MonoBehaviour {
             ChangeState();
         }
     }
+
+    /// <summary>
+    /// Funkcje odpowiedzialne za kontrole postaci:
+    /// </summary>
+    /// 
+
+
+
+    public void Move(float way)
+    {
+        rgdBody.velocity = new Vector2(way * heroSpeed, rgdBody.velocity.y);
+    }
+
+    //wykonanie podstawowowego ataku
+    public void BasicAttack()
+    {
+        combo = comboManager.Step(combo, maxcombo);
+        if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
+        try
+        {
+            anim.SetTrigger(weapon.name + "-attack" + combo);
+        }
+        catch (NullReferenceException)
+        {
+            anim.SetTrigger("NoWeapon-attack" + combo);
+        }
+    }
+
+    //skok
+    public void Jump()
+    {
+        rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
+        anim.SetTrigger("jump");
+    }
+
+    //zejscie z platformy
+    public void ComeDown(Collider2D collider)
+    {
+        Physics2D.IgnoreCollision(collider, gameObject.GetComponent<Collider2D>());
+        StartCoroutine(ReturnCollision(collider, gameObject.GetComponent<Collider2D>()));
+    }
+
+    //rzut podniesioną bronią
+    void Throw()
+    {
+        Debug.Log("throw");
+        anim.SetTrigger("throw");
+    }
+
+    //podniesienie broni
+    void TakeWeapon(GameObject w)
+    {
+        if (weapon == null)
+        {
+            weapon = w;
+            weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
+            weapon.GetComponent<WeaponControler>().player = gameObject;
+            weaponDurability.gameObject.SetActive(true);
+            weapon.SendMessage("HandleWeapon", gameObject.transform);
+            maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
+            anim.Rebind();
+            anim.SetBool(weapon.name, true);
+            anim.SetBool("NoWeapon", false);
+        }
+    }
+
+    void DropAttack()
+    {
+        anim.SetTrigger("dropAttack");
+        rgdBody.velocity = new Vector2(0f, -20f);
+    }
+
+    IEnumerator Dash(float dashTime, float way)
+    {
+        StartCoroutine(DisableKeys(dashTime));
+        foreach (TrailRenderer trail in trailEffect)
+        {
+            trail.Clear();
+            trail.gameObject.SetActive(true);
+        }
+        Debug.Log("dash");
+        anim.SetBool("dash", true);
+        horizontalMove = way;
+        while (0 <= dashTime)
+        {
+            dashTime -= Time.deltaTime;
+            rgdBody.velocity = new Vector2(way * 30f, 0f);
+            yield return null;
+        }
+        foreach (TrailRenderer trail in trailEffect)
+        {
+            trail.gameObject.SetActive(false);
+        }
+        rgdBody.velocity = new Vector2(0f, 0f);
+        anim.SetBool("dash", false);
+    }
+
+    void Block()
+    {
+        anim.SetTrigger("block");
+    }
+
+
+    /// <summary>
+    /// Wykrywanie kolizji:
+    /// </summary>
 
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -253,13 +332,17 @@ public class PlayerControler : MonoBehaviour {
         //schodzenie z platformy
         if (collision.gameObject.tag == "Platform")
         {
-            if (Input.GetKeyDown(down) && keysEnable)
+            if ((Input.GetKeyDown(down) && keysEnable))
             {
-                Physics2D.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider2D>());
-                StartCoroutine(ReturnCollision(collision.collider, gameObject.GetComponent<Collider2D>()));
+                ComeDown(collision.collider);
             }
         }
     }
+
+
+/// <summary>
+/// Funkcje ustawiające/zmieniające stan postaci:
+/// </summary>
 
     IEnumerator DisableKeys(float time)
     {
@@ -311,19 +394,6 @@ public class PlayerControler : MonoBehaviour {
         Debug.Log(currentHealth);
     }
 
-    void Jump()
-    {
-        rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
-        anim.SetTrigger("jump");
-    }
-
-    //rzut podniesioną bronią
-    void Throw()
-    {
-        Debug.Log("throw");
-        anim.SetTrigger("throw");         
-    }
-
     //event wywoływany przez animacje
     void ThrowEvent(float angle)
     {
@@ -332,24 +402,8 @@ public class PlayerControler : MonoBehaviour {
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
+        weapon.GetComponent<Collider2D>().isTrigger = false;
         DistachWeapon();
-    }
-
-    //funkcja wywolywana przez PickUpControler przy zetknieciu z postacią
-    void TakeWeapon(GameObject w)
-    {
-        if(weapon == null)
-        {
-            weapon = w;
-            weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
-            weapon.GetComponent<WeaponControler>().player = gameObject;
-            weaponDurability.gameObject.SetActive(true);
-            weapon.SendMessage("HandleWeapon", gameObject.transform);
-            maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
-            anim.Rebind();
-            anim.SetBool(weapon.name, true);
-            anim.SetBool("NoWeapon", false);
-        }    
     }
 
     //gameobject broni jest odczepiana od rodzica 
@@ -370,14 +424,10 @@ public class PlayerControler : MonoBehaviour {
         weapon = null;
     }
 
-    void DropAttack()
-    {
-        anim.SetTrigger("dropAttack");
-        rgdBody.velocity = new Vector2(0f,-20f);
-    }
-
-
-    ///////////////////////////////////////////////////////ragdoll
+  /// <summary>
+  /// Funkcje odpowiedzialne za ragdoll:
+  /// </summary>
+  // TODO: przenieść do osobnego pliku
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
         float startTime = Time.time;

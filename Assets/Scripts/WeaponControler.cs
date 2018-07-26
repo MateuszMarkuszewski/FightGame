@@ -20,7 +20,7 @@ public class WeaponControler : MonoBehaviour {
     public Vector3 PickUpRot;
 
     public GameObject player;
-    public GameObject sceneMenager;
+    public SceneSetup sceneMenager;
 
     void Start ()
     {
@@ -53,8 +53,11 @@ public class WeaponControler : MonoBehaviour {
             //gameObject.GetComponent<Rigidbody2D>().Sleep();
             attackCollider.SetActive(false);
             pickUpTrigger.SetActive(true);
+            attackCollider.GetComponent<Collider2D>().isTrigger = true;
+
         }
     }
+
     void HandleWeapon(Transform player)
     {
         //this.transform.Find("AttackCollider").gameObject.SetActive(true);
@@ -69,16 +72,18 @@ public class WeaponControler : MonoBehaviour {
         attackCollider.layer = this.transform.parent.gameObject.layer;
         MakeUI();
     }
+
     private void Update()
     {
         if(durability <= 0)
         {
-            sceneMenager.SendMessage("DecreaseWeaponNum");
+            sceneMenager.DecreaseWeaponNum();
             player.SendMessage("DropWeapon");
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();
     }
+
     private void DecreaseDurability(int value)
     {
         durability -= value;
