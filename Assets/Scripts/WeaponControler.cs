@@ -38,9 +38,15 @@ public class WeaponControler : MonoBehaviour {
         durabilityImage.color = new Color(255f,255f,255f, durability/maxDurability);
     }
 
-    void ClearUI()
+    public void Clear()
     {
+        player = null;
         durabilityImage = null;
+        //dla AI
+        if (sceneMenager.AI == true)
+        {
+            sceneMenager.weaponsOnArena.Add(gameObject);
+        }
     }
 
     //gdy rzucona/upuszczona broń dotknie coś innego niż gracz to można ją podnieść i nie zadaje obrażeń
@@ -62,23 +68,28 @@ public class WeaponControler : MonoBehaviour {
     {
         //this.transform.Find("AttackCollider").gameObject.SetActive(true);
         pickUpTrigger.SetActive(false);
-        this.GetComponent<Collider2D>().enabled = false;
-        this.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         //umieszczenie broni np. w rekach
-        this.transform.SetParent(player.Find("Skeleton/Pelvis/Torso/R_arm_1/R_arm_2").transform);
-        this.transform.localPosition = PickUpPos;
-        this.transform.localEulerAngles = PickUpRot;
+        transform.SetParent(player.Find("Skeleton/Pelvis/Torso/R_arm_1/R_arm_2").transform);
+        transform.localPosition = PickUpPos;
+        transform.localEulerAngles = PickUpRot;
 
-        attackCollider.layer = this.transform.parent.gameObject.layer;
+        attackCollider.layer = transform.parent.gameObject.layer;
         MakeUI();
+        //dla AI
+        if(sceneMenager.AI == true)
+        {
+            sceneMenager.weaponsOnArena.Remove(gameObject);
+        }
     }
 
     private void Update()
     {
         if(durability <= 0)
         {
-            sceneMenager.DecreaseWeaponNum();
-            player.SendMessage("DropWeapon");
+            sceneMenager.DecreaseWeaponNum(gameObject);
+            player.GetComponent<PlayerControler>().DropWeapon();
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();

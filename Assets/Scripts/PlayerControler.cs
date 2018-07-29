@@ -4,16 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//TODO: rgdbody.getPoint do AI
-
 public class PlayerControler : MonoBehaviour {
 
-    public bool AI = false;
-    //fizyka postaci
+    //statystyki
     public float heroSpeed;
     public float jumpForce;
     public int throwSpeed;
-    private bool ragdoll = false;
+    public float maxHealth;
+    private float currentHealth;
     //klawisze
     public KeyCode left;
     public KeyCode right;
@@ -25,28 +23,25 @@ public class PlayerControler : MonoBehaviour {
     public Transform groundTester;
     public LayerMask layersToTest;
     public Transform throwPoint;
-    public TrailRenderer[] trailEffect;
-    private float horizontalMove;
-
-    public float maxHealth;
-    private float currentHealth;
+    private float radius = 0.1f;
+    //GUI
     public Image healthBar;
     public Image weaponDurability;
-
+    //componenty
     Animator anim;
-    bool dirToRight = true;
     Rigidbody2D rgdBody;
     ComboManager comboManager;
     Rigidbody2D[] rigs;
-
-    private float radius = 0.1f;
-    private bool onTheGround;
-    private bool onTheWall;
+    public TrailRenderer[] trailEffect;
+    //stany
     private bool keysEnable = true;
     private bool attackEnable = true;
-
-    //zmienne służące do ataków
-    private GameObject weapon = null;
+    bool dirToRight = true;
+    public float horizontalMove;
+    private bool ragdoll = false;
+    public bool AI = false;
+    //walka
+    public GameObject weapon = null;
     private int combo = 1;
     private int maxcombo = 2;
 
@@ -147,8 +142,6 @@ public class PlayerControler : MonoBehaviour {
                     Jump();
                 }
 
-
-                Move(horizontalMove);
             }
             //postać w powierzu
             else
@@ -160,8 +153,6 @@ public class PlayerControler : MonoBehaviour {
                     Jump();
                 }
 
-                //stała predkosc w locie
-                Move(horizontalMove);
 
                 //atak z powietrza
                 if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
@@ -178,7 +169,7 @@ public class PlayerControler : MonoBehaviour {
             }
         }
 
-
+        Move(horizontalMove);
         /// odwracanie sprita postaci w lewo
         if (horizontalMove < 0 && dirToRight)
         {
@@ -218,7 +209,7 @@ public class PlayerControler : MonoBehaviour {
         {
             anim.SetTrigger(weapon.name + "-attack" + combo);
         }
-        catch (NullReferenceException)
+        catch
         {
             anim.SetTrigger("NoWeapon-attack" + combo);
         }
@@ -246,7 +237,7 @@ public class PlayerControler : MonoBehaviour {
     }
 
     //podniesienie broni
-    void TakeWeapon(GameObject w)
+    public void TakeWeapon(GameObject w)
     {
         if (weapon == null)
         {
@@ -398,7 +389,7 @@ public class PlayerControler : MonoBehaviour {
     void ThrowEvent(float angle)
     {
         DropWeapon();
-        weapon.SendMessage("ClearUI");
+        
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
@@ -407,10 +398,11 @@ public class PlayerControler : MonoBehaviour {
     }
 
     //gameobject broni jest odczepiana od rodzica 
-    void DropWeapon()
+    public void DropWeapon()
     {
         weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
+        weapon.GetComponent<WeaponControler>().Clear(); ;
         anim.Rebind();
         weapon.transform.position = throwPoint.transform.position;     
         weapon.GetComponent<Collider2D>().enabled = true;

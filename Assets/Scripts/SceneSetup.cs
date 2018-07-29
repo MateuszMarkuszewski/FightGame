@@ -50,6 +50,7 @@ public class SceneSetup : MonoBehaviour
     public bool AI = false;
     public GameObject[,] grid;
     public GameObject node;
+    public List<GameObject> weaponsOnArena;
 
     void Start()
     {
@@ -78,7 +79,9 @@ public class SceneSetup : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// Tworzenie grafu dla AI
+    /// </summary>
     void MakeNode(int i, int j, float posX, float posY, int num)
     {
         GameObject n = Instantiate(node, new Vector3(posX, posY, 0), Quaternion.identity);
@@ -152,7 +155,7 @@ public class SceneSetup : MonoBehaviour
                 catch
                 {
                 }
-                try
+                /*try
                 {
                     if (grid[i, j - 1] != null)
                     {
@@ -162,7 +165,7 @@ public class SceneSetup : MonoBehaviour
                 catch
                 {
 
-                }
+                }*/
                 try
                 {
                     if (grid[i - 1, j - 1] != null)
@@ -203,6 +206,21 @@ public class SceneSetup : MonoBehaviour
                 catch
                 {
                 }
+                //dodanie każdej platformy poniżej obecnej
+                for(int z = 1; z < rooms.GetLength(1) + 1; z++)
+                {
+                    try
+                    {
+                        if (grid[i, j - z] != null)
+                        {
+                            MakeEdge(grid[i, j], grid[i, j - z]);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
             }
         }
     }
@@ -211,7 +229,7 @@ public class SceneSetup : MonoBehaviour
     {
         node1.GetComponent<Node>().neighbours.Add(node2);
         node1.GetComponent<Node>().distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
-        Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
+        //Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
     }
 
     float Distance(float x1, float y1, float x2, float y2)
@@ -219,8 +237,15 @@ public class SceneSetup : MonoBehaviour
         return Mathf.Sqrt(Mathf.Pow((x2 - x1), 2) + Mathf.Pow((y2 - y1), 2));
     }
 
-    public void DecreaseWeaponNum()
+    /// <summary>
+    /// Zrzuty broni
+    /// </summary>
+    public void DecreaseWeaponNum(GameObject w)
     {
+        if(AI == true)
+        {
+            weaponsOnArena.Remove(w);
+        }
         currentWeaponNum--;
     }
 
@@ -232,7 +257,7 @@ public class SceneSetup : MonoBehaviour
             {
                 yield return null;
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(10f);
 
             RandomWeapon(Random.value);          
         }
@@ -266,10 +291,19 @@ public class SceneSetup : MonoBehaviour
     public void DropWeapon(GameObject weapon)
     {
         int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1))};
-        Instantiate(weapon, new Vector3(room[0]* Room.x + (Room.x / 2f), room[1] * Room.y + 2), Quaternion.Euler(0f,0f,90f)).name = weapon.name;
+        GameObject w = Instantiate(weapon, new Vector3(room[0] * Room.x + (Room.x / 2f), room[1] * Room.y + 2), Quaternion.Euler(0f, 0f, 90f));
+        w.name = weapon.name;
         currentWeaponNum++;
+        if (AI == true)
+        {
+            weaponsOnArena.Add(w);
+        }
     }
 
+
+    /// <summary>
+    /// Wygenerowanie areny
+    /// </summary>
     public void SetBackgroundSize()
     {
         SpriteRenderer sr = background.GetComponent<SpriteRenderer>();
@@ -327,7 +361,6 @@ public class SceneSetup : MonoBehaviour
             }
         }
     }
-
 
     public void SetupMainGround()
     {
