@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class WeaponControler : MonoBehaviour {
 
+    // Child GameObject PickUpTrigger musi być pierwszy (AI)
+
     public int maxcombo;
     private Rigidbody2D rgdBody;
     public GameObject attackCollider;

@@ -10,9 +10,11 @@ public class AIControler : MonoBehaviour {
     public SceneSetup arenaData;
     public LayerMask platformMask;
     public LayerMask enemyMask;
+    public LayerMask pickUpMask;
 
     private bool findWeapon = false;
     private bool findEnemy = false;
+    private bool inAttack = false;
     //TODO: 1.5f na zmienną
 
     void Start () {
@@ -29,12 +31,23 @@ public class AIControler : MonoBehaviour {
     void DecisionTree()
     {
         Debug.DrawRay(transform.position, new Vector2(playerControler.horizontalMove, 0), Color.red);
-        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask))
+        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask) && inAttack == false)
         {
-            Debug.Log("hit");
+            playerControler.BasicAttack();
+            inAttack = true;
+            //jezeli normalized time == 1f to koniec animacji
+            while(playerControler.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime <= 1f)
+            {
+                
+            }
+            inAttack = false;
+            // StartCoroutine(playerControler.Dis)
+            Debug.Log(playerControler.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime);
+
         }
-        else if (playerControler.weapon == null/* && enemy.GetComponent<PlayerControler>().weapon != null*/)
+        else if (playerControler.weapon == null/* && enemy.GetComponent<PlayerControler>().weapon != null*/ && arenaData.weaponsOnArena.Count != 0)
         {
+           // Debug.Log("findweapon");
             if(findWeapon == false)
             {
                 findWeapon = true;
@@ -85,45 +98,51 @@ public class AIControler : MonoBehaviour {
         }
         if (minDistance > Distance(current.transform.position.x, current.transform.position.y, target.transform.position.x, target.transform.position.y))
         {
-            Debug.Log("current");
-
-            AdjustCoordinates(target.GetComponent<CapsuleCollider2D>().bounds);
+            //Debug.Log("current");
+            AdjustCoordinates(target.GetComponent<CapsuleCollider2D>());
         }
         else
         {
-            AdjustCoordinates(neighbours[nextNode].GetComponent<BoxCollider2D>().bounds);
+            AdjustCoordinates(neighbours[nextNode].GetComponent<BoxCollider2D>());
         }
     }
 
 
-    void AdjustCoordinates(Bounds target)
+    void AdjustCoordinates(Collider2D target)
     {   //bo z triggerpick up musi byc 
-        Debug.Log(target.Intersects(transform.parent.GetComponent<BoxCollider2D>().bounds));
-        if (target.Intersects(transform.parent.GetComponent<BoxCollider2D>().bounds) && findWeapon == true)
+        if (transform.parent.GetComponent<BoxCollider2D>().IsTouchingLayers(pickUpMask) && findWeapon == true)
         {
-            Debug.Log("take");
-            playerControler.TakeWeapon(Physics2D.Raycast(transform.position, Vector2.down, 2f, LayerMask.NameToLayer("Weapon")).collider.gameObject);
+            Debug.Log(target.gameObject);
+            playerControler.TakeWeapon(target.gameObject);
+            findWeapon = false;
         }
-        if (transform.position.x > target.max.x)
+        if (transform.position.x > target.bounds.max.x)
         {
             playerControler.horizontalMove = -1f;
         }
-        else if (transform.position.x < target.min.x)
+        else if (transform.position.x < target.bounds.min.x)
         {
             playerControler.horizontalMove = 1f;
         }
 
-        if (transform.position.y < target.min.y)
+        if (transform.position.y < target.bounds.min.y)
         {
             //Debug.Log(transform.position.y);
             playerControler.Jump();
         }
-        else if (transform.position.y > target.max.y)
+        else if (transform.position.y > target.bounds.max.y)
         {
-            RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
-            playerControler.ComeDown(platform.collider);
-        }
+            try
+            {
+                RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
+                playerControler.ComeDown(platform.collider);
+            }
+            catch
+            {
 
+            }
+        }
+        
     }
     
     float Distance(float x1, float y1, float x2, float y2)

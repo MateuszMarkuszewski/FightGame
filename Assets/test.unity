@@ -259,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 39293852}
   - component: {fileID: 39293853}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PickUpTrigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -277,7 +277,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1.56336, z: 1}
   m_Children: []
   m_Father: {fileID: 2138154417}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &39293853
 BoxCollider2D:
@@ -939,7 +939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 155874033}
   - component: {fileID: 155874035}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PickUpTrigger
   m_TagString: Interaction
   m_Icon: {fileID: 0}
@@ -1732,6 +1732,9 @@ MonoBehaviour:
   enemyMask:
     serializedVersion: 2
     m_Bits: 4096
+  pickUpMask:
+    serializedVersion: 2
+    m_Bits: 16384
 --- !u!61 &325137543
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3467,10 +3470,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed48a2e8b79868049b92b92c575f3a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AI: 0
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
+  maxHealth: 500
   left: 97
   right: 100
   jump: 119
@@ -3482,12 +3485,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 131840
   throwPoint: {fileID: 1822779361}
+  healthBar: {fileID: 1508935645}
+  weaponDurability: {fileID: 1489203168}
   trailEffect:
   - {fileID: 1149332041}
   - {fileID: 1266625212}
-  maxHealth: 500
-  healthBar: {fileID: 1508935645}
-  weaponDurability: {fileID: 1489203168}
+  horizontalMove: 0
+  AI: 0
+  weapon: {fileID: 0}
 --- !u!4 &628456960
 Transform:
   m_ObjectHideFlags: 0
@@ -3820,7 +3825,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.06055343, y: -0.3633211}
+  m_Offset: {x: 0.06055343, y: -0.4878783}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -3831,7 +3836,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.3633211, y: 2.120239}
+  m_Size: {x: 1.3633211, y: 2.3693533}
   m_EdgeRadius: 0
 --- !u!114 &708479840
 MonoBehaviour:
@@ -3908,10 +3913,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed48a2e8b79868049b92b92c575f3a32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AI: 0
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
+  maxHealth: 500
   left: 276
   right: 275
   jump: 273
@@ -3923,12 +3928,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4864
   throwPoint: {fileID: 305663027}
+  healthBar: {fileID: 703783036}
+  weaponDurability: {fileID: 1697617470}
   trailEffect:
   - {fileID: 1863169943}
   - {fileID: 490796770}
-  maxHealth: 500
-  healthBar: {fileID: 703783036}
-  weaponDurability: {fileID: 1697617470}
+  horizontalMove: 0
+  AI: 0
+  weapon: {fileID: 0}
 --- !u!4 &708479846
 Transform:
   m_ObjectHideFlags: 0
@@ -5594,8 +5601,12 @@ MonoBehaviour:
   - {fileID: 574531372}
   - {fileID: 2138154414}
   maxWeaponsNum: 4
+  antyDropCollisionMask:
+    serializedVersion: 2
+    m_Bits: 136192
   AI: 0
   node: {fileID: 1076390911}
+  weaponsOnArena: []
 --- !u!4 &1032561370
 Transform:
   m_ObjectHideFlags: 0
@@ -9974,7 +9985,7 @@ Transform:
   m_Children:
   - {fileID: 1084478596}
   m_Father: {fileID: 2138154417}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2051130848
 MonoBehaviour:
@@ -10657,8 +10668,8 @@ Transform:
   m_LocalPosition: {x: -5.07, y: -5.13, z: 0.03466797}
   m_LocalScale: {x: 0.30000085, y: 0.31218794, z: 1}
   m_Children:
-  - {fileID: 2051130847}
   - {fileID: 39293852}
+  - {fileID: 2051130847}
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -10674,8 +10685,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.31999996, y: 1.5999999}
+  m_Offset: {x: 0.005893491, y: 4.9110487e-11}
+  m_Size: {x: 0.43433425, y: 1.5999999}
   m_Direction: 0
 --- !u!114 &2138154419
 MonoBehaviour:

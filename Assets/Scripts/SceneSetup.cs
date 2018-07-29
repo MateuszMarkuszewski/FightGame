@@ -45,12 +45,14 @@ public class SceneSetup : MonoBehaviour
     public int maxWeaponsNum;
     private int currentWeaponNum = 0;
     private float[] weaponProbability;
+    public LayerMask antyDropCollisionMask;
 
     //info dla AI
     public bool AI = false;
     public GameObject[,] grid;
     public GameObject node;
     public List<GameObject> weaponsOnArena;
+
 
     void Start()
     {
@@ -62,7 +64,12 @@ public class SceneSetup : MonoBehaviour
         SetupMainGround();
         GeneratePlatforms();
         //SetupPlayers();
-
+        //AI
+        if (AI == true)
+        {
+            MakeGrid();
+            MakeGraph();
+        }
         //bronie
         CalculateProbability();
 
@@ -70,13 +77,6 @@ public class SceneSetup : MonoBehaviour
         DropWeapon(weapons[1]);
 
         StartCoroutine(WeaponDropMenager());
-
-        //AI
-        if (AI == true)
-        {
-            MakeGrid();
-            MakeGraph();
-        }
     }
 
     /// <summary>
@@ -253,18 +253,20 @@ public class SceneSetup : MonoBehaviour
     {      
         while (true)
         {
+            //nie losuje liczby dopoki maxymalna liczba broni na arenie
             while (currentWeaponNum == maxWeaponsNum)
             {
                 yield return null;
             }
             yield return new WaitForSeconds(10f);
-
+            
             RandomWeapon(Random.value);          
         }
     }
 
     private void RandomWeapon(float number)
     {
+        //porownuje wylosowana liczbe z prawdopodobienstwem wylosowania broni
         float probability = 0;
         for (int i = 0; i < weapons.Length; i++)
         {
@@ -290,14 +292,31 @@ public class SceneSetup : MonoBehaviour
 
     public void DropWeapon(GameObject weapon)
     {
-        int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1))};
-        GameObject w = Instantiate(weapon, new Vector3(room[0] * Room.x + (Room.x / 2f), room[1] * Room.y + 2), Quaternion.Euler(0f, 0f, 90f));
-        w.name = weapon.name;
-        currentWeaponNum++;
-        if (AI == true)
+        while (true)
         {
-            weaponsOnArena.Add(w);
+            int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1) + 1) };
+            try
+            {
+                if (!grid[room[0], room[1]].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
+                {
+                    Debug.Log(grid[room[0], room[1]].transform.position);
+                    GameObject w = Instantiate(weapon, grid[room[0], room[1]].transform.position, Quaternion.Euler(0f, 0f, 90f));
+                    w.name = weapon.name;
+                    currentWeaponNum++;
+                    if (AI == true)
+                    {
+                        weaponsOnArena.Add(w);
+                    }
+                    break;
+                }
+            }
+            catch
+            {
+
+            }
+
         }
+
     }
 
 
