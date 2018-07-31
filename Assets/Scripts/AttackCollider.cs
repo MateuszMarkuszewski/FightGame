@@ -16,9 +16,9 @@ public class AttackCollider : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Player")
         {
-            //collision.GetComponent<Rigidbody2D>().AddForce(new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) *100, 0f), ForceMode2D.Force);
+            collision.GetComponent<Rigidbody2D>().AddForce(new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) *100, 0f), ForceMode2D.Force);
             //collision.GetComponent<Rigidbody2D>().velocity = new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) * 2, 0f);
-            collision.gameObject.SendMessage("DealDamage", dmg);
+            collision.gameObject.GetComponent<PlayerControler>().DealDamage(dmg);
             try
             {
                 SendMessageUpwards("DecreaseDurability", 10);

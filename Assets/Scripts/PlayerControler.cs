@@ -35,7 +35,7 @@ public class PlayerControler : MonoBehaviour {
     public TrailRenderer[] trailEffect;
     //stany
     private bool keysEnable = true;
-    private bool attackEnable = true;
+    public bool attackEnable = true;
     bool dirToRight = true;
     public float horizontalMove;
     private bool ragdoll = false;
@@ -44,6 +44,8 @@ public class PlayerControler : MonoBehaviour {
     public GameObject weapon = null;
     private int combo = 1;
     private int maxcombo = 2;
+    private float lastAttackTime = 0;
+    private float timeBetweenAttack = 0.3f;
 
     //struktura przechowująca kości i ik 
     //używana przy podnoszeniu postaci
@@ -82,6 +84,7 @@ public class PlayerControler : MonoBehaviour {
             Debug.Log(i.ik);
         }
     }
+
     private void FixedUpdate()
     {
 
@@ -205,26 +208,31 @@ public class PlayerControler : MonoBehaviour {
     {
         if (attackEnable)
         {
-            combo = comboManager.Step(combo, maxcombo);
-            if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
-            try
+            if ( Time.time - lastAttackTime >= timeBetweenAttack)
             {
-                anim.SetTrigger(weapon.name + "-attack" + combo);
-            }
-            catch
-            {
-                anim.SetTrigger("NoWeapon-attack" + combo);
+                combo = comboManager.Step(combo, maxcombo);
+                if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
+                try
+                {
+                    anim.SetTrigger(weapon.name + "-attack" + combo);
+                    //StartCoroutine(DisableKeys(timeBetweenAttack));
+                }
+                catch
+                {
+                    anim.SetTrigger("NoWeapon-attack" + combo);
+                    //StartCoroutine(DisableKeys(timeBetweenAttack));
+                }
+                lastAttackTime = Time.time;
             }
         }
     }
 
+
     //skok
     public void Jump()
     {
-
         rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
-        anim.SetTrigger("jump");
-        
+        anim.SetTrigger("jump");       
     }
 
     //zejscie z platformy
@@ -376,14 +384,13 @@ public class PlayerControler : MonoBehaviour {
     void Flip()
     {
         dirToRight = !dirToRight;
-        Vector3 heroScale = gameObject.transform.localScale;
-        heroScale.x *= -1;
-        gameObject.transform.localScale = heroScale;
+        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
     }
 
     //zmniejsza HP
-    void DealDamage(int dmg)
+    public void DealDamage(int dmg)
     {
+        horizontalMove = 0;
         currentHealth = currentHealth - dmg;
         healthBar.fillAmount = currentHealth / maxHealth;
         Debug.Log(gameObject.name);

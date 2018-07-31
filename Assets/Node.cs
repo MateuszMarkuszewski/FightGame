@@ -13,7 +13,7 @@ public class Node : MonoBehaviour {
         if(collision.gameObject.tag == "AI")
         {
             //Debug.Log("AI in block " + nodeNum);
-            collision.gameObject.GetComponent<AIControler>().FindPath(neighbours, distances, gameObject);
+            //collision.gameObject.GetComponent<AIControler>().FindPath(neighbours, distances, gameObject);
         }
     }
 

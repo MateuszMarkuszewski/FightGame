@@ -15,7 +15,6 @@ public class AIControler : MonoBehaviour {
 
     private bool findWeapon = false;
     private bool findEnemy = false;
-    private bool inAttack = false;
     //TODO: 1.5f na zmienną
     private ContactFilter2D throwFilter;
     
@@ -30,34 +29,29 @@ public class AIControler : MonoBehaviour {
     void Update () {
         DecisionTree();
     }
-
-    IEnumerator WaitForEnd()
+    /*
+    IEnumerator WaitForEnd(
     {
         //jezeli normalized time == 1f to koniec animacji
         yield return new WaitWhile(() => transform.parent.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).normalizedTime < 1f);
         inAttack = false;
-    }
+    }*/
 
     void DecisionTree()
     {
-        //Debug.DrawRay(transform.position, new Vector2(playerControler.horizontalMove, 0), Color.red);
         //sprawdza czy może uderzyć podstawowym atakiem
-        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask) && 
-            !inAttack)
+        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask) &&
+            playerControler.attackEnable)
         {
-            playerControler.BasicAttack();
-            inAttack = true;
-            StartCoroutine(WaitForEnd());            
+            playerControler.BasicAttack();       
         }
         //sprawdza czy bedąc w powietrzu znajduje sie nad przeciwnikiem, wtedy atakuje
         else if(Physics2D.Raycast(transform.position, Vector2.down, 5f, enemyMask) && 
-                Physics2D.Raycast(transform.position, Vector2.down, 5f, platformMask) && 
-                !inAttack)
+                Physics2D.Raycast(transform.position, Vector2.down, 5f, platformMask)
+                )
         {
             Debug.Log("drop");
             playerControler.DropAttack();
-            inAttack = true;
-            StartCoroutine(WaitForEnd());
         }
         //sprawdza będąc w powietrzu przeciwnik jest w zasiegu rzutu bronią
         else if (playerControler.gameObject.GetComponent<Animator>().GetBool("InAir") && 
@@ -75,26 +69,21 @@ public class AIControler : MonoBehaviour {
             Throw(new Vector2(playerControler.horizontalMove, 0));
         }
         //czy ma szukać broni
-        else if (playerControler.weapon == null && enemy.GetComponent<PlayerControler>().weapon != null && 
-                arenaData.weaponsOnArena.Count != 0)
+        else if (playerControler.weapon == null && 
+                enemy.GetComponent<PlayerControler>().weapon != null && 
+                arenaData.weaponsOnArena.Count != 0 &&
+                findWeapon == false)
         {
-           // Debug.Log("findweapon");
-            if(findWeapon == false)
-            {
-                findWeapon = true;
-                findEnemy = false;
-            }
+            findWeapon = true;
+            findEnemy = false;
         }
         //czy szukać przeciwnika
-        else
+        else if(playerControler.attackEnable &&
+                findEnemy == false)
         {
-            if (findEnemy == false)
-            {
-                findEnemy = true;
-                findWeapon = false;
-            }
+            findEnemy = true;
+            findWeapon = false;
         }
-
     }
 
     public void FindPath(List<GameObject> neighbours, List<float> distances, GameObject current)
