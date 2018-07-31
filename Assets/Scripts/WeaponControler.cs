@@ -21,7 +21,7 @@ public class WeaponControler : MonoBehaviour {
     public Vector3 PickUpPos;
     public Vector3 PickUpRot;
 
-    public GameObject player;
+    public GameObject handler;
     public SceneSetup sceneMenager;
 
     void Start ()
@@ -42,7 +42,7 @@ public class WeaponControler : MonoBehaviour {
 
     public void Clear()
     {
-        player = null;
+       // player = null;
         durabilityImage = null;
         //dla AI
         if (sceneMenager.AI == true)
@@ -62,7 +62,6 @@ public class WeaponControler : MonoBehaviour {
             attackCollider.SetActive(false);
             pickUpTrigger.SetActive(true);
             attackCollider.GetComponent<Collider2D>().isTrigger = true;
-
         }
     }
 
@@ -77,6 +76,7 @@ public class WeaponControler : MonoBehaviour {
         transform.localPosition = PickUpPos;
         transform.localEulerAngles = PickUpRot;
 
+        handler = player.gameObject;
         attackCollider.layer = transform.parent.gameObject.layer;
         MakeUI();
         //dla AI
@@ -91,7 +91,16 @@ public class WeaponControler : MonoBehaviour {
         if(durability <= 0)
         {
             sceneMenager.DecreaseWeaponNum(gameObject);
-            player.GetComponent<PlayerControler>().DropWeapon();
+            try
+            {
+                handler.GetComponent<PlayerControler>().DropWeapon();
+                handler.GetComponent<PlayerControler>().DetachWeapon();
+            }
+            catch
+            {
+
+            }
+            sceneMenager.weaponsOnArena.Remove(gameObject);
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();

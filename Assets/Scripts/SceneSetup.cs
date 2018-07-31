@@ -299,7 +299,7 @@ public class SceneSetup : MonoBehaviour
             {
                 if (!grid[room[0], room[1]].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
                 {
-                    Debug.Log(grid[room[0], room[1]].transform.position);
+                    //Debug.Log(grid[room[0], room[1]].transform.position);
                     GameObject w = Instantiate(weapon, grid[room[0], room[1]].transform.position, Quaternion.Euler(0f, 0f, 90f));
                     w.name = weapon.name;
                     currentWeaponNum++;

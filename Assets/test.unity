@@ -1665,7 +1665,7 @@ GameObject:
   m_Layer: 17
   m_Name: throwPoint
   m_TagString: GameController
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1735,6 +1735,9 @@ MonoBehaviour:
   pickUpMask:
     serializedVersion: 2
     m_Bits: 16384
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!61 &325137543
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3306,7 +3309,7 @@ MonoBehaviour:
   weaponImage: {fileID: 0}
   PickUpPos: {x: 0.348, y: -0.212, z: -0.03466797}
   PickUpRot: {x: 0, y: 0, z: -184.426}
-  player: {fileID: 0}
+  handler: {fileID: 0}
   sceneMenager: {fileID: 1032561369}
 --- !u!1 &578282088
 GameObject:
@@ -3916,7 +3919,7 @@ MonoBehaviour:
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
-  maxHealth: 500
+  maxHealth: 200
   left: 276
   right: 275
   jump: 273
@@ -10708,5 +10711,5 @@ MonoBehaviour:
   weaponImage: {fileID: 0}
   PickUpPos: {x: 0.33, y: -0.2, z: 0.03466797}
   PickUpRot: {x: 0, y: 0, z: -177.355}
-  player: {fileID: 0}
+  handler: {fileID: 0}
   sceneMenager: {fileID: 1032561369}

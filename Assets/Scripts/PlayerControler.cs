@@ -131,13 +131,13 @@ public class PlayerControler : MonoBehaviour {
                 anim.SetFloat("speed", Mathf.Abs(horizontalMove));
 
                 ///atak
-                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && attackEnable)
+                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) )
                 {
                     BasicAttack();
                 }
 
                 /// skakanie
-                if (Input.GetKeyDown(jump) && keysEnable)
+                if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
                 {
                     Jump();
                 }
@@ -203,23 +203,28 @@ public class PlayerControler : MonoBehaviour {
     //wykonanie podstawowowego ataku
     public void BasicAttack()
     {
-        combo = comboManager.Step(combo, maxcombo);
-        if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
-        try
+        if (attackEnable)
         {
-            anim.SetTrigger(weapon.name + "-attack" + combo);
-        }
-        catch
-        {
-            anim.SetTrigger("NoWeapon-attack" + combo);
+            combo = comboManager.Step(combo, maxcombo);
+            if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
+            try
+            {
+                anim.SetTrigger(weapon.name + "-attack" + combo);
+            }
+            catch
+            {
+                anim.SetTrigger("NoWeapon-attack" + combo);
+            }
         }
     }
 
     //skok
     public void Jump()
     {
+
         rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
         anim.SetTrigger("jump");
+        
     }
 
     //zejscie z platformy
@@ -230,7 +235,7 @@ public class PlayerControler : MonoBehaviour {
     }
 
     //rzut podniesioną bronią
-    void Throw()
+    public void Throw()
     {
         Debug.Log("throw");
         anim.SetTrigger("throw");
@@ -243,7 +248,7 @@ public class PlayerControler : MonoBehaviour {
         {
             weapon = w;
             weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
-            weapon.GetComponent<WeaponControler>().player = gameObject;
+            
             weaponDurability.gameObject.SetActive(true);
             weapon.SendMessage("HandleWeapon", gameObject.transform);
             maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
@@ -253,7 +258,7 @@ public class PlayerControler : MonoBehaviour {
         }
     }
 
-    void DropAttack()
+     public void DropAttack()
     {
         anim.SetTrigger("dropAttack");
         rgdBody.velocity = new Vector2(0f, -20f);
@@ -394,7 +399,7 @@ public class PlayerControler : MonoBehaviour {
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
         weapon.GetComponent<Collider2D>().isTrigger = false;
-        DistachWeapon();
+        DetachWeapon();
     }
 
     //gameobject broni jest odczepiana od rodzica 
@@ -402,7 +407,7 @@ public class PlayerControler : MonoBehaviour {
     {
         weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
-        weapon.GetComponent<WeaponControler>().Clear(); ;
+        weapon.GetComponent<WeaponControler>().Clear();
         anim.Rebind();
         weapon.transform.position = throwPoint.transform.position;     
         weapon.GetComponent<Collider2D>().enabled = true;
@@ -411,7 +416,7 @@ public class PlayerControler : MonoBehaviour {
         weapon.layer = 10; 
     }
 
-    void DistachWeapon()
+    public void DetachWeapon()
     {
         weapon = null;
     }
