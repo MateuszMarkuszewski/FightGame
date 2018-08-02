@@ -12,6 +12,7 @@ TagManager:
   - Interaction
   - Weapon
   - AI
+  - Target
   layers:
   - Default
   - TransparentFX

@@ -52,7 +52,8 @@ public class SceneSetup : MonoBehaviour
     public GameObject[,] grid;
     public GameObject node;
     public List<GameObject> weaponsOnArena;
-
+    public int numOfNodes = 0;
+    public List<GameObject> nodes;
 
     void Start()
     {
@@ -88,6 +89,8 @@ public class SceneSetup : MonoBehaviour
         n.GetComponent<Node>().nodeNum = num;
         n.GetComponent<BoxCollider2D>().size = new Vector2(Room.x, Room.y);
         grid[i, j] = n;
+        numOfNodes++;
+        nodes.Add(n);
     }
 
     void MakeGrid()
@@ -99,19 +102,19 @@ public class SceneSetup : MonoBehaviour
             MakeNode(i, 0, i * Room.x + (Room.x / 2f), 0 * Room.y + (Room.y / 2f), num);
             num++;
         }
-        for (int i = 0; i < rooms.GetLength(0); i++)
+        for (int j = 0; j < rooms.GetLength(1); j++)
         {
-            for (int j = 0; j < rooms.GetLength(1); j++)
+            for (int i = 0; i < rooms.GetLength(0); i++)
             {
                 if (rooms[i, j] != null)
                 {
                     MakeNode(i, j+1, i * Room.x + (Room.x / 2f), (j + 1) * Room.y + (Room.y / 2f) , num);
+                    num++;
                 }
                 else
                 {
                     grid[i, j + 1] = null;
-                }
-                num++;
+                }              
             }
         }
     }
@@ -345,7 +348,7 @@ public class SceneSetup : MonoBehaviour
         int side = 1;
         while(true)
         {
-            Room.SetRoomCoordinates(x, y);
+            //Room.SetRoomCoordinates(x, y);
             //tworzona jest platforma
             Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+Room.y), Quaternion.identity);
             //losowane jest gdzie bedzie następny pokoj

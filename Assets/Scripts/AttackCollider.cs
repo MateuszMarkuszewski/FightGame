@@ -14,9 +14,10 @@ public class AttackCollider : MonoBehaviour
         {
             Debug.Log("weapon");
         }
-        else if (collision.gameObject.tag == "Player")
+        else if (collision.gameObject.tag == "Player" && !collision.isTrigger)
         {
-            collision.GetComponent<Rigidbody2D>().AddForce(new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) *100, 0f), ForceMode2D.Force);
+            //Debug.Log(gameObject.transform.parent.name);
+            //collision.GetComponent<Rigidbody2D>().AddForce(new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) *100, 0f), ForceMode2D.Force);
             //collision.GetComponent<Rigidbody2D>().velocity = new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) * 2, 0f);
             collision.gameObject.GetComponent<PlayerControler>().DealDamage(dmg);
             try
