@@ -21,29 +21,22 @@ public class AIControler : MonoBehaviour {
     //private GameObject target;
     private GameObject previousNode;
 
-    public List<GameObject> Q;
-    public List<GameObject> S;
-    float[] wayCost;
-    int[] prevNode;
-    List<int> way;
+
+
+    public List<GameObject> way;
 
 
     void Start () {
-        //playerControler.AI = true;
+        playerControler.AI = true;
         playerControler.heroSpeed = playerControler.heroSpeed * 3 / 4;
         arenaData.AI = true;
         throwFilter.SetLayerMask(enemyMask | platformMask);
        
         /* Q = arenaData.nodes.ToArray();
          S = new GameObject[Q.Length];*/
-        Invoke("Init", 0.01f);
     }
-    void Init()
-    {
 
-    }
     void Update () {
-
         DecisionTree();
     }
     /*
@@ -139,7 +132,7 @@ public class AIControler : MonoBehaviour {
           for(int i = 0; i < neighbours.ToArray().Length; i++)
           {
               
-              S.Add(neighbours[i]);
+              //S.Add(neighbours[i]);
               tmp = distances[i] + Distance(neighbours[i].transform.position.x, neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
               if(tmp < minDistance && previousNode != neighbours[i])
               {
@@ -157,176 +150,73 @@ public class AIControler : MonoBehaviour {
               AdjustCoordinates(neighbours[nextNode].GetComponent<BoxCollider2D>());
           }
       }
-
-    public void AStar(Node current)
-    {
-        wayCost.SetValue(Mathf.Infinity,0,arenaData.numOfNodes-1);
-        prevNode.SetValue(-1, 0, arenaData.numOfNodes-1);
-
-        float tmp;
-        float minDistance;
-        GameObject target = enemy;
-        //tu było find weapon
-        GameObject currentNode = current.gameObject;
-
-        wayToTarget.Add(current.gameObject);
-
-        wayCost[current.nodeNum] = 0;
-
-        int nextNode = 0;
-        minDistance = Mathf.Infinity;
-
-        while (currentNode.GetComponent<Node>().enemy == true || currentNode.GetComponent<Node>().neighbours.Count != 1)
-        {
-            for (int i = 0; i < current.neighbours.Count; i++)
-            {
-                if (!wayToTarget.Contains(current.neighbours[i]))
-                {
-                    wayCost[current.neighbours[i].GetComponent<Node>().nodeNum] = current.distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-                }
-            }
-
-
-            currentNode = wayToTarget[wayToTarget.Count - 1];
-        }
-
-
-
-        /*
-        for (int i = 0; i < current.neighbours.ToArray().Length; i++)
-        {
-            tmp = current.distances[i] + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-            if (tmp < minDistance)
-            {
-                minDistance = tmp;
-                nextNode = i;
-            }
-        }
-        if (minDistance > Distance(current.transform.position.x, current.transform.position.y, target.transform.position.x, target.transform.position.y))
-        {
-            //Debug.Log("current");
-            AdjustCoordinates(target.GetComponent<CapsuleCollider2D>());
-        }
-        else
-        {
-            wayToTarget.Add(current.neighbours[nextNode]);
-            //AdjustCoordinates(current.neighbours[nextNode].GetComponent<BoxCollider2D>());
-        }*/
-    }
+   
 
     public void Djikstra(Node current)
     {
-        wayCost = new float[arenaData.nodes.Count];
-        prevNode = new int[arenaData.nodes.Count];
-        S.Clear();
-        Q = arenaData.nodes;
+        List<GameObject> Q = new List<GameObject>(arenaData.nodes); ;
+        List<GameObject> S = new List<GameObject>();
+        float[] wayCost = new float[arenaData.nodes.Count];
+        int[] prevNode = new int[arenaData.nodes.Count];
 
+        //wypelnienie tablic wartosciami
         for(int i = 0; i < wayCost.Length; i++)
         {
             wayCost.SetValue(Mathf.Infinity, i);
             prevNode.SetValue(-1, i);
         }
         
-
         GameObject currentNode = current.gameObject;
-        //Debug.Log(wayCost.Length);
         wayCost[current.nodeNum] = 0;
 
-        /*S.Add(currentNode);
-        Q.Remove(currentNode);*/
-
-        //FindNeighbours(current);
-
+        
         while (currentNode.GetComponent<Node>().enemy == false)
         {
             S.Add(currentNode);
             Q.Remove(currentNode);
-                for (int i = 0; i < currentNode.GetComponent<Node>().neighbours.Count; i++)
+            //liczenie watrosci dla sasiadów ze zbioru Q
+            for (int i = 0; i < currentNode.GetComponent<Node>().neighbours.Count; i++)
+            {
+                if (Q.Contains(currentNode.GetComponent<Node>().neighbours[i]))
                 {
-                    if (Q.Contains(currentNode.GetComponent<Node>().neighbours[i]))
+                    if (wayCost[currentNode.GetComponent<Node>().nodeNum] + currentNode.GetComponent<Node>().distances[i] < wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum])
                     {
-                        if (wayCost[currentNode.GetComponent<Node>().nodeNum] + currentNode.GetComponent<Node>().distances[i] < wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum])
-                        {
-                            wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-                            prevNode[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().nodeNum;
-                        }
-                        /*
-                        S.Add(curr.neighbours[i]);
-                        Q.Remove(curr.neighbours[i]);
-                        FindNeighbours(curr.neighbours[i].GetComponent<Node>());*/
+                        wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
+                        prevNode[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().nodeNum;
                     }
                 }
+            }
 
-            
+            //szukanie najktótszej drogi w zbiorze Q
             float tmp = Mathf.Infinity;
-            for(int j = 0; j < wayCost.Length-1; j++)
+            for(int j = 0; j < wayCost.Length; j++)
             {
-                Debug.Log(wayCost[j]);
-                Debug.Log(arenaData.nodes[j].GetComponent<Node>().nodeNum);
-                /*if (wayCost[j] < tmp && Q.Contains(arenaData.nodes[j]))
+                if (wayCost[j] < tmp && Q.Contains(arenaData.nodes[j]))
                 {
                     tmp = wayCost[j];
                     currentNode = arenaData.nodes[j];
-                }*/
+                }
             }
         }
-        //way.Add(currentNode.GetComponent<Node>().nodeNum);
         
         while(prevNode[currentNode.GetComponent<Node>().nodeNum] != -1)
         {
-            way.Add(prevNode[currentNode.GetComponent<Node>().nodeNum]);
+            Debug.Log(currentNode.GetComponent<Node>().nodeNum);
+            way.Add(currentNode);
             currentNode = arenaData.nodes[prevNode[currentNode.GetComponent<Node>().nodeNum]];
         }
-        /*for (int i = 0; i < prevNode.Length; i++)
+        Debug.Log("----------------------------------");
+        if(currentNode == current.gameObject)
         {
-            Debug.Log(prevNode[i]);
-        }*/
-        for (int i = 0; i < way.Count ; i++)
-        {
-            Debug.Log(way[i]);
+            AdjustCoordinates(enemy.GetComponent<CapsuleCollider2D>());
+
         }
-
-        /*
-        while (currentNode.GetComponent<Node>().enemy == true
-        // ||currentNode.GetComponent<Node>().neighbours.Count != 1
-        )
+        else
         {
-            for (int i = 0; i < current.neighbours.Count; i++)
-            {
-                if (!wayToTarget.Contains(current.neighbours[i]))
-                {
-                    prevNode[current.neighbours[i].GetComponent<Node>().nodeNum] = current.GetComponent<Node>().nodeNum;
-                    wayCost[current.neighbours[i].GetComponent<Node>().nodeNum] = current.distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-                }
-            }
-
-
-            currentNode = ;
-        }*/
+            AdjustCoordinates(way[way.Count - 1].GetComponent<BoxCollider2D>());
+        }
     }
     
-    void FindNeighbours(Node curr)
-    {
-        S.Add(curr.gameObject);
-        Q.Remove(curr.gameObject);
-        if (curr.enemy == false)
-        {
-            for (int i = 0; i < curr.neighbours.Count; i++)
-            {
-                if (Q.Contains(curr.neighbours[i]))
-                {
-                    wayCost[curr.neighbours[i].GetComponent<Node>().nodeNum] = curr.distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-                    prevNode[curr.neighbours[i].GetComponent<Node>().nodeNum] = curr.GetComponent<Node>().nodeNum;
-                    /*
-                    S.Add(curr.neighbours[i]);
-                    Q.Remove(curr.neighbours[i]);
-                    FindNeighbours(curr.neighbours[i].GetComponent<Node>());*/
-                }
-            }
-
-        }
-    }
-
 
     //porusza postacią tak aby doprowadzić ją do celu
     void AdjustCoordinates(Collider2D target)

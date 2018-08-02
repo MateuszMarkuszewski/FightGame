@@ -52,8 +52,8 @@ public class SceneSetup : MonoBehaviour
     public GameObject[,] grid;
     public GameObject node;
     public List<GameObject> weaponsOnArena;
-    public int numOfNodes = 0;
     public List<GameObject> nodes;
+    public bool gridDone = false;
 
     void Start()
     {
@@ -89,7 +89,6 @@ public class SceneSetup : MonoBehaviour
         n.GetComponent<Node>().nodeNum = num;
         n.GetComponent<BoxCollider2D>().size = new Vector2(Room.x, Room.y);
         grid[i, j] = n;
-        numOfNodes++;
         nodes.Add(n);
     }
 
@@ -117,6 +116,7 @@ public class SceneSetup : MonoBehaviour
                 }              
             }
         }
+
     }
 
     void MakeGraph()
@@ -226,6 +226,7 @@ public class SceneSetup : MonoBehaviour
                 }
             }
         }
+        gridDone = true;
     }
 
     void MakeEdge(GameObject node1, GameObject node2)

@@ -1738,8 +1738,7 @@ MonoBehaviour:
   wallMask:
     serializedVersion: 2
     m_Bits: 512
-  Q: []
-  S: []
+  way: []
 --- !u!61 &325137543
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5614,8 +5613,8 @@ MonoBehaviour:
   AI: 0
   node: {fileID: 1076390911}
   weaponsOnArena: []
-  numOfNodes: 0
   nodes: []
+  gridDone: 0
 --- !u!4 &1032561370
 Transform:
   m_ObjectHideFlags: 0
@@ -5695,6 +5694,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a98f3c0eabc17d4b9833d55767ee15a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ai: {fileID: 325137542}
   enemy: 0
   nodeNum: 0
   neighbours: []
