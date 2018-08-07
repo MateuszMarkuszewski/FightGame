@@ -18,12 +18,13 @@ public class AIControler : MonoBehaviour {
     //TODO: 1.5f na zmienną
     private ContactFilter2D throwFilter;
     private List<GameObject> wayToTarget;
-    //private GameObject target;
     private GameObject previousNode;
-
+    public GameObject target;
 
 
     public List<GameObject> way;
+
+    public GameObject neighbour;
 
 
     void Start () {
@@ -31,21 +32,13 @@ public class AIControler : MonoBehaviour {
         playerControler.heroSpeed = playerControler.heroSpeed * 3 / 4;
         arenaData.AI = true;
         throwFilter.SetLayerMask(enemyMask | platformMask);
-       
-        /* Q = arenaData.nodes.ToArray();
-         S = new GameObject[Q.Length];*/
     }
 
     void Update () {
         DecisionTree();
+        if (findEnemy && way.Count != 0) AdjustCoordinates(way[way.Count-1].GetComponent<BoxCollider2D>());
+        //if (way.Count == 0) AdjustCoordinates(enemy.GetComponent<CapsuleCollider2D>());
     }
-    /*
-    IEnumerator WaitForEnd(
-    {
-        //jezeli normalized time == 1f to koniec animacji
-        yield return new WaitWhile(() => transform.parent.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(1).normalizedTime < 1f);
-        inAttack = false;
-    }*/
 
     //wywoływane co klatka drzewo decyzyjne które definiuje co AI ma robić
     void DecisionTree()
@@ -82,7 +75,7 @@ public class AIControler : MonoBehaviour {
             Throw(new Vector2(playerControler.horizontalMove, 0));
         }
         //czy ma szukać broni
-        else if (playerControler.weapon == null && 
+       /* else if (playerControler.weapon == null && 
                 //enemy.GetComponent<PlayerControler>().weapon != null && 
                 arenaData.weaponsOnArena.Count != 0 &&
                 findWeapon == false)
@@ -91,27 +84,26 @@ public class AIControler : MonoBehaviour {
             findEnemy = false;
 
             //szukanie najblizszej broni
-            GameObject target;
             float minDistance = Mathf.Infinity;
             float tmp;
-                for (int i = 0; i < arenaData.weaponsOnArena.ToArray().Length; i++)
+            for (int i = 0; i < arenaData.weaponsOnArena.ToArray().Length; i++)
+            {
+                tmp = Distance(transform.position.x, transform.position.y, arenaData.weaponsOnArena[i].transform.position.x, arenaData.weaponsOnArena[i].transform.position.y);
+                if (tmp < minDistance)
                 {
-                    tmp = Distance(transform.position.x, transform.position.y, arenaData.weaponsOnArena[i].transform.position.x, arenaData.weaponsOnArena[i].transform.position.y);
-                    if (tmp < minDistance)
-                    {
-                        target = arenaData.weaponsOnArena[i];
-                    }
+                    target = arenaData.weaponsOnArena[i];
                 }
+            }
 
             
-        }
+        }*/
         //czy szukać przeciwnika
         else if(playerControler.attackEnable &&
                 findEnemy == false)
         {
             findEnemy = true;
             findWeapon = false;
-            
+            target = enemy;         
         }
     }
 
@@ -150,8 +142,8 @@ public class AIControler : MonoBehaviour {
               AdjustCoordinates(neighbours[nextNode].GetComponent<BoxCollider2D>());
           }
       }
-   
-
+   //z node ai wywolywane
+    
     public void Djikstra(Node current)
     {
         List<GameObject> Q = new List<GameObject>(arenaData.nodes); ;
@@ -169,8 +161,8 @@ public class AIControler : MonoBehaviour {
         GameObject currentNode = current.gameObject;
         wayCost[current.nodeNum] = 0;
 
-        
-        while (currentNode.GetComponent<Node>().enemy == false)
+        //enemy == currentnode
+        while (!currentNode.GetComponent<Node>().t == enemy.gameObject)//!currentNode.GetComponent<Node>().targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
         {
             S.Add(currentNode);
             Q.Remove(currentNode);
@@ -206,21 +198,13 @@ public class AIControler : MonoBehaviour {
             currentNode = arenaData.nodes[prevNode[currentNode.GetComponent<Node>().nodeNum]];
         }
         Debug.Log("----------------------------------");
-        if(currentNode == current.gameObject)
-        {
-            AdjustCoordinates(enemy.GetComponent<CapsuleCollider2D>());
-
-        }
-        else
-        {
-            AdjustCoordinates(way[way.Count - 1].GetComponent<BoxCollider2D>());
-        }
     }
-    
 
     //porusza postacią tak aby doprowadzić ją do celu
-    void AdjustCoordinates(Collider2D target)
-    {   //bo z triggerpick up musi byc 
+   void AdjustCoordinates(Collider2D target)
+    {
+       // Debug.Log("target" + target.GetComponent<Node>().nodeNum);
+        //bo z triggerpick up musi byc 
         if (transform.parent.GetComponent<BoxCollider2D>().IsTouchingLayers(pickUpMask) && findWeapon == true)
         {
             Debug.Log(target.gameObject);
@@ -254,9 +238,14 @@ public class AIControler : MonoBehaviour {
                 //nie ma platformy pod sobą bo np. spada
             }
         }
-        if(transform.position.x > target.bounds.min.x && transform.position.x < target.bounds.max.x && target.IsTouching(transform.parent.GetComponent<BoxCollider2D>()))
+        /*if(transform.position.x > target.bounds.min.x && transform.position.x < target.bounds.max.x && target.IsTouching(transform.parent.GetComponent<BoxCollider2D>()))
         {
             playerControler.Jump();
+        }*/
+        //way
+        if (transform.GetComponent<BoxCollider2D>().IsTouching(target))
+        {
+            way.RemoveAt(way.Count - 1);
         }
     }
     
@@ -271,12 +260,7 @@ public class AIControler : MonoBehaviour {
         alg();
         Debug.Log("Time of alghorytm:" + (start - Time.realtimeSinceStartup));
     }
-    /*
-        void SetTarget(GameObject dirNode)
-        {
-            target = dirNode;
-        }
-        */
+
     /// <summary>
     /// ///Kontrola postaci:
     /// </summary>
@@ -304,5 +288,14 @@ public class AIControler : MonoBehaviour {
             Debug.Log("throw");
             playerControler.Throw();
         }   
+    }
+
+    //enemy>this
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Node")
+        {
+            neighbour = collision.gameObject;
+        }
     }
 }

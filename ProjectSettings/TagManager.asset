@@ -13,6 +13,7 @@ TagManager:
   - Weapon
   - AI
   - Target
+  - Node
   layers:
   - Default
   - TransparentFX

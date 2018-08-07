@@ -57,6 +57,7 @@ public class SceneSetup : MonoBehaviour
 
     void Start()
     {
+        //size = GameData.sizeMap;
         //ustawienie sceny
         SetupCamera();
         width = 2 * size * camera.aspect;
@@ -68,9 +69,10 @@ public class SceneSetup : MonoBehaviour
         //AI
         if (AI == true)
         {
-            MakeGrid();
-            MakeGraph();
+            
         }
+        MakeGrid();
+        MakeGraph();
         //bronie
         CalculateProbability();
 
