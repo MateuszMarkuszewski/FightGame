@@ -6,7 +6,7 @@ public class AttackCollider : MonoBehaviour
 {   
     //skrypt przypisywany hitboxom. zadaje obrażenia
     public int dmg;
-
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         
@@ -16,18 +16,11 @@ public class AttackCollider : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Player" && !collision.isTrigger)
         {
-            //Debug.Log(gameObject.transform.parent.name);
-            //collision.GetComponent<Rigidbody2D>().AddForce(new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) *100, 0f), ForceMode2D.Force);
-            //collision.GetComponent<Rigidbody2D>().velocity = new Vector2((transform.position.x > collision.transform.position.x ? -dmg : dmg) * 2, 0f);
+            Vector2 dir = collision.transform.position - transform.position;
+            collision.GetComponent<PlayerControler>().SaveForce(dir);
+            collision.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 2000, ForceMode2D.Force);
             collision.gameObject.GetComponent<PlayerControler>().DealDamage(dmg);
-            try
-            {
-                SendMessageUpwards("DecreaseDurability", 10);
-            }
-            catch
-            {
-                //atakowanie bez broni
-            }
+            SendMessageUpwards("DecreaseDurability", 10);
         }
     }
 }

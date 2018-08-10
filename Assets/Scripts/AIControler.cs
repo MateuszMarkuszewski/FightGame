@@ -14,7 +14,7 @@ public class AIControler : MonoBehaviour {
     public LayerMask wallMask;
 
     private bool findWeapon = false;
-    private bool findEnemy = false;
+    private bool findEnemy = true;
     //TODO: 1.5f na zmienną
     private ContactFilter2D throwFilter;
     private List<GameObject> wayToTarget;
@@ -32,12 +32,13 @@ public class AIControler : MonoBehaviour {
         playerControler.heroSpeed = playerControler.heroSpeed * 3 / 4;
         arenaData.AI = true;
         throwFilter.SetLayerMask(enemyMask | platformMask);
+        target = enemy;
     }
 
     void Update () {
         DecisionTree();
         if (findEnemy && way.Count != 0) AdjustCoordinates(way[way.Count-1].GetComponent<BoxCollider2D>());
-        //if (way.Count == 0) AdjustCoordinates(enemy.GetComponent<CapsuleCollider2D>());
+        //if (way.Count == 0) AdjustCoordinates(target.GetComponent<CapsuleCollider2D>());
     }
 
     //wywoływane co klatka drzewo decyzyjne które definiuje co AI ma robić
@@ -146,8 +147,8 @@ public class AIControler : MonoBehaviour {
     
     public void Djikstra(Node current)
     {
-        List<GameObject> Q = new List<GameObject>(arenaData.nodes); ;
-        List<GameObject> S = new List<GameObject>();
+        List<Node> Q = new List<Node>(arenaData.nodes); ;
+        List<Node> S = new List<Node>();
         float[] wayCost = new float[arenaData.nodes.Count];
         int[] prevNode = new int[arenaData.nodes.Count];
 
@@ -158,23 +159,22 @@ public class AIControler : MonoBehaviour {
             prevNode.SetValue(-1, i);
         }
         
-        GameObject currentNode = current.gameObject;
         wayCost[current.nodeNum] = 0;
 
-        //enemy == currentnode
-        while (!currentNode.GetComponent<Node>().t == enemy.gameObject)//!currentNode.GetComponent<Node>().targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
+        //targets.contains
+        while (!current.targets.Contains(target))//!currentNode.GetComponent<Node>().targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
         {
-            S.Add(currentNode);
-            Q.Remove(currentNode);
+            S.Add(current);
+            Q.Remove(current);
             //liczenie watrosci dla sasiadów ze zbioru Q
-            for (int i = 0; i < currentNode.GetComponent<Node>().neighbours.Count; i++)
+            for (int i = 0; i < current.neighbours.Count; i++)
             {
-                if (Q.Contains(currentNode.GetComponent<Node>().neighbours[i]))
+                if (Q.Contains(current.neighbours[i]))
                 {
-                    if (wayCost[currentNode.GetComponent<Node>().nodeNum] + currentNode.GetComponent<Node>().distances[i] < wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum])
+                    if (wayCost[current.nodeNum] + current.distances[i] < wayCost[current.neighbours[i].GetComponent<Node>().nodeNum])
                     {
-                        wayCost[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
-                        prevNode[currentNode.GetComponent<Node>().neighbours[i].GetComponent<Node>().nodeNum] = currentNode.GetComponent<Node>().nodeNum;
+                        wayCost[current.neighbours[i].GetComponent<Node>().nodeNum] = current.distances[i];// + Distance(current.neighbours[i].transform.position.x, current.neighbours[i].transform.position.y, target.transform.position.x, target.transform.position.y);
+                        prevNode[current.neighbours[i].GetComponent<Node>().nodeNum] = current.nodeNum;
                     }
                 }
             }
@@ -186,16 +186,16 @@ public class AIControler : MonoBehaviour {
                 if (wayCost[j] < tmp && Q.Contains(arenaData.nodes[j]))
                 {
                     tmp = wayCost[j];
-                    currentNode = arenaData.nodes[j];
+                    current = arenaData.nodes[j];
                 }
             }
         }
         
-        while(prevNode[currentNode.GetComponent<Node>().nodeNum] != -1)
+        while(prevNode[current.nodeNum] != -1)
         {
-            Debug.Log(currentNode.GetComponent<Node>().nodeNum);
-            way.Add(currentNode);
-            currentNode = arenaData.nodes[prevNode[currentNode.GetComponent<Node>().nodeNum]];
+            Debug.Log(current.nodeNum);
+            way.Add(current.gameObject);
+            current = arenaData.nodes[prevNode[current.nodeNum]];
         }
         Debug.Log("----------------------------------");
     }
@@ -295,7 +295,15 @@ public class AIControler : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Node")
         {
-            neighbour = collision.gameObject;
+            Djikstra(collision.GetComponent<Node>());
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Node" && way.Count == 0)
+        {
+            Djikstra(collision.GetComponent<Node>());
         }
     }
 }

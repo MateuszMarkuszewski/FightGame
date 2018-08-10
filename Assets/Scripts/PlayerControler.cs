@@ -46,6 +46,17 @@ public class PlayerControler : MonoBehaviour {
     private int maxcombo = 2;
     private float lastAttackTime = 0;
     private float timeBetweenAttack = 0.3f;
+    private Vector2 ragdollForce;
+    private struct Stun
+    {
+        public static float dmgToStun = 50f;
+        public static float timeForDmg = 4f;
+        public static float stunTime = 2f;
+        public float lastTime;
+        public float lastHealth;
+    }
+    private Stun stunControler;
+    Quaternion rotation;
 
     //struktura przechowująca kości i ik 
     //używana przy podnoszeniu postaci
@@ -71,6 +82,7 @@ public class PlayerControler : MonoBehaviour {
         rgdBody = GetComponent<Rigidbody2D>();
         comboManager = GetComponent<ComboManager>();
         rigs = GetComponentsInChildren<Rigidbody2D>();
+        
 
         //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
         Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
@@ -83,6 +95,7 @@ public class PlayerControler : MonoBehaviour {
         {
             Debug.Log(i.ik);
         }
+        //StartCoroutine(CheckIfStuned());
     }
 
     private void FixedUpdate()
@@ -110,9 +123,14 @@ public class PlayerControler : MonoBehaviour {
 
     void Update () {
 
-        if(ragdoll == true)
+        if (Input.GetKeyDown(KeyCode.C))
         {
-            transform.position = new Vector3(limbs[1].ik.position.x,transform.position.y, transform.position.z);
+            ChangeState();
+        }
+
+        if (ragdoll)
+        {
+            transform.position = new Vector2(limbs[7].ik.position.x, limbs[7].ik.position.y + (transform.position.y - GetComponent<CapsuleCollider2D>().bounds.min.y));            
         }
 
         if (comboManager.DoubleClick(left))
@@ -138,13 +156,6 @@ public class PlayerControler : MonoBehaviour {
                 {
                     BasicAttack();
                 }
-
-                /// skakanie
-                if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
-                {
-                    Jump();
-                }
-
             }
             //postać w powierzu
             else
@@ -171,7 +182,11 @@ public class PlayerControler : MonoBehaviour {
                 Throw();
             }
         }
-
+        /// skakanie
+        if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
+        {
+            Jump();
+        }
         Move(horizontalMove);
         /// odwracanie sprita postaci w lewo
         if (horizontalMove < 0 && dirToRight)
@@ -187,7 +202,8 @@ public class PlayerControler : MonoBehaviour {
         if (currentHealth <= 0)
         {
             if(weapon!=null)DropWeapon();
-            ChangeState();
+            if(!ragdoll)ChangeState();
+            //Destroy(this);
         }
     }
 
@@ -393,8 +409,36 @@ public class PlayerControler : MonoBehaviour {
         horizontalMove = 0;
         currentHealth = currentHealth - dmg;
         healthBar.fillAmount = currentHealth / maxHealth;
-        Debug.Log(gameObject.name);
-        Debug.Log(currentHealth);
+        anim.SetTrigger("TakeHit");
+
+        if (Time.time - stunControler.lastTime > Stun.timeForDmg)
+        {
+            stunControler.lastTime = Time.time;
+            stunControler.lastHealth = currentHealth;
+        }
+    }
+    
+
+    IEnumerator CheckIfStuned()
+    {
+        while(true)
+        {
+            if (stunControler.lastHealth - currentHealth >= Stun.dmgToStun && Time.time - stunControler.lastTime <= Stun.timeForDmg && !ragdoll)
+            {
+                ChangeState();
+                stunControler.lastTime = Time.time;
+            }
+            else if(ragdoll && Time.time - stunControler.lastTime >= Stun.stunTime)
+            {
+                ChangeState();
+            }
+            yield return null;
+        }
+    }
+
+    public void SaveForce(Vector2 f)
+    {
+        ragdollForce = f;
     }
 
     //event wywoływany przez animacje
@@ -473,20 +517,27 @@ public class PlayerControler : MonoBehaviour {
         //zmiana stanu postaci z ragdoll do normalnego i odwrotnie
         if (ragdoll == false)
         {
-            
+            //gdy nie wyłaczone ik to zle wstawanie
+            limbs[1].ik.gameObject.SetActive(false);
             anim.enabled = false;
-            rgdBody.bodyType = RigidbodyType2D.Kinematic;
+
             foreach (Rigidbody2D rig in rigs)
             {
                 rig.bodyType = RigidbodyType2D.Dynamic;
             }
+
             limbs[0].ik.parent = null;
+            limbs[0].ik.GetComponentInChildren<Rigidbody2D>().AddForce(ragdollForce * 10000, ForceMode2D.Force);
             ragdoll = true;
         }
         else if (ragdoll == true)
         {
+            //tu można animacje wstawania, tylko podnoszenie kregosłupa
+            anim.enabled = true;
+            anim.SetTrigger("standUp");
             //zmieniam najpierw na static żeby zatrzymać siły działające na objekty
             limbs[0].ik.SetParent(gameObject.transform);
+            limbs[1].ik.gameObject.SetActive(true);
 
             foreach (Rigidbody2D rig in rigs)
             {
@@ -494,14 +545,19 @@ public class PlayerControler : MonoBehaviour {
                 rig.bodyType = RigidbodyType2D.Kinematic;
             }
 
-            StartCoroutine(StandUp(limbs));
-
+           // StartCoroutine(StandUp(limbs));
+           // anim.enabled = true;
             rgdBody.bodyType = RigidbodyType2D.Dynamic;
-
-            //anim.enabled = true;
 
             ragdoll = false;
         }
+    }/*
+    void Awake()
+    {
+        rotation = transform.rotation;
     }
-
+    void LateUpdate()
+    {
+        transform.rotation = rotation;
+    }*/
 }

@@ -52,7 +52,7 @@ public class SceneSetup : MonoBehaviour
     public GameObject[,] grid;
     public GameObject node;
     public List<GameObject> weaponsOnArena;
-    public List<GameObject> nodes;
+    public List<Node> nodes;
     public bool gridDone = false;
 
     void Start()
@@ -65,7 +65,6 @@ public class SceneSetup : MonoBehaviour
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
-        //SetupPlayers();
         //AI
         if (AI == true)
         {
@@ -73,9 +72,10 @@ public class SceneSetup : MonoBehaviour
         }
         MakeGrid();
         MakeGraph();
+        SetupPlayers();
         //bronie
         CalculateProbability();
-
+        //do wyrzucenia
         DropWeapon(weapons[0]);
         DropWeapon(weapons[1]);
 
@@ -91,7 +91,7 @@ public class SceneSetup : MonoBehaviour
         n.GetComponent<Node>().nodeNum = num;
         n.GetComponent<BoxCollider2D>().size = new Vector2(Room.x, Room.y);
         grid[i, j] = n;
-        nodes.Add(n);
+        nodes.Add(n.GetComponent<Node>());
     }
 
     void MakeGrid()
@@ -233,7 +233,7 @@ public class SceneSetup : MonoBehaviour
 
     void MakeEdge(GameObject node1, GameObject node2)
     {
-        node1.GetComponent<Node>().neighbours.Add(node2);
+        node1.GetComponent<Node>().neighbours.Add(node2.GetComponent<Node>());
         node1.GetComponent<Node>().distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
         //Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
     }
@@ -300,6 +300,21 @@ public class SceneSetup : MonoBehaviour
     {
         while (true)
         {
+            int v = (int)Random.Range(0, nodes.Count - 1);
+            if (!nodes[v].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
+            {
+                //Debug.Log(grid[room[0], room[1]].transform.position);
+                GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
+                w.name = weapon.name;
+                currentWeaponNum++;
+                if (AI == true)
+                {
+                    weaponsOnArena.Add(w);
+                }
+                break;
+            }
+            
+            /*
             int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1) + 1) };
             try
             {
@@ -319,7 +334,7 @@ public class SceneSetup : MonoBehaviour
             catch
             {
 
-            }
+            }*/
 
         }
 
@@ -423,7 +438,8 @@ public class SceneSetup : MonoBehaviour
     public void SetupPlayers()
     {
         //ustawia graczy na pozycji startowej
-        player1.transform.position = new Vector3(1f, 1f);
+        player1.transform.position = grid[0,0].transform.position;
+        if (AI) player1.GetComponentInChildren<AITarget>().neighbour = grid[0, 0];
     }
 
     public void Perlin()

@@ -10,7 +10,7 @@ public class Node : MonoBehaviour {
 
     public bool enemy = false;
     public int nodeNum;
-    public List<GameObject> neighbours;
+    public List<Node> neighbours;
     public List<float> distances;
     public List<GameObject> targets;
 
