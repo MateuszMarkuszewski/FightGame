@@ -8,12 +8,7 @@ public class Room
 {
     public static float x = 3;
     public static float y = 3;
-    public int? value;
 
-    public Room( int value)
-    {
-        this.value = value;
-    }
 
     public static void SetRoomCoordinates(int x, int y)
     {
@@ -55,9 +50,11 @@ public class SceneSetup : MonoBehaviour
     public List<Node> nodes;
     public bool gridDone = false;
 
-    void Start()
-    {
-        //size = GameData.sizeMap;
+
+
+    void Awake()
+    {   
+        size = (float)GameData.sizeMap;
         //ustawienie sceny
         SetupCamera();
         width = 2 * size * camera.aspect;
@@ -73,6 +70,7 @@ public class SceneSetup : MonoBehaviour
         MakeGrid();
         MakeGraph();
         SetupPlayers();
+        gridDone = true;
         //bronie
         CalculateProbability();
         //do wyrzucenia
@@ -118,12 +116,10 @@ public class SceneSetup : MonoBehaviour
                 }              
             }
         }
-
     }
 
     void MakeGraph()
     {
-        //graph = new float[rooms.GetLength(0) * (rooms.GetLength(1) + 1), rooms.GetLength(0) * (rooms.GetLength(1) + 1)];
         //tablica
         //x w graph
         for (int j = 0; j < rooms.GetLength(1) + 1; j++)
@@ -228,7 +224,7 @@ public class SceneSetup : MonoBehaviour
                 }
             }
         }
-        gridDone = true;
+        
     }
 
     void MakeEdge(GameObject node1, GameObject node2)
@@ -265,7 +261,7 @@ public class SceneSetup : MonoBehaviour
                 yield return null;
             }
             yield return new WaitForSeconds(10f);
-            
+           
             RandomWeapon(Random.value);          
         }
     }
@@ -292,7 +288,7 @@ public class SceneSetup : MonoBehaviour
         for( int i = 0; i < weapons.Length; i++)
         {
             weaponProbability[i] = size / weapons[i].GetComponentInChildren<AttackCollider>().dmg  / weapons.Length;
-            Debug.Log(weapons[i] + " " + weaponProbability[i]);
+            weapons[i].GetComponentInChildren<AttackCollider>().enabled = false;
         }
     }
 
@@ -306,11 +302,8 @@ public class SceneSetup : MonoBehaviour
                 //Debug.Log(grid[room[0], room[1]].transform.position);
                 GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
                 w.name = weapon.name;
-                currentWeaponNum++;
-                if (AI == true)
-                {
-                    weaponsOnArena.Add(w);
-                }
+                currentWeaponNum++;              
+                weaponsOnArena.Add(w);                
                 break;
             }
             
@@ -347,20 +340,20 @@ public class SceneSetup : MonoBehaviour
     public void SetBackgroundSize()
     {
         SpriteRenderer sr = background.GetComponent<SpriteRenderer>();
-        background.transform.localScale = new Vector3((height / Screen.height * Screen.width) / sr.sprite.bounds.size.x, height / sr.sprite.bounds.size.y, 10f);
-        background.transform.position = new Vector3(size * camera.aspect, size, 20f);
+        background.transform.localScale = new Vector2(width / sr.sprite.bounds.size.x, height / sr.sprite.bounds.size.y);
+        background.transform.position = new Vector2(size * camera.aspect, size);
     }
     
     public void GeneratePlatforms()
     {
         //ustalanie ilosci pokoi
-        Room.x = width / size;
-        Room.y = height / (2*size/3);
+        Room.x = 2 * camera.aspect;
+        Room.y = 3;
         rooms = new Room[(int)size,(int)(2*size/3)-1];
 
         //przeskalowanie objektu platformy aby pokrywał pokój
         platform.transform.localScale += new Vector3(platform.transform.localScale.x * (Room.x - 1), 0, 0);
-
+        int value;
         int x = (int)Random.Range(0, rooms.GetLength(0));
         int y = 0;
         int side = 1;
@@ -370,8 +363,9 @@ public class SceneSetup : MonoBehaviour
             //tworzona jest platforma
             Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+Room.y), Quaternion.identity);
             //losowane jest gdzie bedzie następny pokoj
-            rooms[x, y] = new Room((int)Random.Range(0, 5));
-            if (rooms[x, y].value == 3)
+            rooms[x, y] = new Room();
+            value = (int)Random.Range(0, 5);
+            if (value == 3)
             {
                 y = y + 1;
                 if( x != 0 && x != rooms.GetLength(0))
@@ -386,7 +380,6 @@ public class SceneSetup : MonoBehaviour
             {
                 x = x + side;
             }
-           
             //sprwdzanie czy nie wyszlo poza siatkę pokoi
             if (x == rooms.GetLength(0) || x < 0)
             {
@@ -409,21 +402,20 @@ public class SceneSetup : MonoBehaviour
         float x;
         for (y = 0f; y < (2 * size) +1  ; y++)
         {
-            Instantiate(wallLeft, new Vector3(0f, y), Quaternion.identity);
+            Instantiate(wallLeft).transform.position = new Vector2(0f, y);
         }
         x = 2 * size * camera.aspect;
         for (y = 0f; y < (2 * size) + 1; y++)
         {
-            Instantiate(wallRight, new Vector3(x, y), Quaternion.identity);
+            Instantiate(wallRight).transform.position = new Vector2(x, y);
         }
         for (x = 0f; x < 2 * size * camera.aspect; x++)
         {
-            Instantiate(ground, new Vector3(x, 0f), Quaternion.identity);
+            Instantiate(ground).transform.position = new Vector2(x, 0f);
         }
-        y = (2 * size) + 1;
         for ( x=0 ; x < 2 * size * camera.aspect; x++)
         {
-            Instantiate(ceiling, new Vector3(x, y), Quaternion.identity);
+            Instantiate(ceiling).transform.position = new Vector2(x, y);
         }
     }
 

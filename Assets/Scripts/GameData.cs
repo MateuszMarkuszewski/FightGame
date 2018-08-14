@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameData : ScriptableObject {
+public class GameData{
 
     public static bool? ai;
-    public static int? sizeMap;
+    public static float? sizeMap;
 
 }

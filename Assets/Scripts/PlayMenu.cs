@@ -32,7 +32,7 @@ public class PlayMenu : MonoBehaviour {
     }
     public void SetLargeArena()
     {
-        GameData.sizeMap = 12;
+        GameData.sizeMap = 500;
     }
     public void EnableAI()
     {

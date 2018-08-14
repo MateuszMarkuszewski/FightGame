@@ -14,7 +14,7 @@ public class WeaponControler : MonoBehaviour {
 
     public float restTimeAfterCombo;
     public float maxDurability;
-    private float durability;
+    public float durability;
     public Image durabilityImage;
     public Sprite weaponImage;
 

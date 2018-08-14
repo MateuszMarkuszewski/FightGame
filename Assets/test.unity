@@ -259,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 39293852}
   - component: {fileID: 39293853}
+  - component: {fileID: 39293854}
   m_Layer: 14
   m_Name: PickUpTrigger
   m_TagString: Interaction
@@ -304,6 +305,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1.1310139}
   m_EdgeRadius: 0
+--- !u!114 &39293854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 39293851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cdfbf7e8efdfcf4aad56334a4e8bc1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neighbour: {fileID: 0}
+  ai: {fileID: 0}
 --- !u!1 &43652630
 GameObject:
   m_ObjectHideFlags: 0
@@ -939,6 +953,7 @@ GameObject:
   m_Component:
   - component: {fileID: 155874033}
   - component: {fileID: 155874035}
+  - component: {fileID: 155874034}
   m_Layer: 14
   m_Name: PickUpTrigger
   m_TagString: Interaction
@@ -959,6 +974,19 @@ Transform:
   m_Father: {fileID: 574531374}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &155874034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 155874032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cdfbf7e8efdfcf4aad56334a4e8bc1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  neighbour: {fileID: 0}
+  ai: {fileID: 0}
 --- !u!61 &155874035
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3059,7 +3087,7 @@ Transform:
   m_LocalScale: {x: 0.7812509, y: 0.7812501, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &541892778
 GameObject:
@@ -3250,12 +3278,12 @@ Transform:
   m_GameObject: {fileID: 574531372}
   m_LocalRotation: {x: -0, y: -0, z: 0.3938169, w: 0.9191889}
   m_LocalPosition: {x: -6.91, y: -2.77, z: 0}
-  m_LocalScale: {x: 0.4717073, y: 0.6143093, z: 0.35517415}
+  m_LocalScale: {x: 0.47170722, y: 0.6143092, z: 0.35517415}
   m_Children:
   - {fileID: 155874033}
   - {fileID: 987711896}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -8.5}
 --- !u!50 &574531375
 Rigidbody2D:
@@ -3308,6 +3336,7 @@ MonoBehaviour:
   pickUpTrigger: {fileID: 155874032}
   restTimeAfterCombo: 1
   maxDurability: 100
+  durability: 0
   durabilityImage: {fileID: 0}
   weaponImage: {fileID: 0}
   PickUpPos: {x: 0.348, y: -0.212, z: -0.03466797}
@@ -3493,6 +3522,7 @@ MonoBehaviour:
   throwPoint: {fileID: 1822779361}
   healthBar: {fileID: 1508935645}
   weaponDurability: {fileID: 1489203168}
+  anim: {fileID: 0}
   trailEffect:
   - {fileID: 1149332041}
   - {fileID: 1266625212}
@@ -3923,13 +3953,13 @@ MonoBehaviour:
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
-  maxHealth: 50
+  maxHealth: 500
   left: 276
   right: 275
   jump: 273
   down: 274
-  attack: 102
-  throwWeapon: 103
+  attack: 107
+  throwWeapon: 108
   groundTester: {fileID: 1814435153}
   layersToTest:
     serializedVersion: 2
@@ -3937,6 +3967,7 @@ MonoBehaviour:
   throwPoint: {fileID: 305663027}
   healthBar: {fileID: 703783036}
   weaponDurability: {fileID: 1697617470}
+  anim: {fileID: 0}
   trailEffect:
   - {fileID: 1863169943}
   - {fileID: 490796770}
@@ -5728,7 +5759,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1076390913
 BoxCollider2D:
@@ -6462,7 +6493,7 @@ RectTransform:
   - {fileID: 99230877}
   - {fileID: 797697032}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8399,7 +8430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca756e9a08b75543aaf80175c9043b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 0}
+  pauseMenu: {fileID: 797697031}
   aiGameObjects:
   - {fileID: 325137540}
   - {fileID: 1901687673}
@@ -8814,7 +8845,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1727103987
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8867,7 +8898,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1727103986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.31, y: -10.55, z: 0}
+  m_LocalPosition: {x: 3.6, y: 3.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -10218,7 +10249,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1982764187
 GameObject:
@@ -11365,7 +11396,7 @@ Transform:
   - {fileID: 39293852}
   - {fileID: 2051130847}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!70 &2138154418
 CapsuleCollider2D:
@@ -11398,6 +11429,7 @@ MonoBehaviour:
   pickUpTrigger: {fileID: 39293851}
   restTimeAfterCombo: 0.3
   maxDurability: 50
+  durability: 0
   durabilityImage: {fileID: 0}
   weaponImage: {fileID: 0}
   PickUpPos: {x: 0.33, y: -0.2, z: 0.03466797}

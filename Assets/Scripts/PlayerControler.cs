@@ -28,7 +28,7 @@ public class PlayerControler : MonoBehaviour {
     public Image healthBar;
     public Image weaponDurability;
     //componenty
-    Animator anim;
+    public Animator anim;
     Rigidbody2D rgdBody;
     ComboManager comboManager;
     Rigidbody2D[] rigs;
