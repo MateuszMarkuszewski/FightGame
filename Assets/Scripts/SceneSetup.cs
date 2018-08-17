@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-
+//klasa a nie struktura bo dziedziczy po nullable
 public class Room
 {
     public static float x = 3;
     public static float y = 3;
-
 
     public static void SetRoomCoordinates(int x, int y)
     {
@@ -299,7 +298,6 @@ public class SceneSetup : MonoBehaviour
             int v = (int)Random.Range(0, nodes.Count - 1);
             if (!nodes[v].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
             {
-                //Debug.Log(grid[room[0], room[1]].transform.position);
                 GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
                 w.name = weapon.name;
                 currentWeaponNum++;              
@@ -330,9 +328,7 @@ public class SceneSetup : MonoBehaviour
             }*/
 
         }
-
     }
-
 
     /// <summary>
     /// Wygenerowanie areny
@@ -340,47 +336,52 @@ public class SceneSetup : MonoBehaviour
     public void SetBackgroundSize()
     {
         SpriteRenderer sr = background.GetComponent<SpriteRenderer>();
-        background.transform.localScale = new Vector2(width / sr.sprite.bounds.size.x, height / sr.sprite.bounds.size.y);
+        Vector3 backgroundSizes = sr.sprite.bounds.size;
+        background.transform.localScale = new Vector2(width / backgroundSizes.x, height / backgroundSizes.y);
         background.transform.position = new Vector2(size * camera.aspect, size);
     }
     
     public void GeneratePlatforms()
     {
-        //ustalanie ilosci pokoi
+        //rozmiar pojedynczego pokoju 
         Room.x = 2 * camera.aspect;
         Room.y = 3;
+        //ustalanie ilosci pokoi
         rooms = new Room[(int)size,(int)(2*size/3)-1];
-
         //przeskalowanie objektu platformy aby pokrywał pokój
-        platform.transform.localScale += new Vector3(platform.transform.localScale.x * (Room.x - 1), 0, 0);
-        int value;
-        int x = (int)Random.Range(0, rooms.GetLength(0));
+        platform.transform.localScale = new Vector2(Room.x/platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x , platform.transform.localScale.y);
+        //losowanie pokoju z pierwszego rzędu 
+        int x = Random.Range(0, rooms.GetLength(0));
         int y = 0;
-        int side = 1;
-        while(true)
+        //losowanie kierunku
+        int[] way = { 1, -1 };
+        int side = way[Random.Range(0, 1)];
+        //pętla która wykonuje się do momentu wyjscia poza górną granicę siatki
+        while (true)
         {
-            //Room.SetRoomCoordinates(x, y);
+            Room.SetRoomCoordinates(x, y);
             //tworzona jest platforma
-            Instantiate(platform, new Vector3(x * Room.x + (Room.x/2f), y * Room.y+Room.y), Quaternion.identity);
-            //losowane jest gdzie bedzie następny pokoj
+            Instantiate(platform).transform.position = new Vector3(x * Room.x + (Room.x / 2f), y * Room.y + Room.y);
+
             rooms[x, y] = new Room();
-            value = (int)Random.Range(0, 5);
-            if (value == 3)
+            //losowane jest gdzie bedzie następny pokoj
+            if (Random.Range(0, 5) == 3)
             {
                 y = y + 1;
-                if( x != 0 && x != rooms.GetLength(0))
+                if (x != 0 && x != rooms.GetLength(0))
                 {
-                    if ((int)Random.Range(1, 2) == 1)
-                    {
-                        side = -side;
-                    }
+                    side = way[Random.Range(0, 1)];
+                    /* if (Random.Range(0, 1) == 1)
+                     {
+                         side = -side;
+                     }*/
                 }
             }
             else
             {
                 x = x + side;
             }
-            //sprwdzanie czy nie wyszlo poza siatkę pokoi
+            //sprwdzanie czy nie wyszlo poza boczną granicę siatki
             if (x == rooms.GetLength(0) || x < 0)
             {
                 y = y + 1;
@@ -388,6 +389,7 @@ public class SceneSetup : MonoBehaviour
                 x = x + side;
 
             }
+            //sprawdzanie czy nie wyszlo poza górna granicę
             if (y == rooms.GetLength(1))
             {
                 break;
