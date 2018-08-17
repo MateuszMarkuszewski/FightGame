@@ -33,7 +33,7 @@ public class SceneSetup : MonoBehaviour
     
     private float width;
     private float height;
-    public Room[,] rooms;
+    public Node[,] rooms;
 
     public GameObject[] weapons;
     public int maxWeaponsNum;
@@ -66,9 +66,9 @@ public class SceneSetup : MonoBehaviour
         {
             
         }
-        MakeGrid();
-        MakeGraph();
-        SetupPlayers();
+       // MakeGrid();
+       // MakeGraph();
+       // SetupPlayers();
         gridDone = true;
         //bronie
         CalculateProbability();
@@ -87,7 +87,7 @@ public class SceneSetup : MonoBehaviour
         GameObject n = Instantiate(node, new Vector3(posX, posY, 0), Quaternion.identity);
         n.GetComponent<Node>().nodeNum = num;
         n.GetComponent<BoxCollider2D>().size = new Vector2(Room.x, Room.y);
-        grid[i, j] = n;
+        rooms[i, j] = n.GetComponent<Node>();
         nodes.Add(n.GetComponent<Node>());
     }
 
@@ -347,12 +347,20 @@ public class SceneSetup : MonoBehaviour
         Room.x = 2 * camera.aspect;
         Room.y = 3;
         //ustalanie ilosci pokoi
-        rooms = new Room[(int)size,(int)(2*size/3)-1];
+        rooms = new Node[(int)size,(int)(2*size/3)];
         //przeskalowanie objektu platformy aby pokrywał pokój
         platform.transform.localScale = new Vector2(Room.x/platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x , platform.transform.localScale.y);
+        int num = 0;
+        for (int i = 0; i < rooms.GetLength(0); i++)
+        {
+            MakeNode(i, 0, i * Room.x + (Room.x / 2f), 0 * Room.y + (Room.y / 2f), num);
+            num++;
+        }
+
+
         //losowanie pokoju z pierwszego rzędu 
         int x = Random.Range(0, rooms.GetLength(0));
-        int y = 0;
+        int y = 1;
         //losowanie kierunku
         int[] way = { 1, -1 };
         int side = way[Random.Range(0, 1)];
@@ -361,9 +369,10 @@ public class SceneSetup : MonoBehaviour
         {
             Room.SetRoomCoordinates(x, y);
             //tworzona jest platforma
-            Instantiate(platform).transform.position = new Vector3(x * Room.x + (Room.x / 2f), y * Room.y + Room.y);
-
-            rooms[x, y] = new Room();
+            Instantiate(platform).transform.position = new Vector3(x * Room.x + (Room.x / 2f), y * Room.y);
+            MakeNode(x,y, x * Room.x + (Room.x / 2f), y * Room.y + (Room.y / 2f),num);
+            num++;
+            //rooms[x, y] = new Node();
             //losowane jest gdzie bedzie następny pokoj
             if (Random.Range(0, 5) == 3)
             {
@@ -371,10 +380,6 @@ public class SceneSetup : MonoBehaviour
                 if (x != 0 && x != rooms.GetLength(0))
                 {
                     side = way[Random.Range(0, 1)];
-                    /* if (Random.Range(0, 1) == 1)
-                     {
-                         side = -side;
-                     }*/
                 }
             }
             else
