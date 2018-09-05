@@ -3,19 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-//klasa a nie struktura bo dziedziczy po nullable
-public class Room
-{
-    public static float x = 3;
-    public static float y = 3;
-
-    public static void SetRoomCoordinates(int x, int y)
-    {
-        Debug.DrawLine(new Vector3(Room.x * x, Room.y * y,0), new Vector3(Room.x * x, Room.y * y + Room.y), Color.red,200,false);
-        Debug.DrawLine(new Vector3(Room.x * x +Room.x, Room.y * y, 0), new Vector3(Room.x * x, Room.y * y, 0), Color.red, 200, false);
-    }
-
-}
 
 public class SceneSetup : MonoBehaviour
 {
@@ -30,13 +17,13 @@ public class SceneSetup : MonoBehaviour
     public GameObject background;
     public GameObject player1;
     public GameObject player2;
-    
+
     private float width;
     private float height;
     public Node[,] rooms;
 
     public GameObject[] weapons;
-    public int maxWeaponsNum;
+    private int maxWeaponsNum;
     private int currentWeaponNum = 0;
     private float[] weaponProbability;
     public LayerMask antyDropCollisionMask;
@@ -49,10 +36,12 @@ public class SceneSetup : MonoBehaviour
     public List<Node> nodes;
     public bool gridDone = false;
 
+    public static float roomSizeX;
+    public static float roomSizeY;
 
 
     void Awake()
-    {   
+    {
         size = (float)GameData.sizeMap;
         //ustawienie sceny
         SetupCamera();
@@ -61,14 +50,15 @@ public class SceneSetup : MonoBehaviour
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
+        maxWeaponsNum = 4;
         //AI
         if (AI == true)
         {
             
         }
-       // MakeGrid();
-       // MakeGraph();
-       // SetupPlayers();
+        //MakeGrid();
+        //MakeGraph();
+        //SetupPlayers();
         gridDone = true;
         //bronie
         CalculateProbability();
@@ -79,6 +69,18 @@ public class SceneSetup : MonoBehaviour
         StartCoroutine(WeaponDropMenager());
     }
 
+    public static void DrawRoomBounds(int x, int y)
+    {
+        //lewy
+        Debug.DrawLine(new Vector3(roomSizeX * x, roomSizeY * y, 0), new Vector3(roomSizeX * x, roomSizeY * y + roomSizeY), Color.red, 200, false);
+        //dol
+        Debug.DrawLine(new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y, 0), new Vector3(roomSizeX * x, roomSizeY * y, 0), Color.red, 200, false);
+        //gora
+        Debug.DrawLine(new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y + roomSizeY, 0), new Vector3(roomSizeX * x, roomSizeY * y + roomSizeY, 0), Color.red, 200, false);
+        //prawy
+        Debug.DrawLine(new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y, 0), new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y + roomSizeY, 0), Color.red, 200, false);
+    }
+
     /// <summary>
     /// Tworzenie grafu dla AI
     /// </summary>
@@ -86,7 +88,7 @@ public class SceneSetup : MonoBehaviour
     {
         GameObject n = Instantiate(node, new Vector3(posX, posY, 0), Quaternion.identity);
         n.GetComponent<Node>().nodeNum = num;
-        n.GetComponent<BoxCollider2D>().size = new Vector2(Room.x, Room.y);
+        n.GetComponent<BoxCollider2D>().size = new Vector2(roomSizeX, roomSizeY);
         rooms[i, j] = n.GetComponent<Node>();
         nodes.Add(n.GetComponent<Node>());
     }
@@ -97,22 +99,25 @@ public class SceneSetup : MonoBehaviour
         int num = 0;
         for (int i = 0; i < rooms.GetLength(0); i++)
         {
-            MakeNode(i, 0, i * Room.x + (Room.x / 2f), 0 * Room.y + (Room.y / 2f), num);
-            num++;
+            Debug.Log(rooms[i,0]);
+            /*MakeNode(i, 0, i * roomSizeX + (roomSizeX / 2f), 0 * roomSizeY + (roomSizeY / 2f), num);
+            num++;*/
         }
         for (int j = 0; j < rooms.GetLength(1); j++)
         {
             for (int i = 0; i < rooms.GetLength(0); i++)
             {
-                if (rooms[i, j] != null)
-                {
-                    MakeNode(i, j+1, i * Room.x + (Room.x / 2f), (j + 1) * Room.y + (Room.y / 2f) , num);
-                    num++;
-                }
-                else
-                {
-                    grid[i, j + 1] = null;
-                }              
+                Debug.Log(rooms[i, j]);
+
+                /* if (rooms[i, j] != null)
+                 {
+                     MakeNode(i, j + 1, i * roomSizeX + (roomSizeX / 2f), (j + 1) * roomSizeY + (roomSizeY / 2f), num);
+                     num++;
+                 }
+                 else
+                 {
+                     grid[i, j + 1] = null;
+                 }*/
             }
         }
     }
@@ -207,7 +212,7 @@ public class SceneSetup : MonoBehaviour
                 {
                 }
                 //dodanie każdej platformy poniżej obecnej
-                for(int z = 1; z < rooms.GetLength(1) + 1; z++)
+                for (int z = 1; z < rooms.GetLength(1) + 1; z++)
                 {
                     try
                     {
@@ -223,7 +228,7 @@ public class SceneSetup : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     void MakeEdge(GameObject node1, GameObject node2)
@@ -243,7 +248,7 @@ public class SceneSetup : MonoBehaviour
     /// </summary>
     public void DecreaseWeaponNum(GameObject w)
     {
-        if(AI == true)
+        if (AI == true)
         {
             weaponsOnArena.Remove(w);
         }
@@ -251,7 +256,7 @@ public class SceneSetup : MonoBehaviour
     }
 
     IEnumerator WeaponDropMenager()
-    {      
+    {
         while (true)
         {
             //nie losuje liczby dopoki maxymalna liczba broni na arenie
@@ -259,35 +264,40 @@ public class SceneSetup : MonoBehaviour
             {
                 yield return null;
             }
-            yield return new WaitForSeconds(10f);
-           
-            RandomWeapon(Random.value);          
+            yield return new WaitForSeconds(1f);
+
+            RandomWeapon();
         }
     }
 
-    private void RandomWeapon(float number)
+    private void RandomWeapon()
     {
         //porownuje wylosowana liczbe z prawdopodobienstwem wylosowania broni
+        //losowana jest liczba z przedziału 0-1
+        float number = Random.value;
         float probability = 0;
         for (int i = 0; i < weapons.Length; i++)
         {
+            //porównywanie wylosowanej liczby z prawdopodobieństwem każdej kolejnej broni
             probability += weaponProbability[i];
             if (probability >= number)
             {
+                //tworzona jest instancja wylosowanej broni
                 DropWeapon(weapons[i]);
                 break;
             }
         }
     }
-    
-    //
+
+    //wyliczane jest prawdopodobienstwo pojawienia sie kazdej broni
     private void CalculateProbability()
     {
         weaponProbability = new float[weapons.Length];
-        for( int i = 0; i < weapons.Length; i++)
+        for (int i = 0; i < weapons.Length; i++)
         {
-            weaponProbability[i] = size / weapons[i].GetComponentInChildren<AttackCollider>().dmg  / weapons.Length;
+            weaponProbability[i] = nodes.Count / size / weapons[i].GetComponentInChildren<AttackCollider>().dmg / weapons.Length;
             weapons[i].GetComponentInChildren<AttackCollider>().enabled = false;
+            Debug.Log(weaponProbability[i]);
         }
     }
 
@@ -300,11 +310,11 @@ public class SceneSetup : MonoBehaviour
             {
                 GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
                 w.name = weapon.name;
-                currentWeaponNum++;              
-                weaponsOnArena.Add(w);                
+                currentWeaponNum++;
+                weaponsOnArena.Add(w);
                 break;
             }
-            
+
             /*
             int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1) + 1) };
             try
@@ -340,24 +350,22 @@ public class SceneSetup : MonoBehaviour
         background.transform.localScale = new Vector2(width / backgroundSizes.x, height / backgroundSizes.y);
         background.transform.position = new Vector2(size * camera.aspect, size);
     }
-    
+
     public void GeneratePlatforms()
     {
         //rozmiar pojedynczego pokoju 
-        Room.x = 2 * camera.aspect;
-        Room.y = 3;
+        roomSizeX = 2 * camera.aspect;
+        roomSizeY = 3;
         //ustalanie ilosci pokoi
-        rooms = new Node[(int)size,(int)(2*size/3)];
+        rooms = new Node[(int)size, (int)(2 * size / 3)];
         //przeskalowanie objektu platformy aby pokrywał pokój
-        platform.transform.localScale = new Vector2(Room.x/platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x , platform.transform.localScale.y);
+        platform.transform.localScale = new Vector2(roomSizeX / platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x, platform.transform.localScale.y);
         int num = 0;
         for (int i = 0; i < rooms.GetLength(0); i++)
         {
-            MakeNode(i, 0, i * Room.x + (Room.x / 2f), 0 * Room.y + (Room.y / 2f), num);
+            MakeNode(i, 0, i * roomSizeX + (roomSizeX / 2f), 0 * roomSizeY + (roomSizeY / 2f), num);
             num++;
         }
-
-
         //losowanie pokoju z pierwszego rzędu 
         int x = Random.Range(0, rooms.GetLength(0));
         int y = 1;
@@ -367,20 +375,17 @@ public class SceneSetup : MonoBehaviour
         //pętla która wykonuje się do momentu wyjscia poza górną granicę siatki
         while (true)
         {
-            Room.SetRoomCoordinates(x, y);
+            DrawRoomBounds(x, y);
             //tworzona jest platforma
-            Instantiate(platform).transform.position = new Vector3(x * Room.x + (Room.x / 2f), y * Room.y);
-            MakeNode(x,y, x * Room.x + (Room.x / 2f), y * Room.y + (Room.y / 2f),num);
+            Instantiate(platform).transform.position = new Vector3(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY);
+            MakeNode(x, y, x * roomSizeX + (roomSizeX / 2f), y * roomSizeY + (roomSizeY / 2f), num);
             num++;
             //rooms[x, y] = new Node();
             //losowane jest gdzie bedzie następny pokoj
-            if (Random.Range(0, 5) == 3)
+            if (Random.Range(0, 10) == 3)
             {
                 y = y + 1;
-                if (x != 0 && x != rooms.GetLength(0))
-                {
-                    side = way[Random.Range(0, 1)];
-                }
+                side = way[Random.Range(0, 1)];
             }
             else
             {
@@ -392,7 +397,6 @@ public class SceneSetup : MonoBehaviour
                 y = y + 1;
                 side = -side;
                 x = x + side;
-
             }
             //sprawdzanie czy nie wyszlo poza górna granicę
             if (y == rooms.GetLength(1))
@@ -407,7 +411,7 @@ public class SceneSetup : MonoBehaviour
         //Tworzy podłogę i ściany   
         float y;
         float x;
-        for (y = 0f; y < (2 * size) +1  ; y++)
+        for (y = 0f; y < (2 * size) + 1; y++)
         {
             Instantiate(wallLeft).transform.position = new Vector2(0f, y);
         }
@@ -420,7 +424,7 @@ public class SceneSetup : MonoBehaviour
         {
             Instantiate(ground).transform.position = new Vector2(x, 0f);
         }
-        for ( x=0 ; x < 2 * size * camera.aspect; x++)
+        for (x = 0; x < 2 * size * camera.aspect; x++)
         {
             Instantiate(ceiling).transform.position = new Vector2(x, y);
         }
@@ -437,7 +441,7 @@ public class SceneSetup : MonoBehaviour
     public void SetupPlayers()
     {
         //ustawia graczy na pozycji startowej
-        player1.transform.position = grid[0,0].transform.position;
+        player1.transform.position = grid[0, 0].transform.position;
         if (AI) player1.GetComponentInChildren<AITarget>().neighbour = grid[0, 0];
     }
 
@@ -456,4 +460,3 @@ public class SceneSetup : MonoBehaviour
         }
     }
 }
-

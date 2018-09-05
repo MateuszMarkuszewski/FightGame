@@ -11,32 +11,29 @@ public class ComboManager : MonoBehaviour {
 
     private bool startCombo = false;
     private float startComboTime;
-    private KeyCode checkedKey;
+    private KeyCode checkKey;
 
     public bool DoubleClick(KeyCode key)
     {
-
-        if (clickedOnce && Input.GetKeyDown(key) && (key == checkedKey))
+        if (clickedOnce && (key == checkKey))
         {
-            if ((Time.time - startTime) < maxComboTime)
+            float passedTime = Time.time - startTime;
+            if ((passedTime) < maxComboTime)
             {
                 clickedOnce = false;
-                Debug.Log("doubleclick");
                 return true;
             }
-            else if ((Time.time - startTime) > maxComboTime)
+            else if ((passedTime) > maxComboTime)
             {
                 clickedOnce = false;
             }
         }
-        if (!clickedOnce && Input.GetKeyDown(key))
+        if (!clickedOnce || key != checkKey)
         {
-            
-            checkedKey = key;
+            checkKey = key;
             startTime = Time.time;
             clickedOnce = true;
-        }
-            
+        }          
         return false;
     }
 

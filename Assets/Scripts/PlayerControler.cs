@@ -15,7 +15,7 @@ public class PlayerControler : MonoBehaviour {
     //klawisze
     public KeyCode left;
     public KeyCode right;
-    public KeyCode jump;
+    public KeyCode jumpKey;
     public KeyCode down;
     public KeyCode attack;
     public KeyCode throwWeapon;
@@ -34,6 +34,10 @@ public class PlayerControler : MonoBehaviour {
     Rigidbody2D[] rigs;
     public TrailRenderer[] trailEffect;
     //stany
+    private bool canJump = false;
+    public int dashWay = 0;
+    public bool drop = false;
+    public bool jump = false;
     private bool keysEnable = true;
     public bool attackEnable = true;
     bool dirToRight = true;
@@ -100,28 +104,24 @@ public class PlayerControler : MonoBehaviour {
 
     private void FixedUpdate()
     {
-
-        /*
-        if (comboManager.DoubleClick(left) || comboManager.DoubleClick(right))
-        {
-            Debug.Log("dash");
-            StartCoroutine(Dash(0.1f, dirToRight ? 1 : -1));
-            StartCoroutine(DisableKeys(0.1f));
-        }*/
         
-        if (Input.GetKeyDown(attack) && keysEnable && horizontalMove != 0)
+        Move(horizontalMove);
+        if (jump)
         {
-            //rgdBody.velocity = new Vector2(10f, 0f);
- 
-            //rgdBody.AddForce(new Vector2( 20000f, 0f), ForceMode2D.Impulse);
-
+            Jump();
+        }
+        if (drop)
+        {
+            DropAttack();
+        }
+        if (dashWay != 0)
+        {
+            StartCoroutine(Dash(0.1f, dashWay));
         }
     }
 
-
-
-
     void Update () {
+        canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
 
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -133,15 +133,20 @@ public class PlayerControler : MonoBehaviour {
             transform.position = new Vector2(limbs[7].ik.position.x, limbs[7].ik.position.y + (transform.position.y - GetComponent<CapsuleCollider2D>().bounds.min.y));            
         }
 
-        if (comboManager.DoubleClick(left))
+        if (Input.GetKeyDown(left))
         {
-            StartCoroutine(Dash(0.1f, -1));
+            if (comboManager.DoubleClick(left))
+            {
+                dashWay = -1;
+            }
         }
-        if (comboManager.DoubleClick(right))
+        if (Input.GetKeyDown(right))
         {
-            StartCoroutine(Dash(0.1f, 1));
+            if (comboManager.DoubleClick(right))
+            {
+                dashWay = 1;
+            }
         }
-
         IsGrounded();
         if(AI == false)
         {
@@ -150,44 +155,32 @@ public class PlayerControler : MonoBehaviour {
             {
                 horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
                 anim.SetFloat("speed", Mathf.Abs(horizontalMove));
-
                 ///atak
                 if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) )
                 {
                     BasicAttack();
                 }
             }
-            //postać w powierzu
             else
             {
-                //odbijanie sie od platformy
-                if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
-                {
-                    horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
-                    Jump();
-                }
-
-
                 //atak z powietrza
                 if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
                 {
-                    DropAttack();
+                    drop = true;
                 }
             }
-            //tu moge zapisac wektor https://www.youtube.com/watch?v=EOSjfRuh7x4
-            //Debug.Log(rgdBody.velocity);
+            /// skakanie
+            if (Input.GetKeyDown(jumpKey) && keysEnable && canJump)
+            {
+                jump = true;
+            }
 
             if (Input.GetKeyDown(throwWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
             {
                 Throw();
             }
-        }
-        /// skakanie
-        if (Input.GetKeyDown(jump) && keysEnable && Physics2D.OverlapCircle(groundTester.position, radius, layersToTest))
-        {
-            Jump();
-        }
-        Move(horizontalMove);
+        }   
+        
         /// odwracanie sprita postaci w lewo
         if (horizontalMove < 0 && dirToRight)
         {
@@ -216,7 +209,8 @@ public class PlayerControler : MonoBehaviour {
 
     public void Move(float way)
     {
-        rgdBody.velocity = new Vector2(way * heroSpeed, rgdBody.velocity.y);
+       rgdBody.velocity = new Vector2(way * heroSpeed, rgdBody.velocity.y);       
+       //rgdBody.AddForce(new Vector2(way * heroSpeed,0),ForceMode2D.Impulse);
     }
 
     //wykonanie podstawowowego ataku
@@ -248,7 +242,8 @@ public class PlayerControler : MonoBehaviour {
     public void Jump()
     {
         rgdBody.velocity = new Vector2(rgdBody.velocity.x, jumpForce);
-        anim.SetTrigger("jump");       
+        anim.SetTrigger("jump");
+        jump = false;
     }
 
     //zejscie z platformy
@@ -286,31 +281,35 @@ public class PlayerControler : MonoBehaviour {
     {
         anim.SetTrigger("dropAttack");
         rgdBody.velocity = new Vector2(0f, -20f);
+        drop = false;
     }
 
     IEnumerator Dash(float dashTime, float way)
     {
+        dashWay = 0;
         StartCoroutine(DisableKeys(dashTime));
         foreach (TrailRenderer trail in trailEffect)
         {
             trail.Clear();
             trail.gameObject.SetActive(true);
         }
-        Debug.Log("dash");
         anim.SetBool("dash", true);
         horizontalMove = way;
         while (0 <= dashTime)
         {
+            Debug.Log("dash");
+
             dashTime -= Time.deltaTime;
-            rgdBody.velocity = new Vector2(way * 30f, 0f);
+            rgdBody.velocity = new Vector2(way * 50f, 0f);
+            //rgdBody.AddForce(new Vector2(way * 10000f, 0f));
             yield return null;
         }
+        anim.SetBool("dash", false);
         foreach (TrailRenderer trail in trailEffect)
         {
             trail.gameObject.SetActive(false);
         }
-        rgdBody.velocity = new Vector2(0f, 0f);
-        anim.SetBool("dash", false);
+        //rgdBody.velocity = new Vector2(0f, 0f);
     }
 
     void Block()
@@ -337,12 +336,11 @@ public class PlayerControler : MonoBehaviour {
         if (collision.gameObject.tag == "Wall" && anim.GetBool("InAir"))
         {
             anim.SetBool("wallstay",true);
-            if (Input.GetKeyDown(jump))
+            if (Input.GetKeyDown(jumpKey))
             {
                 anim.SetBool("wallstay", false);
-                Debug.Log("jump");
                 horizontalMove = collision.contacts[0].normal.x;
-                Jump();
+                jump = true;
             }
         }
         else
@@ -358,7 +356,10 @@ public class PlayerControler : MonoBehaviour {
             }
         }
     }
+    public void GroundTest(Collider2D collision)
+    {
 
+    }
 
 /// <summary>
 /// Funkcje ustawiające/zmieniające stan postaci:
@@ -387,10 +388,10 @@ public class PlayerControler : MonoBehaviour {
     //czy postać dotyka ziemi
     void IsGrounded()
     {
-        if(Physics2D.OverlapCircle(groundTester.position, radius, layersToTest) && anim.GetBool("InAir") && rgdBody.velocity.y == 0)
+        if(canJump && anim.GetBool("InAir") && rgdBody.velocity.y == 0)
         {
             anim.SetBool("InAir", false);
-        }else if(!Physics2D.OverlapCircle(groundTester.position, radius, layersToTest) && !anim.GetBool("InAir"))
+        }else if(!canJump && !anim.GetBool("InAir"))
         {
             anim.SetBool("InAir", true);
         }
@@ -551,13 +552,5 @@ public class PlayerControler : MonoBehaviour {
 
             ragdoll = false;
         }
-    }/*
-    void Awake()
-    {
-        rotation = transform.rotation;
     }
-    void LateUpdate()
-    {
-        transform.rotation = rotation;
-    }*/
 }
