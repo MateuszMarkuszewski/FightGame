@@ -42,7 +42,7 @@ public class SceneSetup : MonoBehaviour
 
     void Awake()
     {
-        size = (float)GameData.sizeMap;
+        //size = (float)GameData.sizeMap;
         //ustawienie sceny
         SetupCamera();
         width = 2 * size * camera.aspect;

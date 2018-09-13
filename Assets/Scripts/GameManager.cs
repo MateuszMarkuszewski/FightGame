@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> aiGameObjects;
 
 	void Start () {
-       Debug.Log(GameData.ai);
        if ((bool)GameData.ai)
        {
             foreach(GameObject go in aiGameObjects)

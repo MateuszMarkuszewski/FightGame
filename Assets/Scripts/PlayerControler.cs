@@ -286,6 +286,7 @@ public class PlayerControler : MonoBehaviour {
 
     IEnumerator Dash(float dashTime, float way)
     {
+        float startTime = Time.time;
         dashWay = 0;
         StartCoroutine(DisableKeys(dashTime));
         foreach (TrailRenderer trail in trailEffect)
@@ -295,11 +296,9 @@ public class PlayerControler : MonoBehaviour {
         }
         anim.SetBool("dash", true);
         horizontalMove = way;
-        while (0 <= dashTime)
+        while (Time.time - startTime <= dashTime)
         {
             Debug.Log("dash");
-
-            dashTime -= Time.deltaTime;
             rgdBody.velocity = new Vector2(way * 50f, 0f);
             //rgdBody.AddForce(new Vector2(way * 10000f, 0f));
             yield return null;

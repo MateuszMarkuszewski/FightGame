@@ -3955,7 +3955,7 @@ MonoBehaviour:
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
-  maxHealth: 500
+  maxHealth: 50
   left: 276
   right: 275
   jumpKey: 273
