@@ -17,10 +17,11 @@ public class AttackCollider : MonoBehaviour
         else if (collision.gameObject.tag == "Player" && !collision.isTrigger)
         {
             Vector2 dir = collision.transform.position - transform.position;
-            collision.GetComponent<PlayerControler>().SaveForce(dir);
+            PlayerControler enemy = collision.GetComponent<PlayerControler>();
+            enemy.SaveForce(dir);
             collision.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 2000, ForceMode2D.Force);
-            collision.gameObject.GetComponent<PlayerControler>().DealDamage(dmg);
-            SendMessageUpwards("DecreaseDurability", 10);
+            enemy.DealDamage(dmg);
+            GetComponentInParent<WeaponControler>().DecreaseDurability(10);
         }
     }
 }

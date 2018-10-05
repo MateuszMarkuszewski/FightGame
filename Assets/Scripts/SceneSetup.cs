@@ -24,6 +24,7 @@ public class SceneSetup : MonoBehaviour
 
     public GameObject[] weapons;
     private int maxWeaponsNum;
+    //wykorzystywane do dropu
     private int currentWeaponNum = 0;
     private float[] weaponProbability;
     public LayerMask antyDropCollisionMask;
@@ -32,6 +33,7 @@ public class SceneSetup : MonoBehaviour
     public bool AI = false;
     public GameObject[,] grid;
     public GameObject node;
+    //wykorzystywane do ai
     public List<GameObject> weaponsOnArena;
     public List<Node> nodes;
     public bool gridDone = false;
@@ -248,10 +250,7 @@ public class SceneSetup : MonoBehaviour
     /// </summary>
     public void DecreaseWeaponNum(GameObject w)
     {
-        if (AI == true)
-        {
-            weaponsOnArena.Remove(w);
-        }
+        weaponsOnArena.Remove(w);    
         currentWeaponNum--;
     }
 

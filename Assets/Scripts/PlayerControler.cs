@@ -18,7 +18,7 @@ public class PlayerControler : MonoBehaviour {
     public KeyCode jumpKey;
     public KeyCode down;
     public KeyCode attack;
-    public KeyCode throwWeapon;
+    public KeyCode takeWeapon;
     //testery
     public Transform groundTester;
     public LayerMask layersToTest;
@@ -27,7 +27,7 @@ public class PlayerControler : MonoBehaviour {
     //GUI
     public Image healthBar;
     public Image weaponDurability;
-    //componenty
+    //komponenty
     public Animator anim;
     Rigidbody2D rgdBody;
     ComboManager comboManager;
@@ -156,7 +156,7 @@ public class PlayerControler : MonoBehaviour {
                 horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
                 anim.SetFloat("speed", Mathf.Abs(horizontalMove));
                 ///atak
-                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) )
+                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon) )
                 {
                     BasicAttack();
                 }
@@ -164,7 +164,7 @@ public class PlayerControler : MonoBehaviour {
             else
             {
                 //atak z powietrza
-                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(throwWeapon) && keysEnable)
+                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon) && keysEnable)
                 {
                     drop = true;
                 }
@@ -175,7 +175,7 @@ public class PlayerControler : MonoBehaviour {
                 jump = true;
             }
 
-            if (Input.GetKeyDown(throwWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
+            if (Input.GetKeyDown(takeWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
             {
                 Throw();
             }
@@ -256,7 +256,6 @@ public class PlayerControler : MonoBehaviour {
     //rzut podniesioną bronią
     public void Throw()
     {
-        Debug.Log("throw");
         anim.SetTrigger("throw");
     }
 
@@ -266,11 +265,15 @@ public class PlayerControler : MonoBehaviour {
         if (weapon == null)
         {
             weapon = w;
+            //ustawienie inferfejsu
             weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
-            
             weaponDurability.gameObject.SetActive(true);
-            weapon.SendMessage("HandleWeapon", gameObject.transform);
+            weaponDurability.sprite = weapon.GetComponent<SpriteRenderer>().sprite;
+            //
+            weapon.GetComponent<WeaponControler>().HandleWeapon(gameObject.transform);
+                //SendMessage("HandleWeapon", gameObject.transform);
             maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
+            //rebind poniewaz bron nie jest nieodłącznym elementem postaci i przed tym nie wie o jaki attackcollider chodzi
             anim.Rebind();
             anim.SetBool(weapon.name, true);
             anim.SetBool("NoWeapon", false);
@@ -324,7 +327,7 @@ public class PlayerControler : MonoBehaviour {
     private void OnTriggerStay2D(Collider2D collision)
     {
         //podnoszenie broni, czeka na kolizje z PickUpTrigger
-        if (weapon == null && Input.GetKeyDown(throwWeapon) && !Input.GetKeyDown(attack) && collision.gameObject.tag == "Interaction")
+        if (weapon == null && Input.GetKeyDown(takeWeapon) && !Input.GetKeyDown(attack) && collision.gameObject.tag == "Interaction")
         {
             TakeWeapon(collision.transform.parent.gameObject);
         }
@@ -354,6 +357,7 @@ public class PlayerControler : MonoBehaviour {
                 ComeDown(collision.collider);
             }
         }
+        //if (collision.gameObject.tag == "Interaction") Debug.Log("seeeeeeee");
     }
     public void GroundTest(Collider2D collision)
     {
@@ -449,7 +453,7 @@ public class PlayerControler : MonoBehaviour {
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
-        weapon.GetComponent<Collider2D>().isTrigger = false;
+        //weapon.GetComponent<Collider2D>().isTrigger = false;
         DetachWeapon();
     }
 
@@ -459,7 +463,7 @@ public class PlayerControler : MonoBehaviour {
         weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
         weapon.GetComponent<WeaponControler>().Clear();
-        anim.Rebind();
+        //anim.Rebind();//nie potrzebne?
         weapon.transform.position = throwPoint.transform.position;     
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;

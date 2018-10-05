@@ -11,6 +11,7 @@ public class WeaponControler : MonoBehaviour {
     private Rigidbody2D rgdBody;
     public GameObject attackCollider;
     public GameObject pickUpTrigger;
+    public string holdingRig = "Skeleton/Pelvis/Torso/R_arm_1/R_arm_2";
 
     public float restTimeAfterCombo;
     public float maxDurability;
@@ -27,12 +28,6 @@ public class WeaponControler : MonoBehaviour {
     void Start ()
     {
         durability = maxDurability;
-    }
-
-    void MakeUI()
-    {
-        durabilityImage.GetComponent<Image>().sprite = GetComponent<SpriteRenderer>().sprite;
-        AlphaUI();
     }
 
     void AlphaUI()
@@ -57,28 +52,27 @@ public class WeaponControler : MonoBehaviour {
         if (col.gameObject.tag == "Untagged" || col.gameObject.tag == "Platform")
         {
             //DecreaseDurability(5);
-            gameObject.layer = 10;
+            gameObject.layer = 10;//to juz było w rzucie, czy trzeba?
             //gameObject.GetComponent<Rigidbody2D>().Sleep();
             attackCollider.SetActive(false);
             pickUpTrigger.SetActive(true);
-            attackCollider.GetComponent<Collider2D>().isTrigger = true;
         }
     }
 
-    void HandleWeapon(Transform player)
+    public void HandleWeapon(Transform player)
     {
         //this.transform.Find("AttackCollider").gameObject.SetActive(true);
         pickUpTrigger.SetActive(false);
-        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Collider2D>().enabled = false; //test czy przeciwko graczowi nie trzeba wyłączyć bo gracz to dynamic body
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         //umieszczenie broni np. w rekach
-        transform.SetParent(player.Find("Skeleton/Pelvis/Torso/R_arm_1/R_arm_2").transform);
+        transform.SetParent(player.Find(holdingRig).transform);
         transform.localPosition = PickUpPos;
         transform.localEulerAngles = PickUpRot;
 
         handler = player.gameObject;
         attackCollider.layer = transform.parent.gameObject.layer;
-        MakeUI();
+        //AlphaUI();
         //dla AI
         if(sceneMenager.AI == true)
         {
@@ -93,22 +87,21 @@ public class WeaponControler : MonoBehaviour {
             sceneMenager.DecreaseWeaponNum(gameObject);
             try
             {
-                handler.GetComponent<PlayerControler>().DropWeapon();
-                handler.GetComponent<PlayerControler>().DetachWeapon();
+                PlayerControler PC = handler.GetComponent<PlayerControler>();
+                PC.DropWeapon();
+                PC.DetachWeapon();
             }
             catch
             {
 
             }
-            sceneMenager.weaponsOnArena.Remove(gameObject);
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();
     }
 
-    private void DecreaseDurability(int value)
+    public void DecreaseDurability(int value)
     {
         durability -= value;
-        Debug.Log(durability);
     }
 }
