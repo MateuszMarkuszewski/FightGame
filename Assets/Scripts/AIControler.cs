@@ -16,23 +16,18 @@ public class AIControler : MonoBehaviour {
     public LayerMask wallMask;
 
     private bool findWeapon = false;
-    private bool findEnemy = true;
     //TODO: 1.5f na zmienną
     private ContactFilter2D throwFilter;
     private List<GameObject> wayToTarget;
     private GameObject previousNode;
     public GameObject target;
 
-
     public List<GameObject> way;
-
-    public GameObject neighbour;
 
 
     void Start () {
         playerControler.AI = true;
         playerControler.heroSpeed = playerControler.heroSpeed * 3 / 4;
-        arenaData.AI = true;
         throwFilter.SetLayerMask(enemyMask | platformMask);
         target = enemy;
         StartCoroutine(WaitForArenaMake());
@@ -46,63 +41,31 @@ public class AIControler : MonoBehaviour {
 
     void Update () {
         DecisionTree();
-        if(findEnemy || findWeapon)
+        if (playerControler.attackEnable || findWeapon)
         {
             if (way.Count == 0 || way.Count == 1)
             {
                 AdjustCoordinates(target.GetComponent<Collider2D>());
             }
             else AdjustCoordinates(way[way.Count - 1].GetComponent<BoxCollider2D>());
-        }
+        }     
     }
 
     //wywoływane co klatka drzewo decyzyjne które definiuje co AI ma robić
     void DecisionTree()
     {
-        //sprawdza czy może uderzyć podstawowym atakiem
-        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask) &&
-            playerControler.attackEnable)
+        if (Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 0.5f, enemyMask) && playerControler.attackEnable)
         {
-            playerControler.BasicAttack();       
+            playerControler.BasicAttack();
         }
-        //sprawdza czy bedąc w powietrzu znajduje sie nad przeciwnikiem, wtedy atakuje
-        else if(Physics2D.Raycast(transform.position, Vector2.down, 5f, enemyMask))
-        {
-            RaycastHit2D[] hit = new RaycastHit2D[1]; ;
-            Physics2D.Raycast(transform.position, Vector2.down, throwFilter, hit, 10f);
-            if (hit[0].collider.gameObject.tag == "Player")
-            {
-                playerControler.DropAttack();
-            }
-        }
-        //sprawdza będąc w powietrzu przeciwnik jest w zasiegu rzutu bronią
-        else if (playerControler.anim.GetBool("InAir") && 
-                 playerControler.weapon != null && 
-                 Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, -0.5f), 10f, enemyMask))
-        {
-            Throw(new Vector2(playerControler.horizontalMove, -0.5f));
-        }
-        // sprawdza czy może rzucić bronią
-        else if (!playerControler.anim.GetBool("InAir") && 
-                 playerControler.weapon != null && 
-                 Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 10f, enemyMask) &&
-                 playerControler.weapon.GetComponent<WeaponControler>().durability > playerControler.weapon.GetComponent<WeaponControler>().maxDurability / 5)
-        {
-
-            Throw(new Vector2(playerControler.horizontalMove, 0));
-        }
-        //czy ma szukać broni
-        else if (playerControler.weapon == null && 
-                //enemy.GetComponent<PlayerControler>().weapon != null && 
-                arenaData.weaponsOnArena.Count != 0
-                )
+        if (playerControler.weapon == null &&
+           arenaData.weaponsOnArena.Count != 0)
         {
             findWeapon = true;
-            findEnemy = false;
             //szukanie najblizszej broni
             float minDistance = Mathf.Infinity;
             float tmp;
-            for (int i = 0; i < arenaData.weaponsOnArena.Count ; i++)
+            for (int i = 0; i < arenaData.weaponsOnArena.Count; i++)
             {
                 tmp = Distance(transform.position.x, transform.position.y, arenaData.weaponsOnArena[i].transform.position.x, arenaData.weaponsOnArena[i].transform.position.y);
                 if (tmp < minDistance)
@@ -113,17 +76,45 @@ public class AIControler : MonoBehaviour {
             }
         }
         //czy szukać przeciwnika
-        else if(playerControler.attackEnable)
+        else if (playerControler.attackEnable)
         {
-            findEnemy = true;
-            findWeapon = false;
-            target = enemy;
+            if(findWeapon) findWeapon = false;
+            if (target!=enemy) target = enemy;
+
+            //sprawdza czy bedąc w powietrzu znajduje sie nad przeciwnikiem, wtedy atakuje
+            else if (Physics2D.Raycast(transform.position, Vector2.down, 5f, enemyMask))
+            {
+                RaycastHit2D[] hit = new RaycastHit2D[1]; ;
+                Physics2D.Raycast(transform.position, Vector2.down, throwFilter, hit, 10f);
+                if (hit[0].collider.gameObject.tag == "Player")
+                {
+                    playerControler.DropAttack();
+                }
+            }
+            else if (playerControler.weapon != null)
+            {      
+                if(playerControler.weapon.GetComponent<WeaponControler>().durability <= 20)
+                {
+                    //sprawdza będąc w powietrzu przeciwnik jest w zasiegu rzutu bronią
+                    if (playerControler.anim.GetBool("InAir") &&
+                         Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, -0.5f), 10f, enemyMask))
+                    {
+                        Throw(new Vector2(playerControler.horizontalMove, -0.5f));
+                    }
+                    // sprawdza czy może rzucić bronią
+                    else if (!playerControler.anim.GetBool("InAir") &&
+                             Physics2D.Raycast(transform.position, new Vector2(playerControler.horizontalMove, 0), 10f, enemyMask))
+                    {
+
+                        Throw(new Vector2(playerControler.horizontalMove, 0));
+                    }
+                }               
+            }
         }
-        else
+        else//odsuwa sie od przeciwnika gdy nie moze atakowac
         {
             findWeapon = false;
-            findEnemy = false;
-            AdjustCoordinates(arenaData.nodes[(int)Random.Range(0, arenaData.nodes.Count - 1)].GetComponent<BoxCollider2D>());
+            RunFromEnemy();
         }
     }
 
@@ -153,7 +144,6 @@ public class AIControler : MonoBehaviour {
           }
           if (minDistance > Distance(current.transform.position.x, current.transform.position.y, target.transform.position.x, target.transform.position.y))
           {
-              //Debug.Log("current");
               AdjustCoordinates(target.GetComponent<CapsuleCollider2D>());
           }
           else
@@ -165,7 +155,7 @@ public class AIControler : MonoBehaviour {
     
     public void Djikstra(Node current)
     {
-        List<Node> Q = new List<Node>(arenaData.nodes); ;
+        List<Node> Q = new List<Node>(arenaData.nodes);
         List<Node> S = new List<Node>();
         float[] wayCost = new float[arenaData.nodes.Count];
         int[] prevNode = new int[arenaData.nodes.Count];
@@ -180,7 +170,7 @@ public class AIControler : MonoBehaviour {
         wayCost[current.nodeNum] = 0;
 
         //targets.contains
-        while (!current.targets.Contains(target))//!currentNode.GetComponent<Node>().targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
+        while (!current.targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
         {
             S.Add(current);
             Q.Remove(current);
@@ -208,26 +198,18 @@ public class AIControler : MonoBehaviour {
                 }
             }
         }
-        
+        way.Clear();
         while(prevNode[current.nodeNum] != -1)
         {
-            Debug.Log(current.nodeNum);
             way.Add(current.gameObject);
             current = arenaData.nodes[prevNode[current.nodeNum]];
         }
-        Debug.Log("----------------------------------");
+        //Debug.Log("----------------------------------");
     }
 
     //porusza postacią tak aby doprowadzić ją do celu
    void AdjustCoordinates(Collider2D nextNode)
     {
-        //bo z triggerpick up musi byc 
-        if (transform.parent.GetComponent<BoxCollider2D>().IsTouchingLayers(pickUpMask) && findWeapon == true)
-        {
-            Debug.Log(target.gameObject);
-            playerControler.TakeWeapon(target.gameObject);
-            findWeapon = false;
-        }
         if (transform.position.x > nextNode.bounds.max.x)
         {
             playerControler.horizontalMove = -1f;
@@ -244,8 +226,15 @@ public class AIControler : MonoBehaviour {
         }
         else if (transform.position.y > nextNode.bounds.max.y)
         {
-            try
+            //RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, platformMask);
+            /*if(!platform.Equals(null))
             {
+                playerControler.ComeDown(platform.collider);
+            }*/
+
+            
+            try
+            { 
                 RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
                 playerControler.ComeDown(platform.collider);
             }
@@ -259,10 +248,10 @@ public class AIControler : MonoBehaviour {
             playerControler.Jump();
         }*/
         //way
-        if (transform.GetComponent<BoxCollider2D>().IsTouching(nextNode))
-        {
-            way.RemoveAt(way.Count - 1);
-        }
+        /* if (transform.GetComponent<BoxCollider2D>().IsTouching(nextNode))
+         {
+             way.RemoveAt(way.Count - 1);
+         }*/
     }
     
     float Distance(float x1, float y1, float x2, float y2)
@@ -306,20 +295,66 @@ public class AIControler : MonoBehaviour {
         }   
     }
 
-    //enemy>this
-   /* private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Node")
-        {
-            Djikstra(collision.GetComponent<Node>());
-        }
-    }*/
-
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Node")
         {
             Djikstra(collision.GetComponent<Node>());
         }
+        //bo z triggerpick up musi byc 
+        if (collision.gameObject.tag == "Interaction")
+        {
+            if (collision.transform.parent.gameObject == target && findWeapon == true)
+            {
+                playerControler.TakeWeapon(collision.transform.parent.gameObject);
+                findWeapon = false;
+            }
+        }
+        
+    }
+
+    void RunFromEnemy()
+    {
+        if (transform.position.x >= enemy.transform.position.x)
+        {
+            playerControler.horizontalMove = 1f;
+        }
+        else if (transform.position.x < enemy.transform.position.x)
+        {
+            playerControler.horizontalMove = -1f;
+        }
+
+        if ((transform.position.y >= enemy.transform.position.y) ||
+            transform.parent.GetComponent<BoxCollider2D>().IsTouchingLayers(enemyMask))
+        {
+            Jump();
+        }
+        else if (transform.position.y < enemy.transform.position.y)
+        {
+            RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, platformMask);
+            if (!platform.Equals(null))
+            {
+                playerControler.ComeDown(platform.collider);
+            }
+            /*
+            try
+            {
+                RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
+                playerControler.ComeDown(platform.collider);
+            }
+            catch
+            {
+                //nie ma platformy pod sobą bo np. spada
+            }*/
+        }
+        /*if(transform.position.x > target.bounds.min.x && transform.position.x < target.bounds.max.x && target.IsTouching(transform.parent.GetComponent<BoxCollider2D>()))
+        {
+            playerControler.Jump();
+        }*/
+        //way
+        /* if (transform.GetComponent<BoxCollider2D>().IsTouching(nextNode))
+         {
+             way.RemoveAt(way.Count - 1);
+         }*/
     }
 }

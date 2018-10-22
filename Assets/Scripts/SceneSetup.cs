@@ -25,12 +25,12 @@ public class SceneSetup : MonoBehaviour
     public GameObject[] weapons;
     private int maxWeaponsNum;
     //wykorzystywane do dropu
-    private int currentWeaponNum = 0;
+    public int currentWeaponNum = 0;
     private float[] weaponProbability;
     public LayerMask antyDropCollisionMask;
 
     //info dla AI
-    public bool AI = false;
+    //public bool AI = false;
     public GameObject[,] grid;
     public GameObject node;
     //wykorzystywane do ai
@@ -44,7 +44,8 @@ public class SceneSetup : MonoBehaviour
 
     void Awake()
     {
-        //size = (float)GameData.sizeMap;
+        size = (float)GameData.sizeMap;
+        //AI = (bool)GameData.ai;
         //ustawienie sceny
         SetupCamera();
         width = 2 * size * camera.aspect;
@@ -54,14 +55,12 @@ public class SceneSetup : MonoBehaviour
         GeneratePlatforms();
         maxWeaponsNum = 4;
         //AI
-        if (AI == true)
-        {
-            
-        }
-        //MakeGrid();
-        //MakeGraph();
-        //SetupPlayers();
+ 
+        MakeGraph();
         gridDone = true;
+        
+        //SetupPlayers();
+        
         //bronie
         CalculateProbability();
         //do wyrzucenia
@@ -95,35 +94,6 @@ public class SceneSetup : MonoBehaviour
         nodes.Add(n.GetComponent<Node>());
     }
 
-    void MakeGrid()
-    {
-        grid = new GameObject[(int)size, (int)(2 * size / 3)];
-        int num = 0;
-        for (int i = 0; i < rooms.GetLength(0); i++)
-        {
-            Debug.Log(rooms[i,0]);
-            /*MakeNode(i, 0, i * roomSizeX + (roomSizeX / 2f), 0 * roomSizeY + (roomSizeY / 2f), num);
-            num++;*/
-        }
-        for (int j = 0; j < rooms.GetLength(1); j++)
-        {
-            for (int i = 0; i < rooms.GetLength(0); i++)
-            {
-                Debug.Log(rooms[i, j]);
-
-                /* if (rooms[i, j] != null)
-                 {
-                     MakeNode(i, j + 1, i * roomSizeX + (roomSizeX / 2f), (j + 1) * roomSizeY + (roomSizeY / 2f), num);
-                     num++;
-                 }
-                 else
-                 {
-                     grid[i, j + 1] = null;
-                 }*/
-            }
-        }
-    }
-
     void MakeGraph()
     {
         //tablica
@@ -132,11 +102,12 @@ public class SceneSetup : MonoBehaviour
         {
             for (int i = 0; i < rooms.GetLength(0); i++)
             {
+                //łapane wyjątki bo może wyjść poza siatkę
                 try
                 {
-                    if (grid[i - 1, j] != null)
+                    if (rooms[i - 1, j] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i - 1, j]);
+                        MakeEdge(rooms[i, j], rooms[i - 1, j]);
                     }
                 }
                 catch
@@ -144,9 +115,9 @@ public class SceneSetup : MonoBehaviour
                 }
                 try
                 {
-                    if (grid[i + 1, j] != null)
+                    if (rooms[i + 1, j] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i + 1, j]);
+                        MakeEdge(rooms[i, j], rooms[i + 1, j]);
                     }
                 }
                 catch
@@ -154,9 +125,9 @@ public class SceneSetup : MonoBehaviour
                 }
                 try
                 {
-                    if (grid[i, j + 1] != null)
+                    if (rooms[i, j + 1] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i, j + 1]);
+                        MakeEdge(rooms[i, j], rooms[i, j + 1]);
                     }
                 }
                 catch
@@ -175,9 +146,9 @@ public class SceneSetup : MonoBehaviour
                 }*/
                 try
                 {
-                    if (grid[i - 1, j - 1] != null)
+                    if (rooms[i - 1, j - 1] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i - 1, j - 1]);
+                        MakeEdge(rooms[i, j], rooms[i - 1, j - 1]);
                     }
                 }
                 catch
@@ -185,9 +156,9 @@ public class SceneSetup : MonoBehaviour
                 }
                 try
                 {
-                    if (grid[i + 1, j - 1] != null)
+                    if (rooms[i + 1, j - 1] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i + 1, j - 1]);
+                        MakeEdge(rooms[i, j], rooms[i + 1, j - 1]);
                     }
                 }
                 catch
@@ -195,9 +166,9 @@ public class SceneSetup : MonoBehaviour
                 }
                 try
                 {
-                    if (grid[i - 2, j + 1] != null)
+                    if (rooms[i - 2, j + 1] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i - 2, j + 1]);
+                        MakeEdge(rooms[i, j], rooms[i - 2, j + 1]);
                     }
                 }
                 catch
@@ -205,9 +176,9 @@ public class SceneSetup : MonoBehaviour
                 }
                 try
                 {
-                    if (grid[i + 2, j + 1] != null)
+                    if (rooms[i + 2, j + 1] != null)
                     {
-                        MakeEdge(grid[i, j], grid[i + 2, j + 1]);
+                        MakeEdge(rooms[i, j], rooms[i + 2, j + 1]);
                     }
                 }
                 catch
@@ -218,9 +189,9 @@ public class SceneSetup : MonoBehaviour
                 {
                     try
                     {
-                        if (grid[i, j - z] != null)
+                        if (rooms[i, j - z] != null)
                         {
-                            MakeEdge(grid[i, j], grid[i, j - z]);
+                            MakeEdge(rooms[i, j], rooms[i, j - z]);
                         }
                     }
                     catch
@@ -233,11 +204,11 @@ public class SceneSetup : MonoBehaviour
 
     }
 
-    void MakeEdge(GameObject node1, GameObject node2)
+    void MakeEdge(Node node1, Node node2)
     {
-        node1.GetComponent<Node>().neighbours.Add(node2.GetComponent<Node>());
-        node1.GetComponent<Node>().distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
-        //Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
+        node1.neighbours.Add(node2.GetComponent<Node>());
+        node1.distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
+       // Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
     }
 
     float Distance(float x1, float y1, float x2, float y2)
@@ -250,7 +221,9 @@ public class SceneSetup : MonoBehaviour
     /// </summary>
     public void DecreaseWeaponNum(GameObject w)
     {
+        //dostepne do podniesienia
         weaponsOnArena.Remove(w);    
+        //całkowita ilosć broni na arenie
         currentWeaponNum--;
     }
 
@@ -294,9 +267,9 @@ public class SceneSetup : MonoBehaviour
         weaponProbability = new float[weapons.Length];
         for (int i = 0; i < weapons.Length; i++)
         {
-            weaponProbability[i] = nodes.Count / size / weapons[i].GetComponentInChildren<AttackCollider>().dmg / weapons.Length;
+            weaponProbability[i] = size / weapons[i].GetComponentInChildren<AttackCollider>().dmg / weapons.Length;
             weapons[i].GetComponentInChildren<AttackCollider>().enabled = false;
-            Debug.Log(weaponProbability[i]);
+            //Debug.Log(weaponProbability[i]);
         }
     }
 
@@ -313,29 +286,6 @@ public class SceneSetup : MonoBehaviour
                 weaponsOnArena.Add(w);
                 break;
             }
-
-            /*
-            int[] room = new int[] { (int)Random.Range(0, rooms.GetLength(0)), (int)Random.Range(0, rooms.GetLength(1) + 1) };
-            try
-            {
-                if (!grid[room[0], room[1]].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
-                {
-                    //Debug.Log(grid[room[0], room[1]].transform.position);
-                    GameObject w = Instantiate(weapon, grid[room[0], room[1]].transform.position, Quaternion.Euler(0f, 0f, 90f));
-                    w.name = weapon.name;
-                    currentWeaponNum++;
-                    if (AI == true)
-                    {
-                        weaponsOnArena.Add(w);
-                    }
-                    break;
-                }
-            }
-            catch
-            {
-
-            }*/
-
         }
     }
 
@@ -374,7 +324,7 @@ public class SceneSetup : MonoBehaviour
         //pętla która wykonuje się do momentu wyjscia poza górną granicę siatki
         while (true)
         {
-            DrawRoomBounds(x, y);
+            //DrawRoomBounds(x, y);
             //tworzona jest platforma
             Instantiate(platform).transform.position = new Vector3(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY);
             MakeNode(x, y, x * roomSizeX + (roomSizeX / 2f), y * roomSizeY + (roomSizeY / 2f), num);
@@ -435,13 +385,6 @@ public class SceneSetup : MonoBehaviour
         camera = Camera.main;
         camera.orthographicSize = size;
         camera.transform.position = new Vector3(size * camera.aspect, size, -10f);
-    }
-
-    public void SetupPlayers()
-    {
-        //ustawia graczy na pozycji startowej
-        player1.transform.position = grid[0, 0].transform.position;
-        if (AI) player1.GetComponentInChildren<AITarget>().neighbour = grid[0, 0];
     }
 
     public void Perlin()

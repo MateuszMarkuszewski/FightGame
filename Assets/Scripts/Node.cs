@@ -6,7 +6,6 @@ public class Node : MonoBehaviour {
 
     public static bool target = false;
     public AIControler ai;
-    public GameObject aic;
 
     public bool enemy = false;
     public int nodeNum;
@@ -16,17 +15,6 @@ public class Node : MonoBehaviour {
 
     public GameObject t;
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if(collision.gameObject.tag == "AI")
-        {
-           //if (target == true) collision.gameObject.GetComponent<AIControler>().Djikstra(this);
-
-            //ai.Djikstra(this);
-            //Debug.Log("AI in block " + nodeNum);
-           // collision.gameObject.GetComponent<AIControler>().Djikstra(this);
-        }
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Target")

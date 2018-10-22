@@ -37,13 +37,13 @@ public class WeaponControler : MonoBehaviour {
 
     public void Clear()
     {
-       // player = null;
         durabilityImage = null;
-        //dla AI
-        if (sceneMenager.AI == true)
-        {
-            sceneMenager.weaponsOnArena.Add(gameObject);
-        }
+        handler = null;
+    }
+
+    public void AddToArena()
+    {
+        sceneMenager.weaponsOnArena.Add(gameObject);
     }
 
     //gdy rzucona/upuszczona broń dotknie coś innego niż gracz to można ją podnieść i nie zadaje obrażeń
@@ -63,7 +63,7 @@ public class WeaponControler : MonoBehaviour {
     {
         //this.transform.Find("AttackCollider").gameObject.SetActive(true);
         pickUpTrigger.SetActive(false);
-        GetComponent<Collider2D>().enabled = false; //test czy przeciwko graczowi nie trzeba wyłączyć bo gracz to dynamic body
+        GetComponent<Collider2D>().enabled = false;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         //umieszczenie broni np. w rekach
         transform.SetParent(player.Find(holdingRig).transform);
@@ -72,29 +72,24 @@ public class WeaponControler : MonoBehaviour {
 
         handler = player.gameObject;
         attackCollider.layer = transform.parent.gameObject.layer;
-        //AlphaUI();
         //dla AI
-        if(sceneMenager.AI == true)
-        {
-            sceneMenager.weaponsOnArena.Remove(gameObject);
-        }
+        sceneMenager.weaponsOnArena.Remove(gameObject);
+        
     }
 
     private void Update()
     {
-        if(durability <= 0)
+        if(durability < 0)
         {
-            sceneMenager.DecreaseWeaponNum(gameObject);
-            try
+
+            if (handler)
             {
                 PlayerControler PC = handler.GetComponent<PlayerControler>();
+            
                 PC.DropWeapon();
                 PC.DetachWeapon();
-            }
-            catch
-            {
-
-            }
+            }         
+            sceneMenager.DecreaseWeaponNum(gameObject);
             Destroy(gameObject);
         }
         if(durabilityImage!=null)AlphaUI();

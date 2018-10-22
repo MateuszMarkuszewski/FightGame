@@ -97,7 +97,7 @@ public class PlayerControler : MonoBehaviour {
         }
         foreach(Limb i in limbs)
         {
-            Debug.Log(i.ik);
+            //Debug.Log(i.ik);
         }
         //StartCoroutine(CheckIfStuned());
     }
@@ -122,17 +122,24 @@ public class PlayerControler : MonoBehaviour {
 
     void Update () {
         canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
-
+        //do wywalenia 
         if (Input.GetKeyDown(KeyCode.C))
         {
             ChangeState();
         }
-
+        
         if (ragdoll)
         {
-            transform.position = new Vector2(limbs[7].ik.position.x, limbs[7].ik.position.y + (transform.position.y - GetComponent<CapsuleCollider2D>().bounds.min.y));            
+            if (GetComponent<CapsuleCollider2D>().bounds.min.y < limbs[7].ik.position.y)
+            {
+                transform.position = new Vector2(limbs[7].ik.position.x, limbs[7].ik.position.y + (transform.position.y - GetComponent<CapsuleCollider2D>().bounds.min.y));
+            }
+            else
+            {
+                transform.position = new Vector2(limbs[7].ik.position.x, transform.position.y);
+            }
         }
-
+        
         if (Input.GetKeyDown(left))
         {
             if (comboManager.DoubleClick(left))
@@ -301,7 +308,6 @@ public class PlayerControler : MonoBehaviour {
         horizontalMove = way;
         while (Time.time - startTime <= dashTime)
         {
-            Debug.Log("dash");
             rgdBody.velocity = new Vector2(way * 50f, 0f);
             //rgdBody.AddForce(new Vector2(way * 10000f, 0f));
             yield return null;
@@ -357,7 +363,6 @@ public class PlayerControler : MonoBehaviour {
                 ComeDown(collision.collider);
             }
         }
-        //if (collision.gameObject.tag == "Interaction") Debug.Log("seeeeeeee");
     }
     public void GroundTest(Collider2D collision)
     {
@@ -449,7 +454,7 @@ public class PlayerControler : MonoBehaviour {
     void ThrowEvent(float angle)
     {
         DropWeapon();
-        
+        weapon.GetComponent<WeaponControler>().AddToArena();
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
@@ -460,10 +465,10 @@ public class PlayerControler : MonoBehaviour {
     //gameobject broni jest odczepiana od rodzica 
     public void DropWeapon()
     {
+        weapon.GetComponent<WeaponControler>().Clear();
         weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
-        weapon.GetComponent<WeaponControler>().Clear();
-        //anim.Rebind();//nie potrzebne?
+        anim.Rebind();
         weapon.transform.position = throwPoint.transform.position;     
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
@@ -521,7 +526,6 @@ public class PlayerControler : MonoBehaviour {
         //zmiana stanu postaci z ragdoll do normalnego i odwrotnie
         if (ragdoll == false)
         {
-            //gdy nie wyłaczone ik to zle wstawanie
             limbs[1].ik.gameObject.SetActive(false);
             anim.enabled = false;
 
@@ -529,28 +533,29 @@ public class PlayerControler : MonoBehaviour {
             {
                 rig.bodyType = RigidbodyType2D.Dynamic;
             }
-
+            //limbs[0].ik.GetComponentInParent<Rigidbody2D>().Sleep();
             limbs[0].ik.parent = null;
             limbs[0].ik.GetComponentInChildren<Rigidbody2D>().AddForce(ragdollForce * 10000, ForceMode2D.Force);
+            
+
             ragdoll = true;
         }
         else if (ragdoll == true)
         {
             //tu można animacje wstawania, tylko podnoszenie kregosłupa
-            anim.enabled = true;
-            anim.SetTrigger("standUp");
+            //anim.enabled = true;
+            //anim.SetTrigger("standUp");
             //zmieniam najpierw na static żeby zatrzymać siły działające na objekty
             limbs[0].ik.SetParent(gameObject.transform);
+            //limbs[0].ik.GetComponentInParent<Rigidbody2D>().WakeUp();
             limbs[1].ik.gameObject.SetActive(true);
 
             foreach (Rigidbody2D rig in rigs)
             {
-                rig.bodyType = RigidbodyType2D.Static;
                 rig.bodyType = RigidbodyType2D.Kinematic;
             }
 
-           // StartCoroutine(StandUp(limbs));
-           // anim.enabled = true;
+            StartCoroutine(StandUp(limbs));
             rgdBody.bodyType = RigidbodyType2D.Dynamic;
 
             ragdoll = false;

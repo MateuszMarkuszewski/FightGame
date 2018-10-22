@@ -5,11 +5,11 @@ using UnityEngine;
 public class AITarget : MonoBehaviour {
 
     public GameObject neighbour;
-    public AIControler ai;
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //zmienia strukture grafu poprzez łączenie najbliżyszch wierzchołków z obiektem
         if(collision.gameObject.tag == "Node")
         {
             /*collision.GetComponent<Node>().t = gameObject.transform.parent.gameObject;
