@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.Networking;
 
 
-public class SceneSetup : MonoBehaviour
+public class SceneSetup : NetworkBehaviour
 {
-
-    public float size;
+    [SyncVar] public float size;
     public GameObject ground;
     public GameObject wallLeft;
     public GameObject wallRight;
     public GameObject ceiling;
-    public GameObject platform;
-    private Camera camera;
+    [SyncVar(hook = "OnPlatformSync")] public GameObject platform;
+
+    public Camera mainCamera;
+
+    [SyncVar(hook = "OnAspectChange")]
+    public float cameraAspect;
     public GameObject background;
-    public GameObject player1;
-    public GameObject player2;
+    public GameObject player1interface;
+    public GameObject player2interface;
 
     private float width;
     private float height;
@@ -40,35 +44,50 @@ public class SceneSetup : MonoBehaviour
 
     public static float roomSizeX;
     public static float roomSizeY;
-
-
-    void Awake()
+    
+    public void OnPlatformSync(GameObject platform2)
     {
-        size = (float)GameData.sizeMap;
+        Debug.Log("asd");
+        if (!isServer)
+         platform.transform.localScale = new Vector2(2, 1);
+    }
+
+    void OnAspectChange(float a)
+    {
+        if (!isServer)
+        {
+            cameraAspect = a;
+            mainCamera.aspect = a;
+        }
+    }
+
+    //wywolywane tylko na serwerze
+    public override void OnStartServer()
+    {
+        cameraAspect = mainCamera.aspect;
         //AI = (bool)GameData.ai;
         //ustawienie sceny
-        SetupCamera();
-        width = 2 * size * camera.aspect;
+        //to wczesnie wyslane
+        size = (float)GameData.sizeMap;
+        SetupCamera(size);/////
+        width = 2 * size * cameraAspect;
         height = 2 * size;
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
         maxWeaponsNum = 4;
         //AI
- 
+
         MakeGraph();
         gridDone = true;
-        
+
         //SetupPlayers();
-        
+
         //bronie
         CalculateProbability();
-        //do wyrzucenia
-        DropWeapon(weapons[0]);
-        DropWeapon(weapons[1]);
-
         StartCoroutine(WeaponDropMenager());
     }
+    
 
     public static void DrawRoomBounds(int x, int y)
     {
@@ -280,10 +299,12 @@ public class SceneSetup : MonoBehaviour
             int v = (int)Random.Range(0, nodes.Count - 1);
             if (!nodes[v].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
             {
+
                 GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
-                w.name = weapon.name;
+                //w.name = w.name.Replace("(Clone)", "");
                 currentWeaponNum++;
                 weaponsOnArena.Add(w);
+                CmdSpawnGameObjectOnClient(w);
                 break;
             }
         }
@@ -294,21 +315,22 @@ public class SceneSetup : MonoBehaviour
     /// </summary>
     public void SetBackgroundSize()
     {
-        SpriteRenderer sr = background.GetComponent<SpriteRenderer>();
+        GameObject BG = Instantiate(background);
+        SpriteRenderer sr = BG.GetComponent<SpriteRenderer>();
         Vector3 backgroundSizes = sr.sprite.bounds.size;
-        background.transform.localScale = new Vector2(width / backgroundSizes.x, height / backgroundSizes.y);
-        background.transform.position = new Vector2(size * camera.aspect, size);
+        BG.transform.localScale = new Vector2(width / backgroundSizes.x, height / backgroundSizes.y);
+        BG.transform.position = new Vector2(size * cameraAspect, size);
+        CmdSpawnGameObjectOnClient(BG);
     }
 
     public void GeneratePlatforms()
     {
         //rozmiar pojedynczego pokoju 
-        roomSizeX = 2 * camera.aspect;
+        roomSizeX = 2 * cameraAspect;
         roomSizeY = 3;
         //ustalanie ilosci pokoi
         rooms = new Node[(int)size, (int)(2 * size / 3)];
-        //przeskalowanie objektu platformy aby pokrywał pokój
-        platform.transform.localScale = new Vector2(roomSizeX / platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x, platform.transform.localScale.y);
+        
         int num = 0;
         for (int i = 0; i < rooms.GetLength(0); i++)
         {
@@ -318,6 +340,8 @@ public class SceneSetup : MonoBehaviour
         //losowanie pokoju z pierwszego rzędu 
         int x = Random.Range(0, rooms.GetLength(0));
         int y = 1;
+
+        platform.transform.localScale = new Vector2(roomSizeX / platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x, platform.transform.localScale.y);
         //losowanie kierunku
         int[] way = { 1, -1 };
         int side = way[Random.Range(0, 1)];
@@ -326,10 +350,15 @@ public class SceneSetup : MonoBehaviour
         {
             //DrawRoomBounds(x, y);
             //tworzona jest platforma
-            Instantiate(platform).transform.position = new Vector3(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY);
+            GameObject go = Instantiate(platform, new Vector2(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY), Quaternion.Euler(0f, 0f, 0f));
+           // go.transform.position = new Vector3(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY);
+            //przeskalowanie objektu platformy aby pokrywał pokój
+            
+            CmdSpawnGameObjectOnClient(go);
+            //RpcAdjustScale(go, roomSizeX / go.GetComponent<SpriteRenderer>().sprite.bounds.size.x, go.transform.localScale.y);
             MakeNode(x, y, x * roomSizeX + (roomSizeX / 2f), y * roomSizeY + (roomSizeY / 2f), num);
             num++;
-            //rooms[x, y] = new Node();
+
             //losowane jest gdzie bedzie następny pokoj
             if (Random.Range(0, 10) == 3)
             {
@@ -362,36 +391,39 @@ public class SceneSetup : MonoBehaviour
         float x;
         for (y = 0f; y < (2 * size) + 1; y++)
         {
-            Instantiate(wallLeft).transform.position = new Vector2(0f, y);
+            CmdSpawnGameObjectOnPosition(wallLeft, 0f, y);
+            //Instantiate(wallLeft).transform.position = new Vector2(0f, y);
         }
-        x = 2 * size * camera.aspect;
+        x = 2 * size * cameraAspect;
         for (y = 0f; y < (2 * size) + 1; y++)
         {
-            Instantiate(wallRight).transform.position = new Vector2(x, y);
+            CmdSpawnGameObjectOnPosition(wallRight, x, y);
+            //Instantiate(wallRight).transform.position = new Vector2(x, y);
         }
-        for (x = 0f; x < 2 * size * camera.aspect; x++)
+        for (x = 0f; x < 2 * size * cameraAspect; x++)
         {
-            Instantiate(ground).transform.position = new Vector2(x, 0f);
+            CmdSpawnGameObjectOnPosition(ground, x, 0f);
+            //Instantiate(ground).transform.position = new Vector2(x, 0f);
         }
-        for (x = 0; x < 2 * size * camera.aspect; x++)
+        for (x = 0; x < 2 * size * cameraAspect; x++)
         {
-            Instantiate(ceiling).transform.position = new Vector2(x, y);
+            CmdSpawnGameObjectOnPosition(ceiling, x, y);
+            //Instantiate(ceiling).transform.position = new Vector2(x, y);
         }
     }
 
-    public void SetupCamera()
+    public void SetupCamera(float size)
     {
         //zmiana rozmiaru kamery w zależności od rozmiaru 
-        camera = Camera.main;
-        camera.orthographicSize = size;
-        camera.transform.position = new Vector3(size * camera.aspect, size, -10f);
+        mainCamera.orthographicSize = size;
+        mainCamera.transform.position = new Vector3(size * cameraAspect, size, -10f);
     }
 
     public void Perlin()
     {
         //generuje szum Perlina
         // Debug.Log(height);
-        for (int x = 0; x < 2 * size * camera.aspect; x++)
+        for (int x = 0; x < 2 * size * cameraAspect; x++)
         {
 
             for (int lvl = 10; lvl < height; lvl = lvl + 10)
@@ -399,6 +431,39 @@ public class SceneSetup : MonoBehaviour
                 Instantiate(ground, new Vector3(x, (Mathf.PerlinNoise(((float)x) / 35, 0f) * 10) + lvl), Quaternion.identity);
 
             }
+        }
+    }
+
+    //przyjmuje jako argument prefab, tworzy go na serwerze a nastepnie na klientach
+    [Command]
+    void CmdSpawnGameObjectOnPosition(GameObject go, float x, float y)
+    {
+        GameObject instance = Instantiate(go);
+        instance.transform.position = new Vector2(x, y);
+        NetworkServer.Spawn(instance);
+    }
+
+    //tworzy na klientach stworzony wcześniej GameObject 
+    [Command]
+    void CmdSpawnGameObjectOnClient(GameObject instance)
+    {
+        NetworkServer.Spawn(instance);
+    }
+    
+    [ClientRpc]
+    public void RpcAdjustScale(GameObject go, float x, float y)
+    {       
+        Debug.Log("asdasdas");
+        go.transform.localScale = new Vector2(x,y);
+    }
+    
+    public override void OnStartClient()
+    {
+        //modyfikuje kamere klienta aby dopasowac do areny
+        if (isClient && !isServer)
+        {
+            //mainCamera.aspect = cameraAspect;
+            SetupCamera(size);
         }
     }
 }

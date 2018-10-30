@@ -3,15 +3,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class PlayerControler : MonoBehaviour {
+public class PlayerControler : NetworkBehaviour {
 
     //statystyki
     public float heroSpeed;
     public float jumpForce;
     public int throwSpeed;
     public float maxHealth;
-    private float currentHealth;
+    [SyncVar(hook = "OnHealthChange")]
+    public float currentHealth;
     //klawisze
     public KeyCode left;
     public KeyCode right;
@@ -29,9 +31,9 @@ public class PlayerControler : MonoBehaviour {
     public Image weaponDurability;
     //komponenty
     public Animator anim;
-    Rigidbody2D rgdBody;
-    ComboManager comboManager;
-    Rigidbody2D[] rigs;
+    public Rigidbody2D rgdBody;
+    public ComboManager comboManager;
+    public Rigidbody2D[] rigs;
     public TrailRenderer[] trailEffect;
     //stany
     private bool canJump = false;
@@ -44,6 +46,7 @@ public class PlayerControler : MonoBehaviour {
     public float horizontalMove;
     private bool ragdoll = false;
     public bool AI = false;
+    public NetworkPlayerMovement networkPC;
     //walka
     public GameObject weapon = null;
     private int combo = 1;
@@ -78,132 +81,139 @@ public class PlayerControler : MonoBehaviour {
     public Limb[] limbs;
 
     class ComplateCoroutines { public int num = 0; }
-    
-    void Start ()
-    {
-        currentHealth = maxHealth;
-        anim = GetComponent<Animator>();
-        rgdBody = GetComponent<Rigidbody2D>();
-        comboManager = GetComponent<ComboManager>();
-        rigs = GetComponentsInChildren<Rigidbody2D>();
-        
 
-        //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
+    public override void OnStartClient()
+    {
+        rigs = GetComponentsInChildren<Rigidbody2D>();
         Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
         limbs = new Limb[iks.Length];
-        for(int i=0; i<iks.Length; i++)
+        for (int i = 0; i < iks.Length; i++)
         {
             limbs[i] = new Limb(iks[i]);
         }
-        foreach(Limb i in limbs)
-        {
-            //Debug.Log(i.ik);
+    }
+
+    void Start ()
+    {
+        currentHealth = maxHealth;
+        if (hasAuthority)
+        {     
+            /*anim = GetComponent<Animator>();
+            rgdBody = GetComponent<Rigidbody2D>();
+            comboManager = GetComponent<ComboManager>();*/
+        
+            //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
+          /*  Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
+            limbs = new Limb[iks.Length];
+            for(int i=0; i<iks.Length; i++)
+            {
+                limbs[i] = new Limb(iks[i]);
+            }*/
         }
         //StartCoroutine(CheckIfStuned());
     }
 
     private void FixedUpdate()
     {
-        
-        Move(horizontalMove);
-        if (jump)
+        if (hasAuthority)
         {
-            Jump();
-        }
-        if (drop)
-        {
-            DropAttack();
-        }
-        if (dashWay != 0)
-        {
-            StartCoroutine(Dash(0.1f, dashWay));
+            Move(horizontalMove);
+            networkPC.CmdMove(horizontalMove);
+            if (jump)
+            {
+                networkPC.CmdJump();
+                Jump();
+            }
+            if (drop)
+            {
+                networkPC.CmdDropAttack();
+                DropAttack();
+            }
+            if (dashWay != 0)
+            {
+
+                StartCoroutine(Dash(0.1f, dashWay));
+            }
         }
     }
 
     void Update () {
-        canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
-        //do wywalenia 
-        if (Input.GetKeyDown(KeyCode.C))
+
+        if (hasAuthority)
         {
-            ChangeState();
-        }
-        
-        if (ragdoll)
-        {
-            if (GetComponent<CapsuleCollider2D>().bounds.min.y < limbs[7].ik.position.y)
+            canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
+
+            if (ragdoll)
             {
-                transform.position = new Vector2(limbs[7].ik.position.x, limbs[7].ik.position.y + (transform.position.y - GetComponent<CapsuleCollider2D>().bounds.min.y));
-            }
-            else
-            {
-                transform.position = new Vector2(limbs[7].ik.position.x, transform.position.y);
-            }
-        }
-        
-        if (Input.GetKeyDown(left))
-        {
-            if (comboManager.DoubleClick(left))
-            {
-                dashWay = -1;
-            }
-        }
-        if (Input.GetKeyDown(right))
-        {
-            if (comboManager.DoubleClick(right))
-            {
-                dashWay = 1;
-            }
-        }
-        IsGrounded();
-        if(AI == false)
-        {
-            //postać na ziemi
-            if (!anim.GetBool("InAir"))
-            {
-                horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
-                anim.SetFloat("speed", Mathf.Abs(horizontalMove));
-                ///atak
-                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon) )
-                {
-                    BasicAttack();
-                }
-            }
-            else
-            {
-                //atak z powietrza
-                if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon) && keysEnable)
-                {
-                    drop = true;
-                }
-            }
-            /// skakanie
-            if (Input.GetKeyDown(jumpKey) && keysEnable && canJump)
-            {
-                jump = true;
+                return;
             }
 
-            if (Input.GetKeyDown(takeWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
+            if (Input.GetKeyDown(left))
             {
-                Throw();
+                if (comboManager.DoubleClick(left))
+                {
+                    dashWay = -1;
+                }
             }
-        }   
-        
-        /// odwracanie sprita postaci w lewo
-        if (horizontalMove < 0 && dirToRight)
-        {
-            Flip();
-        }
-        /// odwracanie sprita postaci w prawo
-        if (horizontalMove > 0 && !dirToRight)
-        {
-            Flip();
-        }
-        ///sprawdza czy postac zyje
-        if (currentHealth <= 0)
-        {
-            if(weapon!=null)DropWeapon();
-            if(!ragdoll)ChangeState();
-            //Destroy(this);
+            if (Input.GetKeyDown(right))
+            {
+                if (comboManager.DoubleClick(right))
+                {
+                    dashWay = 1;
+                }
+            }
+            IsGrounded();
+            if (AI == false)
+            {
+                //postać na ziemi
+                if (!anim.GetBool("InAir"))
+                {
+                    horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
+                    anim.SetFloat("speed", Mathf.Abs(horizontalMove));
+                    ///atak
+                    if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon))
+                    {
+                        networkPC.CmdBasicAttack();
+                        BasicAttack();
+                    }
+                }
+                else
+                {
+                    //atak z powietrza
+                    if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon) && keysEnable)
+                    {
+                        drop = true;
+                    }
+                }
+                /// skakanie
+                if (Input.GetKeyDown(jumpKey) && keysEnable && canJump)
+                {
+                    jump = true;
+                }
+
+                if (Input.GetKeyDown(takeWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
+                {
+                    networkPC.CmdThrow();
+                    Throw();
+                }
+            }
+
+            /// odwracanie sprita postaci w lewo
+            if (horizontalMove < 0 && dirToRight)
+            {
+                Flip();
+            }
+            /// odwracanie sprita postaci w prawo
+            if (horizontalMove > 0 && !dirToRight)
+            {
+                Flip();
+            }
+            ///sprawdza czy postac zyje
+            if (currentHealth <= 0)
+            {
+                if (weapon != null) DropWeapon();
+                if (!ragdoll) ChangeState();
+            }
         }
     }
 
@@ -211,13 +221,9 @@ public class PlayerControler : MonoBehaviour {
     /// Funkcje odpowiedzialne za kontrole postaci:
     /// </summary>
     /// 
-
-
-
     public void Move(float way)
     {
        rgdBody.velocity = new Vector2(way * heroSpeed, rgdBody.velocity.y);       
-       //rgdBody.AddForce(new Vector2(way * heroSpeed,0),ForceMode2D.Impulse);
     }
 
     //wykonanie podstawowowego ataku
@@ -287,10 +293,10 @@ public class PlayerControler : MonoBehaviour {
         }
     }
 
-     public void DropAttack()
-    {
-        anim.SetTrigger("dropAttack");
+    public void DropAttack()
+    { 
         rgdBody.velocity = new Vector2(0f, -20f);
+        anim.SetTrigger("dropAttack");
         drop = false;
     }
 
@@ -335,6 +341,7 @@ public class PlayerControler : MonoBehaviour {
         //podnoszenie broni, czeka na kolizje z PickUpTrigger
         if (weapon == null && Input.GetKeyDown(takeWeapon) && !Input.GetKeyDown(attack) && collision.gameObject.tag == "Interaction")
         {
+            networkPC.CmdTakeWeapon(collision.transform.parent.gameObject);
             TakeWeapon(collision.transform.parent.gameObject);
         }
     }
@@ -360,13 +367,10 @@ public class PlayerControler : MonoBehaviour {
         {
             if ((Input.GetKeyDown(down) && keysEnable))
             {
+                //networkPC.CmdComeDown(collision.collider);
                 ComeDown(collision.collider);
             }
         }
-    }
-    public void GroundTest(Collider2D collision)
-    {
-
     }
 
 /// <summary>
@@ -412,21 +416,29 @@ public class PlayerControler : MonoBehaviour {
         gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
     }
 
-    //zmniejsza HP
+    //zmniejsza HP 
     public void DealDamage(int dmg)
     {
-        horizontalMove = 0;
-        currentHealth = currentHealth - dmg;
-        healthBar.fillAmount = currentHealth / maxHealth;
-        anim.SetTrigger("TakeHit");
+        if (hasAuthority)
+        {
+            horizontalMove = 0;
+            anim.SetTrigger("TakeHit");
+            CmdReduceHealth(dmg);
+        }
 
+        /*
         if (Time.time - stunControler.lastTime > Stun.timeForDmg)
         {
             stunControler.lastTime = Time.time;
             stunControler.lastHealth = currentHealth;
-        }
+        }*/
     }
-    
+    [Command]
+    void CmdReduceHealth(int dmg)
+    {
+        currentHealth = currentHealth - dmg;
+        healthBar.fillAmount = currentHealth / maxHealth;
+    }
 
     IEnumerator CheckIfStuned()
     {
@@ -484,7 +496,7 @@ public class PlayerControler : MonoBehaviour {
   /// <summary>
   /// Funkcje odpowiedzialne za ragdoll:
   /// </summary>
-  // TODO: przenieść do osobnego pliku
+
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
         float startTime = Time.time;
@@ -533,11 +545,10 @@ public class PlayerControler : MonoBehaviour {
             {
                 rig.bodyType = RigidbodyType2D.Dynamic;
             }
-            //limbs[0].ik.GetComponentInParent<Rigidbody2D>().Sleep();
+
             limbs[0].ik.parent = null;
             limbs[0].ik.GetComponentInChildren<Rigidbody2D>().AddForce(ragdollForce * 10000, ForceMode2D.Force);
             
-
             ragdoll = true;
         }
         else if (ragdoll == true)
@@ -561,4 +572,12 @@ public class PlayerControler : MonoBehaviour {
             ragdoll = false;
         }
     }
+
+    void OnHealthChange(float health)
+    {
+        Debug.Log("healchange");
+        currentHealth = health;
+        healthBar.fillAmount = currentHealth / maxHealth;
+    }
+
 }

@@ -2,26 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
+using TMPro;
 
-public class NetworkHUD : MonoBehaviour {
+public class NetworkHUD : NetworkBehaviour {
 
-    private NetworkManagerHUD HUD;
+    public NetworkManager NM;
 
-    void Start () {
-        HUD = GetComponent<NetworkManagerHUD>();
-	}
-
-    void ShowHUD(bool show)
+    public void Host()
     {
-        HUD.showGUI = show;
+        NM.StartHost();
     }
 
-    private void OnGUI()
+    public void Connect()
     {
-        if (HUD.enabled)
-        {
-            HUD.offsetX = Screen.width / 3;
-            HUD.offsetY = Screen.height / 3;
-        }
+        NM.StartClient();
+    }
+
+    public void ChangeServerAdress(TMP_InputField _input)
+    {       
+        NM.networkAddress = _input.text;
     }
 }

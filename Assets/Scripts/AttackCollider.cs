@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class AttackCollider : MonoBehaviour
 {   
@@ -12,7 +13,7 @@ public class AttackCollider : MonoBehaviour
         
         if (collision.gameObject.tag == "Hitbox")
         {
-            Debug.Log("weapon");
+            //TODO: odrzut
         }
         else if (collision.gameObject.tag == "Player" && !collision.isTrigger)
         {
@@ -21,6 +22,7 @@ public class AttackCollider : MonoBehaviour
             enemy.SaveForce(dir);
             collision.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 2000, ForceMode2D.Force);
             enemy.DealDamage(dmg);
+            Debug.Log(enemy.GetComponent<NetworkAvatarSetUp>().playerNum);
             GetComponentInParent<WeaponControler>().DecreaseDurability(10);
         }
     }

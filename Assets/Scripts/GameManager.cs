@@ -10,13 +10,13 @@ public class GameManager : MonoBehaviour {
     public List<GameObject> aiGameObjects;
 
 	void Start () {
-       if ((bool)GameData.ai)
+      /* if ((bool)GameData.ai)
        {
             foreach(GameObject go in aiGameObjects)
             {
                 go.SetActive(true);
             }
-       }
+       }*/
 
 	}
     private void Update()
@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour {
         GameData.ai = null;
         GameData.sizeMap = null;
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
+        GameData.NM.StopHost();
+        //SceneManager.LoadScene(0);
     }
 }

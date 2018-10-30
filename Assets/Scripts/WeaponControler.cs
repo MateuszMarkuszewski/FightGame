@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class WeaponControler : MonoBehaviour {
+public class WeaponControler : NetworkBehaviour {
 
     // Child GameObject PickUpTrigger musi być pierwszy (AI)
 
@@ -24,6 +25,12 @@ public class WeaponControler : MonoBehaviour {
 
     public GameObject handler;
     public SceneSetup sceneMenager;
+
+    
+    public override void OnStartClient()
+    {
+        gameObject.name.Replace("(Clone)", "");
+    }
 
     void Start ()
     {
