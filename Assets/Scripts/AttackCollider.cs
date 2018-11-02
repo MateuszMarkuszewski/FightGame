@@ -22,8 +22,7 @@ public class AttackCollider : MonoBehaviour
             enemy.SaveForce(dir);
             collision.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 2000, ForceMode2D.Force);
             enemy.DealDamage(dmg);
-            Debug.Log(enemy.GetComponent<NetworkAvatarSetUp>().playerNum);
-            GetComponentInParent<WeaponControler>().DecreaseDurability(10);
+            GetComponentInParent<WeaponControler>().CmdDecreaseDurability(10);
         }
     }
 }

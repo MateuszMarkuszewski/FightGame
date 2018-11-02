@@ -236,7 +236,7 @@ public class AIControler : MonoBehaviour {
             try
             { 
                 RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
-                playerControler.ComeDown(platform.collider);
+                playerControler.ComeDown();
             }
             catch
             {
@@ -334,7 +334,7 @@ public class AIControler : MonoBehaviour {
             RaycastHit2D platform = Physics2D.Raycast(transform.position, Vector2.down, 0.5f, platformMask);
             if (!platform.Equals(null))
             {
-                playerControler.ComeDown(platform.collider);
+                playerControler.ComeDown();
             }
             /*
             try

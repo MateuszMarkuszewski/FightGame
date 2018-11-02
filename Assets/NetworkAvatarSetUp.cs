@@ -19,6 +19,7 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         Debug.Log("client"+playerNum);
         SetPlayerUI();
         SetPlayerLayer();
+        SetLayerToJumpTest();
         ActiveHitboxes(false);        
     }
 
@@ -57,7 +58,6 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         }
     }
 
-
     //Używane do aktywowania a nastepnie dezktywowania hitboxów aby ustalić ich warstwę
     void ActiveHitboxes(bool set)
     {
@@ -65,5 +65,12 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         {
             go.SetActive(set);
         }
+    }
+
+    //dodaje warstwe przeciwnika do powierzchni od których mozna sie odbić
+    void SetLayerToJumpTest()
+    {
+        LayerMask layerToJump = LayerMask.GetMask(LayerMask.LayerToName(playerNum == 1 ? 17 : 12));
+        PC.layersToTest = PC.layersToTest | layerToJump;
     }
 }

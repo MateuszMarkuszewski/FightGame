@@ -12,7 +12,7 @@ public class SceneSetup : NetworkBehaviour
     public GameObject wallLeft;
     public GameObject wallRight;
     public GameObject ceiling;
-    [SyncVar(hook = "OnPlatformSync")] public GameObject platform;
+    public GameObject platform;
 
     public Camera mainCamera;
 
@@ -45,12 +45,6 @@ public class SceneSetup : NetworkBehaviour
     public static float roomSizeX;
     public static float roomSizeY;
     
-    public void OnPlatformSync(GameObject platform2)
-    {
-        Debug.Log("asd");
-        if (!isServer)
-         platform.transform.localScale = new Vector2(2, 1);
-    }
 
     void OnAspectChange(float a)
     {
@@ -288,7 +282,6 @@ public class SceneSetup : NetworkBehaviour
         {
             weaponProbability[i] = size / weapons[i].GetComponentInChildren<AttackCollider>().dmg / weapons.Length;
             weapons[i].GetComponentInChildren<AttackCollider>().enabled = false;
-            //Debug.Log(weaponProbability[i]);
         }
     }
 
@@ -299,9 +292,8 @@ public class SceneSetup : NetworkBehaviour
             int v = (int)Random.Range(0, nodes.Count - 1);
             if (!nodes[v].GetComponent<BoxCollider2D>().IsTouchingLayers(antyDropCollisionMask))
             {
-
                 GameObject w = Instantiate(weapon, nodes[v].transform.position, Quaternion.Euler(0f, 0f, 90f));
-                //w.name = w.name.Replace("(Clone)", "");
+                w.GetComponent<WeaponControler>().sceneMenager = this;
                 currentWeaponNum++;
                 weaponsOnArena.Add(w);
                 CmdSpawnGameObjectOnClient(w);
@@ -318,7 +310,7 @@ public class SceneSetup : NetworkBehaviour
         GameObject BG = Instantiate(background);
         SpriteRenderer sr = BG.GetComponent<SpriteRenderer>();
         Vector3 backgroundSizes = sr.sprite.bounds.size;
-        BG.transform.localScale = new Vector2(width / backgroundSizes.x, height / backgroundSizes.y);
+        BG.GetComponent<NetworkBackgroundScaleSync>().SetScale(width / backgroundSizes.x, height / backgroundSizes.y);
         BG.transform.position = new Vector2(size * cameraAspect, size);
         CmdSpawnGameObjectOnClient(BG);
     }
@@ -341,7 +333,7 @@ public class SceneSetup : NetworkBehaviour
         int x = Random.Range(0, rooms.GetLength(0));
         int y = 1;
 
-        platform.transform.localScale = new Vector2(roomSizeX / platform.GetComponent<SpriteRenderer>().sprite.bounds.size.x, platform.transform.localScale.y);
+        platform.GetComponent<NetworkPlatformScaleSync>().roomSizeX = roomSizeX;
         //losowanie kierunku
         int[] way = { 1, -1 };
         int side = way[Random.Range(0, 1)];
@@ -414,7 +406,7 @@ public class SceneSetup : NetworkBehaviour
 
     public void SetupCamera(float size)
     {
-        //zmiana rozmiaru kamery w zależności od rozmiaru 
+        //zmiana rozmiaru kamery w zależności od rozmiaru areny
         mainCamera.orthographicSize = size;
         mainCamera.transform.position = new Vector3(size * cameraAspect, size, -10f);
     }
@@ -450,19 +442,12 @@ public class SceneSetup : NetworkBehaviour
         NetworkServer.Spawn(instance);
     }
     
-    [ClientRpc]
-    public void RpcAdjustScale(GameObject go, float x, float y)
-    {       
-        Debug.Log("asdasdas");
-        go.transform.localScale = new Vector2(x,y);
-    }
-    
     public override void OnStartClient()
     {
         //modyfikuje kamere klienta aby dopasowac do areny
         if (isClient && !isServer)
         {
-            //mainCamera.aspect = cameraAspect;
+            mainCamera.aspect = cameraAspect;
             SetupCamera(size);
         }
     }

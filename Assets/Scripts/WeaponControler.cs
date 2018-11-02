@@ -16,9 +16,8 @@ public class WeaponControler : NetworkBehaviour {
 
     public float restTimeAfterCombo;
     public float maxDurability;
-    public float durability;
+    [SyncVar(hook = "OnDurabilityChange")] public float durability;
     public Image durabilityImage;
-    public Sprite weaponImage;
 
     public Vector3 PickUpPos;
     public Vector3 PickUpRot;
@@ -29,18 +28,23 @@ public class WeaponControler : NetworkBehaviour {
     
     public override void OnStartClient()
     {
-        gameObject.name.Replace("(Clone)", "");
-    }
-
-    void Start ()
-    {
+        gameObject.name = gameObject.name.Replace("(Clone)", "");
         durability = maxDurability;
     }
 
-    void AlphaUI()
+    void OnDurabilityChange(float durability)
+    {
+        Debug.Log(durability);
+        if (durabilityImage != null)
+        {
+            durabilityImage.color = new Color(255f, 255f, 255f, durability / maxDurability);
+        }
+    }
+
+    /*void AlphaUI()
     {
         durabilityImage.color = new Color(255f,255f,255f, durability/maxDurability);
-    }
+    }*/
 
     public void Clear()
     {
@@ -50,7 +54,7 @@ public class WeaponControler : NetworkBehaviour {
 
     public void AddToArena()
     {
-        sceneMenager.weaponsOnArena.Add(gameObject);
+        if(isServer) sceneMenager.weaponsOnArena.Add(gameObject);
     }
 
     //gdy rzucona/upuszczona broń dotknie coś innego niż gracz to można ją podnieść i nie zadaje obrażeń
@@ -80,15 +84,13 @@ public class WeaponControler : NetworkBehaviour {
         handler = player.gameObject;
         attackCollider.layer = transform.parent.gameObject.layer;
         //dla AI
-        sceneMenager.weaponsOnArena.Remove(gameObject);
-        
+        if(isServer)sceneMenager.weaponsOnArena.Remove(gameObject);     
     }
 
     private void Update()
     {
         if(durability < 0)
         {
-
             if (handler)
             {
                 PlayerControler PC = handler.GetComponent<PlayerControler>();
@@ -96,13 +98,14 @@ public class WeaponControler : NetworkBehaviour {
                 PC.DropWeapon();
                 PC.DetachWeapon();
             }         
-            sceneMenager.DecreaseWeaponNum(gameObject);
+            if(isServer)sceneMenager.DecreaseWeaponNum(gameObject);
             Destroy(gameObject);
-        }
-        if(durabilityImage!=null)AlphaUI();
+            
+        }      
     }
 
-    public void DecreaseDurability(int value)
+    [Command]
+    public void CmdDecreaseDurability(int value)
     {
         durability -= value;
     }

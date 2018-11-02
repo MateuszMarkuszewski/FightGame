@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4249859956558768}
   - component: {fileID: 212867350605447192}
   - component: {fileID: 114075107671834646}
+  - component: {fileID: 114354337511384560}
   m_Layer: 18
   m_Name: BG
   m_TagString: Untagged
@@ -73,6 +74,19 @@ MonoBehaviour:
     i15: 117
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
+--- !u!114 &114354337511384560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1875911008360798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bdf6e32e7526844b966744f2a59ea1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scaleX: 0
+  scaleY: 0
 --- !u!212 &212867350605447192
 SpriteRenderer:
   m_ObjectHideFlags: 1

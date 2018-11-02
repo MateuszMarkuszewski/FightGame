@@ -35,39 +35,39 @@ public class NetworkPlayerMovement : NetworkBehaviour {
         PC.DropAttack();
     }
 
+    //komenda do serwera z prośbą o zryw
     [Command]
     public void CmdDash()
     {
-        //StartCoroutine(PC.Dash(0.1f, dashWay));
+        StartCoroutine(PC.Dash(0.1f, PC.dashWay));
     }
-    /*
-    //
-    [Command]
-    public void CmdComeDown(Collider2D collider)
-    {
-        PC.ComeDown(collider);
-    }*/
 
-    //
+    //komenda do serwera z prośbą o zejscie z platformy
+    [Command]
+    public void CmdComeDown()
+    {
+        PC.ComeDown();
+    }
+
+    //komenda do serwera z prośbą o podstawowoy atak
     [Command]
     public void CmdBasicAttack()
     {
         PC.BasicAttack();
     }
 
-    //
+    //komenda do serwera z prośbą o rzut bronią
     [Command]
     public void CmdThrow()
     {
         PC.Throw();
     }
 
-    //
+    //komenda do serwera z prośbą o podniesienie broni
     [Command]
     public void CmdTakeWeapon(GameObject weapon)
     {
         PC.TakeWeapon(weapon);
     }
-
 
 }

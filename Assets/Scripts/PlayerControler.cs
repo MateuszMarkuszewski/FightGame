@@ -47,6 +47,8 @@ public class PlayerControler : NetworkBehaviour {
     private bool ragdoll = false;
     public bool AI = false;
     public NetworkPlayerMovement networkPC;
+    public bool getDownFromPlatform = false;
+    Collider2D platformBehind;
     //walka
     public GameObject weapon = null;
     private int combo = 1;
@@ -131,7 +133,7 @@ public class PlayerControler : NetworkBehaviour {
             }
             if (dashWay != 0)
             {
-
+                networkPC.CmdDash();
                 StartCoroutine(Dash(0.1f, dashWay));
             }
         }
@@ -169,7 +171,7 @@ public class PlayerControler : NetworkBehaviour {
                 if (!anim.GetBool("InAir"))
                 {
                     horizontalMove = keysEnable ? ((Input.GetKey(left) ? -1 : 0) + (Input.GetKey(right) ? 1 : 0)) : 0;
-                    anim.SetFloat("speed", Mathf.Abs(horizontalMove));
+                    
                     ///atak
                     if (Input.GetKeyDown(attack) && !Input.GetKeyDown(takeWeapon))
                     {
@@ -197,24 +199,24 @@ public class PlayerControler : NetworkBehaviour {
                     Throw();
                 }
             }
-
-            /// odwracanie sprita postaci w lewo
-            if (horizontalMove < 0 && dirToRight)
-            {
-                Flip();
-            }
-            /// odwracanie sprita postaci w prawo
-            if (horizontalMove > 0 && !dirToRight)
-            {
-                Flip();
-            }
-            ///sprawdza czy postac zyje
-            if (currentHealth <= 0)
-            {
-                if (weapon != null) DropWeapon();
-                if (!ragdoll) ChangeState();
-            }
         }
+        ///sprawdza czy postac zyje
+        if (currentHealth <= 0)
+        {
+            if (weapon != null) DropWeapon();
+            if (!ragdoll) ChangeState();
+        }
+        /// odwracanie sprita postaci w lewo
+        if (horizontalMove < 0 && dirToRight)
+        {
+            Flip();
+        }
+        /// odwracanie sprita postaci w prawo
+        if (horizontalMove > 0 && !dirToRight)
+        {
+            Flip();
+        }
+        if (!anim.GetBool("InAir")) anim.SetFloat("speed", Mathf.Abs(horizontalMove));
     }
 
     /// <summary>
@@ -260,10 +262,10 @@ public class PlayerControler : NetworkBehaviour {
     }
 
     //zejscie z platformy
-    public void ComeDown(Collider2D collider)
+    public void ComeDown()
     {
-        Physics2D.IgnoreCollision(collider, gameObject.GetComponent<Collider2D>());
-        StartCoroutine(ReturnCollision(collider, gameObject.GetComponent<Collider2D>()));
+        Physics2D.IgnoreCollision(platformBehind, GetComponent<Collider2D>());
+        StartCoroutine(ReturnCollision(platformBehind, GetComponent<Collider2D>()));
     }
 
     //rzut podniesioną bronią
@@ -300,7 +302,7 @@ public class PlayerControler : NetworkBehaviour {
         drop = false;
     }
 
-    IEnumerator Dash(float dashTime, float way)
+    public IEnumerator Dash(float dashTime, float way)
     {
         float startTime = Time.time;
         dashWay = 0;
@@ -341,8 +343,12 @@ public class PlayerControler : NetworkBehaviour {
         //podnoszenie broni, czeka na kolizje z PickUpTrigger
         if (weapon == null && Input.GetKeyDown(takeWeapon) && !Input.GetKeyDown(attack) && collision.gameObject.tag == "Interaction")
         {
-            networkPC.CmdTakeWeapon(collision.transform.parent.gameObject);
-            TakeWeapon(collision.transform.parent.gameObject);
+            if (hasAuthority)
+            {
+                networkPC.CmdTakeWeapon(collision.transform.parent.gameObject);
+                TakeWeapon(collision.transform.parent.gameObject);
+            }
+
         }
     }
 
@@ -351,8 +357,9 @@ public class PlayerControler : NetworkBehaviour {
         if (collision.gameObject.tag == "Wall" && anim.GetBool("InAir"))
         {
             anim.SetBool("wallstay",true);
-            if (Input.GetKeyDown(jumpKey))
+            if (Input.GetKeyDown(jumpKey) && hasAuthority)
             {
+
                 anim.SetBool("wallstay", false);
                 horizontalMove = collision.contacts[0].normal.x;
                 jump = true;
@@ -365,10 +372,11 @@ public class PlayerControler : NetworkBehaviour {
         //schodzenie z platformy
         if (collision.gameObject.tag == "Platform")
         {
-            if ((Input.GetKeyDown(down) && keysEnable))
+            platformBehind = collision.collider;
+            if (Input.GetKeyDown(down) && keysEnable && hasAuthority)
             {
-                //networkPC.CmdComeDown(collision.collider);
-                ComeDown(collision.collider);
+                networkPC.CmdComeDown();
+                ComeDown();
             }
         }
     }
@@ -425,7 +433,6 @@ public class PlayerControler : NetworkBehaviour {
             anim.SetTrigger("TakeHit");
             CmdReduceHealth(dmg);
         }
-
         /*
         if (Time.time - stunControler.lastTime > Stun.timeForDmg)
         {
@@ -575,7 +582,6 @@ public class PlayerControler : NetworkBehaviour {
 
     void OnHealthChange(float health)
     {
-        Debug.Log("healchange");
         currentHealth = health;
         healthBar.fillAmount = currentHealth / maxHealth;
     }
