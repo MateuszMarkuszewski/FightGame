@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class NetworkAvatarSetUp : NetworkBehaviour {
 
+    public bool secondLocalAvatar;
     public PlayerControler PC;
     [SyncVar]public int playerNum;
     public GameObject[] hitboxes;
@@ -14,13 +15,22 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
     //ustala którym graczem jest client i dostosowuje elementy
     public override void OnStartClient()
     {
-        ActiveHitboxes(true);
-        if (isServer)playerNum = NetworkServer.connections.Count;
-        Debug.Log("client"+playerNum);
-        SetPlayerUI();
-        SetPlayerLayer();
-        SetLayerToJumpTest();
-        ActiveHitboxes(false);        
+        if (!secondLocalAvatar)
+        {
+            if (isServer) playerNum = NetworkManager.singleton.numPlayers;//.connections.Count;
+            SetPlayerUI();
+            ActiveHitboxes(true);
+            SetPlayerLayer();
+            SetLayerToJumpTest();
+            ActiveHitboxes(false);
+        }
+        else
+        {
+            playerNum = 2;
+            SetPlayerUI();
+            if ((bool)GameData.ai) transform.Find("AITarget").gameObject.SetActive(true);
+        }
+        PC.networkSetUpDone = true;
     }
 
     //przypisuje odpowiedni interfejs gracza

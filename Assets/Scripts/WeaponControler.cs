@@ -84,26 +84,31 @@ public class WeaponControler : NetworkBehaviour {
         handler = player.gameObject;
         attackCollider.layer = transform.parent.gameObject.layer;
         //dla AI
-        if(isServer)sceneMenager.weaponsOnArena.Remove(gameObject);     
+        if(isServer)sceneMenager.weaponsOnArena.Remove(gameObject);
     }
 
     private void Update()
     {
         if(durability < 0)
         {
-            if (handler)
-            {
-                PlayerControler PC = handler.GetComponent<PlayerControler>();
-            
-                PC.DropWeapon();
-                PC.DetachWeapon();
-            }         
-            if(isServer)sceneMenager.DecreaseWeaponNum(gameObject);
-            Destroy(gameObject);
-            
-        }      
+            if (isServer) sceneMenager.DecreaseWeaponNum(gameObject);         
+            NetworkServer.Destroy(gameObject);
+        }
     }
 
+    public override void OnNetworkDestroy()
+    {
+        if (handler)
+        {
+            PlayerControler PC = handler.GetComponent<PlayerControler>();
+
+            PC.networkPC.CmdDropWeapon();
+            PC.networkPC.CmdDetachWeapon();
+            PC.DropWeapon();
+            PC.DetachWeapon();
+        }
+    }
+    
     [Command]
     public void CmdDecreaseDurability(int value)
     {

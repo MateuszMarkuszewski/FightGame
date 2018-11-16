@@ -7,6 +7,6 @@ public class GameData{
 
     public static bool? ai;
     public static float? sizeMap;
-    public static NetworkManager NM;
+    public static bool secondClientConnected = false;
 
 }

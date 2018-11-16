@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1342616417695746}
+  m_IsPrefabAsset: 1
+--- !u!1 &1342616417695746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4047127436211470}
+  - component: {fileID: 114950505682449460}
+  - component: {fileID: 114865478836501542}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4047127436211470
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1342616417695746}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.5, y: -0.752, z: 0}
+  m_LocalScale: {x: 1.1260906, y: 1.126091, z: 1.126091}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114865478836501542
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1342616417695746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 81
+    i1: 234
+    i2: 116
+    i3: 194
+    i4: 172
+    i5: 148
+    i6: 56
+    i7: 20
+    i8: 184
+    i9: 180
+    i10: 90
+    i11: 37
+    i12: 0
+    i13: 5
+    i14: 178
+    i15: 32
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
+--- !u!114 &114950505682449460
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1342616417695746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff11f7e64fffc1549abe1079b1708ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: 12
+  ground: {fileID: 1749361073884444, guid: 03555ce1878732c4d8a2250dc89991e3, type: 2}
+  wallLeft: {fileID: 1456052956626614, guid: 7ed2537cb98681245a5b5ddbf31ece6e, type: 2}
+  wallRight: {fileID: 1465004162843778, guid: 5785136249f0e274c8b3a790a0f785a8, type: 2}
+  ceiling: {fileID: 1128453902870488, guid: 7c3c7b0fc77f1b54485b7102cbfc8be4, type: 2}
+  platform: {fileID: 1467420128852842, guid: 175b0fdefb80cfc45a1acffcf7d2ad3c, type: 2}
+  mainCamera: {fileID: 0}
+  cameraAspect: 0
+  background: {fileID: 1875911008360798, guid: 6043a72a1d7f2dd4dbfa9eb2d6cf8475, type: 2}
+  weapons:
+  - {fileID: 1559701197755034, guid: 565d538291abee249bd3d5d44b3e02d3, type: 2}
+  - {fileID: 1324354312122494, guid: 0efc06063c69a8a45b218174f0bef0fe, type: 2}
+  currentWeaponNum: 0
+  antyDropCollisionMask:
+    serializedVersion: 2
+    m_Bits: 136192
+  node: {fileID: 0}
+  weaponsOnArena: []
+  nodes: []
+  gridDone: 0

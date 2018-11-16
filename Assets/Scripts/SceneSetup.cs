@@ -16,11 +16,9 @@ public class SceneSetup : NetworkBehaviour
 
     public Camera mainCamera;
 
-    [SyncVar(hook = "OnAspectChange")]
+    [SyncVar]
     public float cameraAspect;
     public GameObject background;
-    public GameObject player1interface;
-    public GameObject player2interface;
 
     private float width;
     private float height;
@@ -40,12 +38,12 @@ public class SceneSetup : NetworkBehaviour
     //wykorzystywane do ai
     public List<GameObject> weaponsOnArena;
     public List<Node> nodes;
-    public bool gridDone = false;
+    [SyncVar]public bool gridDone = false;
 
     public static float roomSizeX;
     public static float roomSizeY;
     
-
+    /*
     void OnAspectChange(float a)
     {
         if (!isServer)
@@ -53,7 +51,7 @@ public class SceneSetup : NetworkBehaviour
             cameraAspect = a;
             mainCamera.aspect = a;
         }
-    }
+    }*/
 
     //wywolywane tylko na serwerze
     public override void OnStartServer()
@@ -69,7 +67,7 @@ public class SceneSetup : NetworkBehaviour
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
-        maxWeaponsNum = 4;
+        maxWeaponsNum = (int)size/2;
         //AI
 
         MakeGraph();
@@ -80,8 +78,9 @@ public class SceneSetup : NetworkBehaviour
         //bronie
         CalculateProbability();
         StartCoroutine(WeaponDropMenager());
+        //oznacza to ze gra nie jest lokalna i czeka na polaczenie
+        if(GameData.ai == null)NetworkServer.dontListen = false;
     }
-    
 
     public static void DrawRoomBounds(int x, int y)
     {
@@ -411,22 +410,7 @@ public class SceneSetup : NetworkBehaviour
         mainCamera.transform.position = new Vector3(size * cameraAspect, size, -10f);
     }
 
-    public void Perlin()
-    {
-        //generuje szum Perlina
-        // Debug.Log(height);
-        for (int x = 0; x < 2 * size * cameraAspect; x++)
-        {
-
-            for (int lvl = 10; lvl < height; lvl = lvl + 10)
-            {
-                Instantiate(ground, new Vector3(x, (Mathf.PerlinNoise(((float)x) / 35, 0f) * 10) + lvl), Quaternion.identity);
-
-            }
-        }
-    }
-
-    //przyjmuje jako argument prefab, tworzy go na serwerze a nastepnie na klientach
+    //przyjmuje jako argument prefab, tworzy go na serwerzse a nastepnie na klientach
     [Command]
     void CmdSpawnGameObjectOnPosition(GameObject go, float x, float y)
     {
@@ -447,8 +431,22 @@ public class SceneSetup : NetworkBehaviour
         //modyfikuje kamere klienta aby dopasowac do areny
         if (isClient && !isServer)
         {
-            mainCamera.aspect = cameraAspect;
-            SetupCamera(size);
+
+            Debug.Log("scenesetupclient");
+            SetupClientCamera();
+            //StartCoroutine(WaitForArenaMake());
         }
+    }
+    
+    public void SetupClientCamera()
+    {
+        mainCamera.aspect = cameraAspect;
+        SetupCamera(size);
+    }
+
+    IEnumerator WaitForArenaMake()
+    {
+        yield return new WaitWhile(() => !gridDone);
+        SetupClientCamera();
     }
 }

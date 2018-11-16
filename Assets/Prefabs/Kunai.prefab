@@ -335,7 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: 0.1
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -375,7 +375,6 @@ MonoBehaviour:
   maxDurability: 50
   durability: 0
   durabilityImage: {fileID: 0}
-  weaponImage: {fileID: 0}
   PickUpPos: {x: 0.33, y: -0.2, z: 0.03466797}
   PickUpRot: {x: 0, y: 0, z: -177.355}
   handler: {fileID: 0}

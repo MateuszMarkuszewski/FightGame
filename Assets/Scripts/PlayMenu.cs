@@ -9,6 +9,11 @@ public class PlayMenu : MonoBehaviour {
 
     public Button playbutton;
 
+    private void Start()
+    {
+        playbutton.interactable = false;
+    }
+
     private void Update()
     {
         if (GameData.sizeMap != null && GameData.ai != null && !playbutton.interactable)
@@ -42,4 +47,11 @@ public class PlayMenu : MonoBehaviour {
     {
         GameData.ai = false;
     }
+
+    public void ResetSetup()
+    {
+        GameData.ai = null;
+        GameData.sizeMap = null;
+    }
+
 }

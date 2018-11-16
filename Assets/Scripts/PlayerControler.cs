@@ -42,8 +42,10 @@ public class PlayerControler : NetworkBehaviour {
     public bool jump = false;
     private bool keysEnable = true;
     public bool attackEnable = true;
+    public bool networkSetUpDone;
     bool dirToRight = true;
-    public float horizontalMove;
+    //synchronizacja na porzeby animacji
+    [SyncVar] public float horizontalMove;
     private bool ragdoll = false;
     public bool AI = false;
     public NetworkPlayerMovement networkPC;
@@ -84,7 +86,13 @@ public class PlayerControler : NetworkBehaviour {
 
     class ComplateCoroutines { public int num = 0; }
 
-    public override void OnStartClient()
+    IEnumerator WaitForAvatarSetUp()
+    {
+        yield return new WaitWhile(() => !networkSetUpDone);
+        RigsSetUp();
+    }
+
+    void RigsSetUp()
     {
         rigs = GetComponentsInChildren<Rigidbody2D>();
         Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
@@ -95,15 +103,16 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
 
-    void Start ()
+    public override void OnStartClient()
     {
         currentHealth = maxHealth;
+        StartCoroutine(WaitForAvatarSetUp());
+    }
+
+    void Start ()
+    {
         if (hasAuthority)
         {     
-            /*anim = GetComponent<Animator>();
-            rgdBody = GetComponent<Rigidbody2D>();
-            comboManager = GetComponent<ComboManager>();*/
-        
             //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
           /*  Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
             limbs = new Limb[iks.Length];
@@ -133,7 +142,7 @@ public class PlayerControler : NetworkBehaviour {
             }
             if (dashWay != 0)
             {
-                networkPC.CmdDash();
+                networkPC.CmdDash(0.1f, dashWay);
                 StartCoroutine(Dash(0.1f, dashWay));
             }
         }
@@ -141,15 +150,15 @@ public class PlayerControler : NetworkBehaviour {
 
     void Update () {
 
+        if (ragdoll)
+        {
+            return;
+        }
+        //na potrzeby synchronizacji animacji wykonywane na kazdej kopii
+        IsGrounded();
+        canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
         if (hasAuthority)
         {
-            canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
-
-            if (ragdoll)
-            {
-                return;
-            }
-
             if (Input.GetKeyDown(left))
             {
                 if (comboManager.DoubleClick(left))
@@ -164,7 +173,6 @@ public class PlayerControler : NetworkBehaviour {
                     dashWay = 1;
                 }
             }
-            IsGrounded();
             if (AI == false)
             {
                 //postać na ziemi
@@ -203,8 +211,8 @@ public class PlayerControler : NetworkBehaviour {
         ///sprawdza czy postac zyje
         if (currentHealth <= 0)
         {
-            if (weapon != null) DropWeapon();
-            if (!ragdoll) ChangeState();
+            networkPC.CmdDie();
+            Die();            
         }
         /// odwracanie sprita postaci w lewo
         if (horizontalMove < 0 && dirToRight)
@@ -251,7 +259,6 @@ public class PlayerControler : NetworkBehaviour {
             }
         }
     }
-
 
     //skok
     public void Jump()
@@ -384,6 +391,11 @@ public class PlayerControler : NetworkBehaviour {
 /// <summary>
 /// Funkcje ustawiające/zmieniające stan postaci:
 /// </summary>
+    public void Die()
+    {
+        if (weapon != null) DropWeapon();
+        if (!ragdoll) ChangeState();
+    }
 
     IEnumerator DisableKeys(float time)
     {
@@ -492,7 +504,7 @@ public class PlayerControler : NetworkBehaviour {
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         maxcombo = 2;
-        weapon.layer = 10; 
+        weapon.layer = 10;
     }
 
     public void DetachWeapon()
@@ -500,9 +512,18 @@ public class PlayerControler : NetworkBehaviour {
         weapon = null;
     }
 
-  /// <summary>
-  /// Funkcje odpowiedzialne za ragdoll:
-  /// </summary>
+
+
+    //funkcja wywolywana tylko z perspektywy broni w przypadku zniszczenia gdy jest rzymana
+    //czeka az client oraz server zakonczą procesy z tym zwiącane po czym ją niszczy
+    public IEnumerator WaitForDetach()
+    {
+        yield return new WaitWhile(() => weapon == null);
+    }
+
+    /// <summary>
+    /// Funkcje odpowiedzialne za ragdoll:
+    /// </summary>
 
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
@@ -538,7 +559,6 @@ public class PlayerControler : NetworkBehaviour {
         }
         anim.enabled = true;
     }
-
 
     public void ChangeState()
     {
@@ -579,11 +599,11 @@ public class PlayerControler : NetworkBehaviour {
             ragdoll = false;
         }
     }
-
+    
     void OnHealthChange(float health)
     {
         currentHealth = health;
-        healthBar.fillAmount = currentHealth / maxHealth;
+        if(networkSetUpDone)healthBar.fillAmount = currentHealth / maxHealth;
     }
 
 }

@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: 0.1
+  m_SendInterval: 0.033333335
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -523,10 +523,9 @@ MonoBehaviour:
   pickUpTrigger: {fileID: 1570582155791730}
   holdingRig: Skeleton/Pelvis/Torso/R_arm_1/R_arm_2
   restTimeAfterCombo: 1
-  maxDurability: 100
+  maxDurability: 40
   durability: 0
   durabilityImage: {fileID: 0}
-  weaponImage: {fileID: 0}
   PickUpPos: {x: 0.348, y: -0.212, z: -0.03466797}
   PickUpRot: {x: 0, y: 0, z: -184.426}
   handler: {fileID: 0}
