@@ -29,12 +29,12 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     public void CmdJump()
     {
         RpcJump();
-        PC.Jump();
+        //PC.Jump();
     }
     [ClientRpc]
     public void RpcJump()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpcjump");
             PC.Jump();
@@ -45,12 +45,12 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     public void CmdDropAttack()
     {
         RpcDropAttack();
-        PC.DropAttack();
+        //PC.DropAttack();
     }
     [ClientRpc]
     public void RpcDropAttack()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpcdropattak");
             PC.DropAttack();
@@ -77,13 +77,13 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     [Command]
     public void CmdComeDown()
     {
-        PC.ComeDown();
+        //PC.ComeDown();
         RpcComeDown();
     }
     [ClientRpc]
     public void RpcComeDown()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpccd");
             PC.ComeDown();
@@ -94,13 +94,13 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     [Command]
     public void CmdBasicAttack()
     {
-        PC.BasicAttack();
+        //PC.BasicAttack();
         RpcBasicAttack();
     }
     [ClientRpc]
     public void RpcBasicAttack()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpbasicattak");
             PC.BasicAttack();
@@ -112,13 +112,13 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     [Command]
     public void CmdThrow()
     {
-        PC.Throw();
+       // PC.Throw();
         RpcThow();
     }
     [ClientRpc]
     public void RpcThow()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpcthrow");
             PC.Throw();
@@ -129,13 +129,13 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     [Command]
     public void CmdTakeWeapon(GameObject weapon)
     {
-        PC.TakeWeapon(weapon);
+        //PC.TakeWeapon(weapon);
         RpcTakeWeapon(weapon);
     }
     [ClientRpc]
     public void RpcTakeWeapon(GameObject weapon)
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("rpctake");
             PC.TakeWeapon(weapon);
@@ -159,13 +159,13 @@ public class NetworkPlayerMovement : NetworkBehaviour {
     [Command]
     public void CmdDie()
     {
-        PC.Die();
+       // PC.Die();
         RpcDie();
     }
     [ClientRpc]
     public void RpcDie()
     {
-        if (!hasAuthority && !isServer)
+        if (!hasAuthority)
         {
             Debug.Log("die");
             PC.Die();

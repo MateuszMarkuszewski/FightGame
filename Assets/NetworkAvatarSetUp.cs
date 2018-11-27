@@ -18,6 +18,9 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         if (!secondLocalAvatar)
         {
             if (isServer) playerNum = NetworkManager.singleton.numPlayers;//.connections.Count;
+            Debug.Log(playerNum);
+            PC.playerNum = playerNum;
+            ControlsSetUp(GameData.p1);
             SetPlayerUI();
             ActiveHitboxes(true);
             SetPlayerLayer();
@@ -26,12 +29,42 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         }
         else
         {
+            ControlsSetUp(GameData.p2);
             playerNum = 2;
             SetPlayerUI();
             if ((bool)GameData.ai) transform.Find("AITarget").gameObject.SetActive(true);
         }
         PC.networkSetUpDone = true;
     }
+
+    void ControlsSetUp(GameData.Controls player)
+    {
+        if(player.attack.key != null)
+        {
+            PC.attack = (KeyCode)player.attack.key;
+        }
+        if (player.pickUp.key != null)
+        {
+            PC.takeWeapon = (KeyCode)player.pickUp.key;
+        }
+        if (player.up.key != null)
+        {
+            PC.jumpKey = (KeyCode)player.up.key;
+        }
+        if (player.down.key != null)
+        {
+            PC.down = (KeyCode)player.down.key;
+        }
+        if (player.right.key != null)
+        {
+            PC.right = (KeyCode)player.right.key;
+        }
+        if (player.left.key != null)
+        {
+            PC.left = (KeyCode)player.left.key;
+        }
+    }
+
 
     //przypisuje odpowiedni interfejs gracza
     void SetPlayerUI()

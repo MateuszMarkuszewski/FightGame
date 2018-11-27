@@ -9,28 +9,20 @@ public class CustomNetworkManager : NetworkManager {
     public override void OnServerConnect(NetworkConnection conn)
     {
         base.OnServerConnect(conn);
-        NetworkServer.dontListen = true;//tu nie dziala moze serwer nie aktywny
-
-        Debug.Log("onserverconn");
-        if (NetworkServer.connections.Count == 2) GameData.secondClientConnected = true;
-    }
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-        //GameData.secondClientConnected = true;
+        //nie słucha do momentu wygenerowania areny
+        NetworkServer.dontListen = true;
+        Debug.Log(singleton.numPlayers);
+        if (singleton.numPlayers == 1) GameData.secondClientConnected = true;
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)
     {
-
-        NetworkServer.dontListen = true;//byc moze nie potrzebne 
+        //w chwili wyjscia klienta restartowana jest rozgrywka
+        //alternatywa: zapisywanie transform i currentHealth w GameData// problem z trzymaną bronią
+        NetworkServer.dontListen = true;
         GameData.secondClientConnected = false;
         base.OnServerDisconnect(conn);
-        Debug.Log(NetworkManager.singleton.numPlayers);
         NetworkManager.singleton.ServerChangeScene(onlineScene);
-
     }
-
-
 
 }

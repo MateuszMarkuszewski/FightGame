@@ -542,6 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dmg: 25
+  networkIdentity: {fileID: 114158733195347920}
 --- !u!114 &114998495303941662
 MonoBehaviour:
   m_ObjectHideFlags: 1

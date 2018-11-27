@@ -89,7 +89,7 @@ public class WeaponControler : NetworkBehaviour {
 
     private void Update()
     {
-        if(durability < 0)
+        if(durability <= 0)
         {
             if (isServer) sceneMenager.DecreaseWeaponNum(gameObject);         
             NetworkServer.Destroy(gameObject);

@@ -36,7 +36,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4254819288032920}
   - component: {fileID: 61958233129011906}
-  - component: {fileID: 114936185940615516}
+  - component: {fileID: 114819120240512532}
   m_Layer: 11
   m_Name: AttackCollider
   m_TagString: Hitbox
@@ -379,6 +379,19 @@ MonoBehaviour:
   PickUpRot: {x: 0, y: 0, z: -177.355}
   handler: {fileID: 0}
   sceneMenager: {fileID: 0}
+--- !u!114 &114819120240512532
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1341876507840060}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28a2928bbe4428d42887b6be62bff3da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 10
+  networkIdentity: {fileID: 114884553463489048}
 --- !u!114 &114884553463489048
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -411,18 +424,6 @@ MonoBehaviour:
     i15: 211
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
---- !u!114 &114936185940615516
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1341876507840060}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28a2928bbe4428d42887b6be62bff3da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 10
 --- !u!212 &212307438227383422
 SpriteRenderer:
   m_ObjectHideFlags: 1

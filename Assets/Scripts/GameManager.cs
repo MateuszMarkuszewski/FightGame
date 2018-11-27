@@ -3,19 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using UnityEngine.Events;
+using TMPro;
+
+
+[System.Serializable]
+public class IntEvent : UnityEvent<int>
+{
+}
 
 public class GameManager : NetworkBehaviour {
 
+    public static IntEvent deadEvent;
     public static bool paused = false;
     public GameObject pauseMenu;
     public List<GameObject> aiGameObjects;
     public GameObject connectionWaitMenu;
     public GameObject secondAvatarPrefab;
     GameObject secondAvatar;
-
-
-	void Start () {
+    public GameObject endGameMenu;
+    public GameObject winnerTextSpot;
+    
+    public override void OnStartClient()
+    {       
         if (isClient) WaitingMenuActive(false);
+
+        if (deadEvent == null)
+            deadEvent = new IntEvent();
+
+        deadEvent.AddListener(GameOver);
 
         if (GameData.ai == null)
         {
@@ -35,18 +51,21 @@ public class GameManager : NetworkBehaviour {
     }
     private void Update()
     {
-        Debug.Log(NetworkServer.dontListen);
+        //Debug.Log(NetworkServer.dontListen);
         if (isServer && GameData.ai == null)
         {//zeby ciagle nie zmienialo
             if (!GameData.secondClientConnected)
             {
-                Time.timeScale = 0f;
-                WaitingMenuActive(true);
+                if (!connectionWaitMenu.activeSelf)
+                {
+                    Time.timeScale = 0f;
+                    WaitingMenuActive(true);
+                }            
             }
-            else
-            {
+            else if(connectionWaitMenu.activeSelf)
+            {                              
                 Time.timeScale = 1f;
-                WaitingMenuActive(false);
+                WaitingMenuActive(false);              
             }
         }
         
@@ -54,14 +73,42 @@ public class GameManager : NetworkBehaviour {
         {
             if (!paused)
             {
-                PauseGame();
+                //PauseGame();
+                CmdPauseGame();
             }
             else
             {
-                ResumeGame();
+                // ResumeGame();
+                CmdResumeGame();
             }
             
         }
+    }
+
+    [Command]
+    void CmdPauseGame()
+    {
+        RpcPauseGame();
+    }
+    [ClientRpc]
+    void RpcPauseGame()
+    {
+        paused = !paused;
+        Time.timeScale = 0f;
+        pauseMenu.SetActive(true);
+    }
+
+    [Command]
+    void CmdResumeGame()
+    {
+        RpcResumeGame();
+    }
+    [ClientRpc]
+    void RpcResumeGame()
+    {
+        paused = !paused;
+        Time.timeScale = 1f;
+        pauseMenu.SetActive(false);
     }
 
     void PauseGame()
@@ -70,6 +117,7 @@ public class GameManager : NetworkBehaviour {
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
     }
+
     public void ResumeGame()
     {
         paused = !paused;
@@ -90,7 +138,7 @@ public class GameManager : NetworkBehaviour {
         }
         else
         {
-            NetworkServer.Reset();
+            //NetworkServer.Reset();
             NetworkManager.singleton.StopClient();
         }
     }
@@ -100,27 +148,27 @@ public class GameManager : NetworkBehaviour {
         if(connectionWaitMenu.activeSelf != set) connectionWaitMenu.SetActive(set);
     }
 
+    void GameOver(int i)
+    {
+        Debug.Log("GameOver" + i);
+        endGameMenu.SetActive(true);
+        //Time.timeScale = 0f;
+        winnerTextSpot.GetComponent<TextMeshProUGUI>().SetText("Game Over \nPlayer" + i + " won");
+    }
 
+    public void RestartGame()
+    {
+        /* NetworkServer.dontListen = true;
+         GameData.secondClientConnected = false;*/
 
+        //NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+        CmdRestartGame();
+    }
 
-  
-    
-    
-   [Command]
-    public void CmdStartGame()
-    {      
-        Debug.Log(NetworkServer.connections.Count);
-        if (isServer && NetworkServer.connections.Count == 2)
-        {
-            NetworkServer.dontListen = true;
-            Time.timeScale = 1f;
-            connectionWaitMenu.SetActive(false);
-        }
-        else if(isServer)
-        {
-            NetworkServer.dontListen = false;
-            Time.timeScale = 0f;
-            connectionWaitMenu.SetActive(true);
-        }
+    [Command]
+    public void CmdRestartGame()
+    {
+        NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+
     }
 }

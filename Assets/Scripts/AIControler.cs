@@ -155,26 +155,28 @@ public class AIControler : MonoBehaviour {
     
     public void Djikstra(Node current)
     {
+        //lista wierzchołków, dla których najkrótsze ścieżki nie zostały jeszcze policzone
         List<Node> Q = new List<Node>(arenaData.nodes);
+        //lista wierzchołków o policzonych już najkrótszych ścieżkach
         List<Node> S = new List<Node>();
+        //tablica odległości między wierzchołkami
         float[] wayCost = new float[arenaData.nodes.Count];
+        //tablica poprzedników na ścieżkach
         int[] prevNode = new int[arenaData.nodes.Count];
-
         //wypelnienie tablic wartosciami
         for(int i = 0; i < wayCost.Length; i++)
         {
             wayCost.SetValue(Mathf.Infinity, i);
             prevNode.SetValue(-1, i);
-        }
-        
+        }       
+        //droga do samego siebie jest równa 0
         wayCost[current.nodeNum] = 0;
-
-        //targets.contains
+        //operacje wykonywane do momentu znaleźienia wierzchołka w którym znajduje się cel
         while (!current.targets.Contains(target))//currentNode.GetComponent<Node>().enemy == false)
         {
             S.Add(current);
             Q.Remove(current);
-            //liczenie watrosci dla sasiadów ze zbioru Q
+            //liczenie watrości dla sąsiadów wierzchołka znajdujących się w liście Q
             for (int i = 0; i < current.neighbours.Count; i++)
             {
                 if (Q.Contains(current.neighbours[i]))
@@ -186,8 +188,8 @@ public class AIControler : MonoBehaviour {
                     }
                 }
             }
-
-            //szukanie najktótszej drogi w zbiorze Q
+            //szukanie najktótszej drogi do następnego wierzchołka w zbiorze Q
+            //będzie on rozpatrywany przy następnym obiegu pętli
             float tmp = Mathf.Infinity;
             for(int j = 0; j < wayCost.Length; j++)
             {
@@ -198,13 +200,15 @@ public class AIControler : MonoBehaviour {
                 }
             }
         }
+        //usunięcie wcześniej znalezionej drogi
         way.Clear();
+        //tworzenie listy kolejnych wierzchołków drogi do przebycia za pomocą tablicy poprzedników
+        //ostatni na liście to wierzchołek w którym znajduje się bot, a w pierwszym znajduje się cel
         while(prevNode[current.nodeNum] != -1)
         {
             way.Add(current.gameObject);
             current = arenaData.nodes[prevNode[current.nodeNum]];
         }
-        //Debug.Log("----------------------------------");
     }
 
     //porusza postacią tak aby doprowadzić ją do celu
@@ -357,4 +361,5 @@ public class AIControler : MonoBehaviour {
              way.RemoveAt(way.Count - 1);
          }*/
     }
+
 }

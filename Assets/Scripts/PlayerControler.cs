@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 public class PlayerControler : NetworkBehaviour {
 
     //statystyki
+    public int playerNum;
     public float heroSpeed;
     public float jumpForce;
     public int throwSpeed;
@@ -57,7 +58,7 @@ public class PlayerControler : NetworkBehaviour {
     private int maxcombo = 2;
     private float lastAttackTime = 0;
     private float timeBetweenAttack = 0.3f;
-    private Vector2 ragdollForce;
+    [SyncVar]private Vector2 ragdollForce;
     private struct Stun
     {
         public static float dmgToStun = 50f;
@@ -67,7 +68,6 @@ public class PlayerControler : NetworkBehaviour {
         public float lastHealth;
     }
     private Stun stunControler;
-    Quaternion rotation;
 
     //struktura przechowująca kości i ik 
     //używana przy podnoszeniu postaci
@@ -211,8 +211,8 @@ public class PlayerControler : NetworkBehaviour {
         ///sprawdza czy postac zyje
         if (currentHealth <= 0)
         {
-            networkPC.CmdDie();
-            Die();            
+            Die();
+            GameManager.deadEvent.Invoke(playerNum);
         }
         /// odwracanie sprita postaci w lewo
         if (horizontalMove < 0 && dirToRight)
@@ -437,26 +437,19 @@ public class PlayerControler : NetworkBehaviour {
     }
 
     //zmniejsza HP 
-    public void DealDamage(int dmg)
-    {
-        if (hasAuthority)
-        {
-            horizontalMove = 0;
-            anim.SetTrigger("TakeHit");
-            CmdReduceHealth(dmg);
-        }
-        /*
-        if (Time.time - stunControler.lastTime > Stun.timeForDmg)
-        {
-            stunControler.lastTime = Time.time;
-            stunControler.lastHealth = currentHealth;
-        }*/
-    }
     [Command]
-    void CmdReduceHealth(int dmg)
+    public void CmdReduceHealth(int dmg)
     {
+        anim.SetTrigger("TakeHit");
         currentHealth = currentHealth - dmg;
-        healthBar.fillAmount = currentHealth / maxHealth;
+        Debug.Log("health - " + currentHealth);
+    }
+
+    public void ReduceHealth(int dmg)
+    {
+        anim.SetTrigger("TakeHit");
+        currentHealth = currentHealth - dmg;
+        Debug.Log("health - " + currentHealth);
     }
 
     IEnumerator CheckIfStuned()
