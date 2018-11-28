@@ -8,24 +8,71 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
 
     public bool secondLocalAvatar;
     public PlayerControler PC;
-    [SyncVar]public int playerNum;
+    [SyncVar]public int playerNum = 0;
     public GameObject[] hitboxes;
+    [SyncVar]public bool authorityAssigned = false;
+
+
+    [Command]
+    public void CmdSetPlayerNum(int num)
+    {
+        playerNum = num;
+    }
+
+    [Command]
+    public void CmdAuthorityConfirmation()
+    {
+        authorityAssigned = true;
+    }
+
+    public override void OnStartAuthority()
+    {
+        CmdAuthorityConfirmation();
+    }
+
+    IEnumerator WaitForAuthority()
+    {
+        yield return new WaitWhile(() => !authorityAssigned);
+        AvatarNumberSetUp();
+    }
+    //
+    IEnumerator WaitForSynchronization()
+    {
+        yield return new WaitWhile(() => playerNum == 0);
+        AvatarSetUp();
+    }
+
+    //numer avatara ustala klient który ma nad nim władzę
+    void AvatarNumberSetUp()
+    {
+        if (hasAuthority)
+        {
+            CmdSetPlayerNum(NetworkManager.singleton.client.connection.connectionId + 1);
+        }
+        StartCoroutine(WaitForSynchronization());
+    }
+
+    void AvatarSetUp()
+    {
+        //if (isServer) playerNum = NetworkManager.singleton.numPlayers;//.connections.Count;
+        Debug.Log("playernum " + playerNum);
+        PC.playerNum = playerNum;
+        ControlsSetUp(GameData.p1);
+        SetPlayerUI();
+        ActiveHitboxes(true);
+        SetPlayerLayer();
+        SetLayerToJumpTest();
+        ActiveHitboxes(false);
+        PC.networkSetUpDone = true;
+    }
 
     //wykonywane na wszytki kopiach tego obiektu
-    //ustala którym graczem jest client i dostosowuje elementy
+    //ustala numer avatara i dostosowuje elementy
     public override void OnStartClient()
     {
-        if (!secondLocalAvatar)
+        if (!secondLocalAvatar)//aby ustalic numer avatara potrzebna jest wartosc hasAuthority która tu jest jeszcze nie ustalona
         {
-            if (isServer) playerNum = NetworkManager.singleton.numPlayers;//.connections.Count;
-            Debug.Log(playerNum);
-            PC.playerNum = playerNum;
-            ControlsSetUp(GameData.p1);
-            SetPlayerUI();
-            ActiveHitboxes(true);
-            SetPlayerLayer();
-            SetLayerToJumpTest();
-            ActiveHitboxes(false);
+            StartCoroutine(WaitForAuthority());
         }
         else
         {
@@ -33,8 +80,9 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
             playerNum = 2;
             SetPlayerUI();
             if ((bool)GameData.ai) transform.Find("AITarget").gameObject.SetActive(true);
+            PC.networkSetUpDone = true;
         }
-        PC.networkSetUpDone = true;
+        
     }
 
     void ControlsSetUp(GameData.Controls player)
@@ -70,8 +118,12 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
     void SetPlayerUI()
     {
         Transform playerInterface = GameObject.Find("Canvas").transform.Find("Player" + playerNum);
-        SetPlayerHealthBar(playerInterface.Find("Healthbar").Find("RedBar").Find("GreenBar").GetComponent<Image>());
-        SetPlayerWeaponUI(playerInterface.Find("WeaponDurability").GetComponent<Image>());
+        Image healthBar = playerInterface.Find("Healthbar").Find("RedBar").Find("GreenBar").GetComponent<Image>();
+        Image weaponDurability = playerInterface.Find("WeaponDurability").GetComponent<Image>();
+        SetPlayerHealthBar(healthBar);
+        SetPlayerWeaponUI(weaponDurability);
+
+        healthBar.fillAmount = 1;
     }
     
     void SetPlayerHealthBar(Image img)

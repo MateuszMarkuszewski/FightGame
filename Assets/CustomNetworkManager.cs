@@ -5,14 +5,27 @@ using UnityEngine.Networking;
 
 public class CustomNetworkManager : NetworkManager {
 
+    public GameManager gameManager;
     
     public override void OnServerConnect(NetworkConnection conn)
     {
         base.OnServerConnect(conn);
         //nie słucha do momentu wygenerowania areny
         NetworkServer.dontListen = true;
-        Debug.Log(singleton.numPlayers);
-        if (singleton.numPlayers == 1) GameData.secondClientConnected = true;
+
+
+        if (singleton.numPlayers == 1)
+        {
+            GameData.secondClientConnected = true;
+        }
+    }
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        base.OnServerAddPlayer(conn, playerControllerId);
+        if (singleton.numPlayers == 2)//nadaje władze nad obiketem GameManager drugiemu klientowi aby ten mógł wysyłać żadania do serwera
+        {
+            gameManager.GetComponent<NetworkIdentity>().AssignClientAuthority(conn);
+        }
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)

@@ -2057,6 +2057,17 @@ Prefab:
       propertyPath: winnerTextSpot
       value: 
       objectReference: {fileID: 1006450752}
+    - target: {fileID: 114758091719823030, guid: 5f648dbcd2c25e847af53da2f6095174,
+        type: 2}
+      propertyPath: m_LocalPlayerAuthority
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114329607790949218, guid: 5f648dbcd2c25e847af53da2f6095174,
+        type: 2}
+      propertyPath: clientsGameController
+      value: 
+      objectReference: {fileID: 1087591088722902, guid: fd63daebca765a34eacb06c0d4ef7d3c,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f648dbcd2c25e847af53da2f6095174, type: 2}
   m_IsPrefabAsset: 0

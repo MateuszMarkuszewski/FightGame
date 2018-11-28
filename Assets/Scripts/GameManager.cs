@@ -12,7 +12,7 @@ public class IntEvent : UnityEvent<int>
 {
 }
 
-public class GameManager : NetworkBehaviour {
+    public class GameManager : NetworkBehaviour {
 
     public static IntEvent deadEvent;
     public static bool paused = false;
@@ -23,9 +23,14 @@ public class GameManager : NetworkBehaviour {
     GameObject secondAvatar;
     public GameObject endGameMenu;
     public GameObject winnerTextSpot;
-    
+
+    public override void OnStartServer()
+    {
+        NetworkManager.singleton.GetComponent<CustomNetworkManager>().gameManager = this;
+    }
+
     public override void OnStartClient()
-    {       
+    {
         if (isClient) WaitingMenuActive(false);
 
         if (deadEvent == null)
@@ -163,12 +168,26 @@ public class GameManager : NetworkBehaviour {
 
         //NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
         CmdRestartGame();
+        
     }
 
     [Command]
     public void CmdRestartGame()
     {
-        NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+        RpcRespawnPlayer();
+       // NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+    }
 
+    //usunięcie avatara i stworzenie nowego
+    [ClientRpc]
+    public void RpcRespawnPlayer()
+    {
+        //przypisanie części avatara która była "odczepiona" w chwili śmierci, tak aby ona również była usunięta
+        NetworkManager.singleton.client.connection.playerControllers[0].gameObject.GetComponent<PlayerControler>().AssingSkeleton();
+        short playerId = NetworkManager.singleton.client.connection.playerControllers[0].playerControllerId;
+        ClientScene.RemovePlayer(playerId);
+        ClientScene.AddPlayer(NetworkManager.singleton.client.connection, playerId);
+
+        endGameMenu.SetActive(false);
     }
 }

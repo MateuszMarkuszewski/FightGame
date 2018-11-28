@@ -20589,6 +20589,7 @@ MonoBehaviour:
   matchSize: 4
   isNetworkActive: 0
   matchMaker: {fileID: 0}
+  gameManager: {fileID: 0}
 --- !u!4 &1885233760
 Transform:
   m_ObjectHideFlags: 0

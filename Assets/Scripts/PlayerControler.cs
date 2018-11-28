@@ -47,7 +47,7 @@ public class PlayerControler : NetworkBehaviour {
     bool dirToRight = true;
     //synchronizacja na porzeby animacji
     [SyncVar] public float horizontalMove;
-    private bool ragdoll = false;
+    public bool ragdoll = false;
     public bool AI = false;
     public NetworkPlayerMovement networkPC;
     public bool getDownFromPlatform = false;
@@ -573,12 +573,7 @@ public class PlayerControler : NetworkBehaviour {
         }
         else if (ragdoll == true)
         {
-            //tu można animacje wstawania, tylko podnoszenie kregosłupa
-            //anim.enabled = true;
-            //anim.SetTrigger("standUp");
-            //zmieniam najpierw na static żeby zatrzymać siły działające na objekty
             limbs[0].ik.SetParent(gameObject.transform);
-            //limbs[0].ik.GetComponentInParent<Rigidbody2D>().WakeUp();
             limbs[1].ik.gameObject.SetActive(true);
 
             foreach (Rigidbody2D rig in rigs)
@@ -586,13 +581,25 @@ public class PlayerControler : NetworkBehaviour {
                 rig.bodyType = RigidbodyType2D.Kinematic;
             }
 
-            StartCoroutine(StandUp(limbs));
+            //StartCoroutine(StandUp(limbs));
             rgdBody.bodyType = RigidbodyType2D.Dynamic;
+            anim.enabled = true;
 
+            foreach (Limb limb in limbs)
+            {
+                limb.ik.transform.localPosition = limb.orgPosition;
+            }
             ragdoll = false;
         }
     }
-    
+
+    //przyłączenie częsci avatara odpadającej w chwili śmierci
+    public void AssingSkeleton()
+    {
+        limbs[0].ik.SetParent(gameObject.transform);
+    }
+
+    //synchronizacja zdrowia
     void OnHealthChange(float health)
     {
         currentHealth = health;
