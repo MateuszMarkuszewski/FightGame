@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -9,44 +8,61 @@ public class PlayMenu : MonoBehaviour {
 
     public Button playbutton;
 
-    private void Start()
-    {
-        playbutton.interactable = false;
-    }
 
     private void Update()
     {
-        if (GameData.sizeMap != null && GameData.ai != null && !playbutton.interactable)
+        //kontrola dostępności przycisku rozpoczynającego rozgrywkę
+        if (GameData.sizeMap != null && GameData.ai != null)
         {
             playbutton.interactable = true;
         }
+        else
+        {
+            playbutton.interactable = false;
+        }
     }
 
-    public void Play()
+    //przypisane do checkboxów ustawiających rozmiar areny
+    //bool active - zaznaczenie checkboxa
+    //obiekty te są w grupach gdzie tylko jeden checkbox może być aktywny
+    //jeśli podczas zaznaczania jakiś jest już atywny to najpierw jest dezaktywowany
+    public void SetSmallArena(bool active)
     {
-        SceneManager.LoadScene(1);
+        if(active)
+            GameData.sizeMap = 6;
+        else GameData.sizeMap = null;
+
+    }
+    public void SetMediumArena(bool active)
+    {
+        if (active)
+            GameData.sizeMap = 8;
+        else GameData.sizeMap = null;
+
+    }
+    public void SetLargeArena(bool active)
+    {
+        if (active)
+            GameData.sizeMap = 10;
+        else GameData.sizeMap = null;
+
     }
 
-    public void SetSmallArena()
+    //funkcje przypisane do checkboxów pvp i pvai
+    //tylko jeden może być zaznaczony, działa jak wyżej
+    public void EnableAI(bool active)
     {
-        GameData.sizeMap = 6;
+        if (active)
+            GameData.ai = true;
+        else GameData.ai = null;
     }
-    public void SetMediumArena()
+    public void DisableAI(bool active)
     {
-        GameData.sizeMap = 8;
+        if (active)
+            GameData.ai = false;
+        else GameData.ai = null;
     }
-    public void SetLargeArena()
-    {
-        GameData.sizeMap = 10;
-    }
-    public void EnableAI()
-    {
-        GameData.ai = true;
-    }
-    public void DisableAI()
-    {
-        GameData.ai = false;
-    }
+    
 
     public void ResetSetup()
     {

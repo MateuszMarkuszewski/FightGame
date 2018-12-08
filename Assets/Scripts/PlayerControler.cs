@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class PlayerControler : NetworkBehaviour {
 
-    //statystyki
+    ////statystyki
     public int playerNum;
     public float heroSpeed;
     public float jumpForce;
@@ -15,50 +15,61 @@ public class PlayerControler : NetworkBehaviour {
     public float maxHealth;
     [SyncVar(hook = "OnHealthChange")]
     public float currentHealth;
-    //klawisze
+    ////klawisze
     public KeyCode left;
     public KeyCode right;
     public KeyCode jumpKey;
     public KeyCode down;
     public KeyCode attack;
     public KeyCode takeWeapon;
-    //testery
+    ////testery
     public Transform groundTester;
-    public LayerMask layersToTest;
-    public Transform throwPoint;
+    public LayerMask layersToTest;   
     private float radius = 0.1f;
-    //GUI
+    ////GUI
     public Image healthBar;
     public Image weaponDurability;
-    //komponenty
+    ////komponenty
     public Animator anim;
     public Rigidbody2D rgdBody;
     public ComboManager comboManager;
     public Rigidbody2D[] rigs;
     public TrailRenderer[] trailEffect;
-    //stany
+    public NetworkPlayerMovement networkPC;
+    ////stany
     private bool canJump = false;
     public int dashWay = 0;
     public bool drop = false;
     public bool jump = false;
+    //na potrzeby wyłączenia manewrów w pewnych okolicznościach
     private bool keysEnable = true;
     public bool attackEnable = true;
+    //zmienna opisująca czy avatar został przygotowany do rozgrywki
     public bool networkSetUpDone;
+    //czy sprite obrucony w prawo
     bool dirToRight = true;
-    //synchronizacja na porzeby animacji
+    //przyjmuje wartości -1,0,1 w zależności od kierunku poruszania
     [SyncVar] public float horizontalMove;
     public bool ragdoll = false;
-    public bool AI = false;
-    public NetworkPlayerMovement networkPC;
+    //wyłącza możliwość kierowania postacią bota
+    public bool AI = false;  
     public bool getDownFromPlatform = false;
+    //platforma na której gracz stoi (w komendzie do serwera nie można przekazywać komponentów, więc w ten sposób)
     Collider2D platformBehind;
-    //walka
+    ////walka
+    public Transform throwPoint;
+    //trzymana broń
     public GameObject weapon = null;
+    //sekwencja ataków bez broni
     private int combo = 1;
     private int maxcombo = 2;
     private float lastAttackTime = 0;
     private float timeBetweenAttack = 0.3f;
+    //siła w którą zostanie avatar popchnięty w chwili śmierci
     [SyncVar]private Vector2 ragdollForce;
+
+    //zmienne opisujące ogłuszenie
+    //funkcjonalność niedostępna w tej wersji gry z powodu niezadowalających sposobów na wstawanie postaci
     private struct Stun
     {
         public static float dmgToStun = 50f;
@@ -70,7 +81,7 @@ public class PlayerControler : NetworkBehaviour {
     private Stun stunControler;
 
     //struktura przechowująca kości i ik 
-    //używana przy podnoszeniu postaci
+    //używana m.in. przy wstawaniu postaci (podnoszenie postaci niedostępna w tej wersji gry)
     public struct Limb
     {
         public Vector3 orgPosition;
@@ -83,8 +94,8 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
     public Limb[] limbs;
-
     class ComplateCoroutines { public int num = 0; }
+
 
     IEnumerator WaitForAvatarSetUp()
     {
@@ -109,21 +120,8 @@ public class PlayerControler : NetworkBehaviour {
         StartCoroutine(WaitForAvatarSetUp());
     }
 
-    void Start ()
-    {
-        if (hasAuthority)
-        {     
-            //tworze listę objektów limbs która służy do ustawiania postaci do pozycji stojącej
-          /*  Transform[] iks = GetComponentInChildren<Transform>().Find("Skeleton").gameObject.GetComponentsInChildren<Transform>();
-            limbs = new Limb[iks.Length];
-            for(int i=0; i<iks.Length; i++)
-            {
-                limbs[i] = new Limb(iks[i]);
-            }*/
-        }
-        //StartCoroutine(CheckIfStuned());
-    }
-
+    //wykonywana przy każdej aktualizacji fizyki
+    //wywoływane są tu manewry wpływające na Rigidbody2D
     private void FixedUpdate()
     {
         if (hasAuthority)
@@ -148,15 +146,17 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
 
+    //wywoływana co klatkę
     void Update () {
-
+        //uniemożliwienie poruszania się pokonanej postaci
         if (ragdoll)
         {
             return;
         }
         //na potrzeby synchronizacji animacji wykonywane na kazdej kopii
-        IsGrounded();
         canJump = Physics2D.OverlapCircle(groundTester.position, radius, layersToTest);
+        IsGrounded();
+
         if (hasAuthority)
         {
             if (Input.GetKeyDown(left))
@@ -200,7 +200,7 @@ public class PlayerControler : NetworkBehaviour {
                 {
                     jump = true;
                 }
-
+                //rzut bronią
                 if (Input.GetKeyDown(takeWeapon) && Input.GetKeyDown(attack) && (weapon != null) && keysEnable)
                 {
                     networkPC.CmdThrow();
@@ -215,22 +215,21 @@ public class PlayerControler : NetworkBehaviour {
             GameManager.deadEvent.Invoke(playerNum);
         }
         /// odwracanie sprita postaci w lewo
-        if (horizontalMove < 0 && dirToRight)
+        if (dirToRight && horizontalMove < 0)
         {
             Flip();
         }
         /// odwracanie sprita postaci w prawo
-        if (horizontalMove > 0 && !dirToRight)
+        if (!dirToRight && horizontalMove > 0)
         {
             Flip();
         }
         if (!anim.GetBool("InAir")) anim.SetFloat("speed", Mathf.Abs(horizontalMove));
     }
 
-    /// <summary>
-    /// Funkcje odpowiedzialne za kontrole postaci:
-    /// </summary>
-    /// 
+
+    //// Funkcje odpowiedzialne za kontrole postaci:
+
     public void Move(float way)
     {
        rgdBody.velocity = new Vector2(way * heroSpeed, rgdBody.velocity.y);       
@@ -241,19 +240,20 @@ public class PlayerControler : NetworkBehaviour {
     {
         if (attackEnable)
         {
+            //pomiędzy atakami jest przerwa pozwalająca skończyć animację
             if ( Time.time - lastAttackTime >= timeBetweenAttack)
             {
+                //wybierany krok w sekwencji ataków
                 combo = comboManager.Step(combo, maxcombo);
+                //po wykonaniu całej sekwencji możliwość ataku zostaje na jakiś czas wyłączona
                 if (combo == maxcombo) StartCoroutine(DisableAttack(1f));
                 try
                 {
                     anim.SetTrigger(weapon.name + "-attack" + combo);
-                    //StartCoroutine(DisableKeys(timeBetweenAttack));
                 }
                 catch
                 {
                     anim.SetTrigger("NoWeapon-attack" + combo);
-                    //StartCoroutine(DisableKeys(timeBetweenAttack));
                 }
                 lastAttackTime = Time.time;
             }
@@ -287,21 +287,22 @@ public class PlayerControler : NetworkBehaviour {
         if (weapon == null)
         {
             weapon = w;
-            //ustawienie inferfejsu
-            weapon.GetComponent<WeaponControler>().durabilityImage = weaponDurability;
+            WeaponControler WC = weapon.GetComponent<WeaponControler>();
+            //ustawienie inferfejsu broni
+            WC.durabilityImage = weaponDurability;
             weaponDurability.gameObject.SetActive(true);
             weaponDurability.sprite = weapon.GetComponent<SpriteRenderer>().sprite;
-            //
-            weapon.GetComponent<WeaponControler>().HandleWeapon(gameObject.transform);
-                //SendMessage("HandleWeapon", gameObject.transform);
-            maxcombo = weapon.GetComponent<WeaponControler>().maxcombo;
-            //rebind poniewaz bron nie jest nieodłącznym elementem postaci i przed tym nie wie o jaki attackcollider chodzi
+            //dostosowanie broni
+            WC.HandleWeapon(gameObject.transform);
+            maxcombo = WC.maxcombo;
+            //rebind poniewaz bron nie jest nieodłącznym elementem postaci i Animator niezawiera referencji do niej
             anim.Rebind();
             anim.SetBool(weapon.name, true);
             anim.SetBool("NoWeapon", false);
         }
     }
-
+    
+    //atak z powietrza
     public void DropAttack()
     { 
         rgdBody.velocity = new Vector2(0f, -20f);
@@ -309,22 +310,27 @@ public class PlayerControler : NetworkBehaviour {
         drop = false;
     }
 
+    //zryw
     public IEnumerator Dash(float dashTime, float way)
     {
+        //way działa analogicznie do horizontalMove
         float startTime = Time.time;
+        //aby zryw został wykonanay raz
         dashWay = 0;
+        //ograniczenie kontroli
         StartCoroutine(DisableKeys(dashTime));
+        //dodatkowe efekty graficzne
         foreach (TrailRenderer trail in trailEffect)
         {
             trail.Clear();
             trail.gameObject.SetActive(true);
         }
         anim.SetBool("dash", true);
+        //kontynuowanie/zmiana ruchu gdy postać w powietrzu
         horizontalMove = way;
         while (Time.time - startTime <= dashTime)
         {
             rgdBody.velocity = new Vector2(way * 50f, 0f);
-            //rgdBody.AddForce(new Vector2(way * 10000f, 0f));
             yield return null;
         }
         anim.SetBool("dash", false);
@@ -332,18 +338,9 @@ public class PlayerControler : NetworkBehaviour {
         {
             trail.gameObject.SetActive(false);
         }
-        //rgdBody.velocity = new Vector2(0f, 0f);
     }
 
-    void Block()
-    {
-        anim.SetTrigger("block");
-    }
-
-
-    /// <summary>
-    /// Wykrywanie kolizji:
-    /// </summary>
+    //// Wykrywanie kolizji:
 
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -361,12 +358,12 @@ public class PlayerControler : NetworkBehaviour {
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        //"złapanie" się ściany
         if (collision.gameObject.tag == "Wall" && anim.GetBool("InAir"))
         {
             anim.SetBool("wallstay",true);
             if (Input.GetKeyDown(jumpKey) && hasAuthority)
             {
-
                 anim.SetBool("wallstay", false);
                 horizontalMove = collision.contacts[0].normal.x;
                 jump = true;
@@ -388,15 +385,16 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
 
-/// <summary>
-/// Funkcje ustawiające/zmieniające stan postaci:
-/// </summary>
+    //// Funkcje ustawiające/zmieniające stan postaci:
+
+    //śmierć avatara
     public void Die()
     {
         if (weapon != null) DropWeapon();
         if (!ragdoll) ChangeState();
     }
 
+    //ograniczenie możliwości kontroli
     IEnumerator DisableKeys(float time)
     {
         keysEnable = false;
@@ -404,6 +402,7 @@ public class PlayerControler : NetworkBehaviour {
         keysEnable = true;     
     }
 
+    //ograniczenie możliwości ataku
     IEnumerator DisableAttack(float time)
     {
         attackEnable = false;
@@ -411,6 +410,7 @@ public class PlayerControler : NetworkBehaviour {
         attackEnable = true;
     }
 
+    //po zejściu z platformy, przywraca kolizję
     IEnumerator ReturnCollision(Collider2D coll1, Collider2D coll2)
     {
         yield return new WaitForSeconds(0.5f);
@@ -429,22 +429,14 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
 
-    /// w objekcie postaci zmienia wartosc Transform>Scale>x aby odwrócić sprite w drugą stronę
+    // w objekcie postaci zmienia wartosc Transform>Scale>x aby odwrócić sprite w drugą stronę
     void Flip()
     {
         dirToRight = !dirToRight;
         gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
     }
 
-    //zmniejsza HP 
-    [Command]
-    public void CmdReduceHealth(int dmg)
-    {
-        anim.SetTrigger("TakeHit");
-        currentHealth = currentHealth - dmg;
-        Debug.Log("health - " + currentHealth);
-    }
-
+    //zmniejsza ilość życia, wykonywane tylko na serwerze
     public void ReduceHealth(int dmg)
     {
         anim.SetTrigger("TakeHit");
@@ -452,6 +444,7 @@ public class PlayerControler : NetworkBehaviour {
         Debug.Log("health - " + currentHealth);
     }
 
+    //nieobecne w ostatecznej wersji gry
     IEnumerator CheckIfStuned()
     {
         while(true)
@@ -469,20 +462,22 @@ public class PlayerControler : NetworkBehaviour {
         }
     }
 
+    //zapisanie siły która będzie działać na postać w przypadku śmierci
     public void SaveForce(Vector2 f)
     {
         ragdollForce = f;
     }
 
-    //event wywoływany przez animacje
+    //event wywoływany przez animacje, rzuca bronią
     void ThrowEvent(float angle)
     {
         DropWeapon();
         weapon.GetComponent<WeaponControler>().AddToArena();
+        //nadanie obiektowi siły
         weapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(throwSpeed * transform.localScale.x, angle), ForceMode2D.Impulse);
+        //zwrucenie broni ostrzem w stronę w którą zwrucony jest avatar
         weapon.transform.rotation = Quaternion.Euler(0, 0, (dirToRight ? -1f : 1f) * 90 - (dirToRight ? -angle : angle));
         weapon.transform.Find("AttackCollider").gameObject.SetActive(true);
-        //weapon.GetComponent<Collider2D>().isTrigger = false;
         DetachWeapon();
     }
 
@@ -493,31 +488,23 @@ public class PlayerControler : NetworkBehaviour {
         weaponDurability.gameObject.SetActive(false);
         weapon.transform.parent = null;
         anim.Rebind();
-        weapon.transform.position = throwPoint.transform.position;     
+        weapon.transform.position = throwPoint.transform.position;    
+        //zmiana stanu broni, może zaatakować lecz jeszcze nie można jej podnieść
         weapon.GetComponent<Collider2D>().enabled = true;
         weapon.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
         maxcombo = 2;
         weapon.layer = 10;
     }
 
+    //wykonywane na końcu "odczepienia" broni gdy już zostały zrealizowane wszystkie modyfikacje
     public void DetachWeapon()
     {
         weapon = null;
     }
 
+    //// Funkcje odpowiedzialne za ragdoll:
 
-
-    //funkcja wywolywana tylko z perspektywy broni w przypadku zniszczenia gdy jest rzymana
-    //czeka az client oraz server zakonczą procesy z tym zwiącane po czym ją niszczy
-    public IEnumerator WaitForDetach()
-    {
-        yield return new WaitWhile(() => weapon == null);
-    }
-
-    /// <summary>
-    /// Funkcje odpowiedzialne za ragdoll:
-    /// </summary>
-
+    //nieobecne w ostatecznej wersji gry
     IEnumerator MoveToOrgPosition(Vector3 source, float overTime, Limb childObject, ComplateCoroutines complated)
     {
         float startTime = Time.time;
@@ -529,6 +516,7 @@ public class PlayerControler : NetworkBehaviour {
         complated.num++;
     }
 
+    //nieobecne w ostatecznej wersji gry
     IEnumerator StandUp(Limb[] limbs)
     {
         ComplateCoroutines complated = new ComplateCoroutines();
@@ -553,24 +541,28 @@ public class PlayerControler : NetworkBehaviour {
         anim.enabled = true;
     }
 
+    //uśmiercenie avatara
     public void ChangeState()
     {
-        //zmiana stanu postaci z ragdoll do normalnego i odwrotnie
         if (ragdoll == false)
         {
+            //wyłączenie kinematyki odwrotnej, obiekty za nią odpowiadające przeszkadzają w swobodnym upadku
             limbs[1].ik.gameObject.SetActive(false);
             anim.enabled = false;
 
+            //umożliwia wpływ fizyki silnika na każdą część ciała avatara
             foreach (Rigidbody2D rig in rigs)
             {
                 rig.bodyType = RigidbodyType2D.Dynamic;
             }
 
             limbs[0].ik.parent = null;
+            //wyrzut avatara
             limbs[0].ik.GetComponentInChildren<Rigidbody2D>().AddForce(ragdollForce * 10000, ForceMode2D.Force);
             
             ragdoll = true;
         }
+        /*podnoszenie postaci
         else if (ragdoll == true)
         {
             limbs[0].ik.SetParent(gameObject.transform);
@@ -590,7 +582,7 @@ public class PlayerControler : NetworkBehaviour {
                 limb.ik.transform.localPosition = limb.orgPosition;
             }
             ragdoll = false;
-        }
+        }*/
     }
 
     //przyłączenie częsci avatara odpadającej w chwili śmierci

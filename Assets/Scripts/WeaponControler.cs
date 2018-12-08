@@ -6,23 +6,22 @@ using UnityEngine.Networking;
 
 public class WeaponControler : NetworkBehaviour {
 
-    // Child GameObject PickUpTrigger musi być pierwszy (AI)
-
+    //ilość ciosów w sekwencji
     public int maxcombo;
-    private Rigidbody2D rgdBody;
     public GameObject attackCollider;
     public GameObject pickUpTrigger;
-    public string holdingRig = "Skeleton/Pelvis/Torso/R_arm_1/R_arm_2";
-
-    public float restTimeAfterCombo;
+    //ścieżka do części ciała avatara której ma być przpisana broń np. Skeleton/Pelvis/Torso/R_arm_1/R_arm_2
+    public string holdingRig;
+    //wytrzymałość broni
     public float maxDurability;
     [SyncVar(hook = "OnDurabilityChange")] public float durability;
     public Image durabilityImage;
-
+    //pozycja broni po podniesieniu, względem obiektu-rodzica a nie świata
     public Vector3 PickUpPos;
     public Vector3 PickUpRot;
-
+    //avatar który trzyma broń
     public GameObject handler;
+    //referencja do skryptu przechowującego informacje o arenie
     public SceneSetup sceneMenager;
 
     
@@ -32,26 +31,23 @@ public class WeaponControler : NetworkBehaviour {
         durability = maxDurability;
     }
 
+    //funkcja wykonywana podczas sychronizacji wytzymałości, aktualizuje UI
     void OnDurabilityChange(float durability)
     {
-        Debug.Log(durability);
         if (durabilityImage != null)
         {
             durabilityImage.color = new Color(255f, 255f, 255f, durability / maxDurability);
         }
     }
 
-    /*void AlphaUI()
-    {
-        durabilityImage.color = new Color(255f,255f,255f, durability/maxDurability);
-    }*/
-
+    //wywoływana po upuszczeniu
     public void Clear()
     {
         durabilityImage = null;
         handler = null;
     }
 
+    //aktualizacja informacji o dostępnych broniach 
     public void AddToArena()
     {
         if(isServer) sceneMenager.weaponsOnArena.Add(gameObject);
@@ -62,17 +58,17 @@ public class WeaponControler : NetworkBehaviour {
     {
         if (col.gameObject.tag == "Untagged" || col.gameObject.tag == "Platform")
         {
-            //DecreaseDurability(5);
-            gameObject.layer = 10;//to juz było w rzucie, czy trzeba?
-            //gameObject.GetComponent<Rigidbody2D>().Sleep();
+            gameObject.layer = 10;
             attackCollider.SetActive(false);
             pickUpTrigger.SetActive(true);
         }
     }
 
+    //funkcja wywoływana z obiektu avatara który podnosi broń
+    //dostosowuje oręż do walki
     public void HandleWeapon(Transform player)
     {
-        //this.transform.Find("AttackCollider").gameObject.SetActive(true);
+        //wyłączenie niepotrzebnych interakcji
         pickUpTrigger.SetActive(false);
         GetComponent<Collider2D>().enabled = false;
         GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
@@ -82,8 +78,9 @@ public class WeaponControler : NetworkBehaviour {
         transform.localEulerAngles = PickUpRot;
 
         handler = player.gameObject;
+        //przypisanie broni warstwy trzymającego avatara, tak aby była identyfikowana jako jego część
         attackCollider.layer = transform.parent.gameObject.layer;
-        //dla AI
+
         if(isServer)sceneMenager.weaponsOnArena.Remove(gameObject);
     }
 
@@ -96,19 +93,20 @@ public class WeaponControler : NetworkBehaviour {
         }
     }
 
+    //w przypadku gdy obiekt broni jest niszczony oraz jeżeli jest w danech chwili trzymany to zostaje najpierw odłączony od avatara
+    //wykonywana na obu instancjach
     public override void OnNetworkDestroy()
     {
         if (handler)
         {
             PlayerControler PC = handler.GetComponent<PlayerControler>();
 
-            PC.networkPC.CmdDropWeapon();
-            PC.networkPC.CmdDetachWeapon();
             PC.DropWeapon();
             PC.DetachWeapon();
         }
     }
     
+    //polecenie do serwera zmniejszające wytrzymałość
     [Command]
     public void CmdDecreaseDurability(int value)
     {

@@ -6,13 +6,12 @@ public class ComboManager : MonoBehaviour {
 
     private bool clickedOnce = false;
     private float startTime;
-    private float minComboTime = 0.1f;
     private float maxComboTime = 0.5f;
-
     private bool startCombo = false;
     private float startComboTime;
     private KeyCode checkKey;
 
+    //sprawdza czy klawisz został wciśnięty 2 razy w małym odstępie czasu
     public bool DoubleClick(KeyCode key)
     {
         if (clickedOnce && (key == checkKey))
@@ -37,6 +36,7 @@ public class ComboManager : MonoBehaviour {
         return false;
     }
 
+    //zwraca numer ataku w sekwencji który ma być teraz wykonany
     public int Step(int currentStep, int maxStep)
     {
         if (((Time.time - startComboTime) < maxComboTime) && currentStep + 1 <= maxStep)

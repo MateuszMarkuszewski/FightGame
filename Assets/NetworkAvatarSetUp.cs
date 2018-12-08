@@ -6,36 +6,43 @@ using UnityEngine.UI;
 
 public class NetworkAvatarSetUp : NetworkBehaviour {
 
+    //czy avatar jest drugim lokalnym graczem lub botem
     public bool secondLocalAvatar;
     public PlayerControler PC;
+    //0 oznacza że nie został mu jeszcze przypisany numer
     [SyncVar]public int playerNum = 0;
+    //lista hitboxów przypisanych do konczyn avatara
     public GameObject[] hitboxes;
     [SyncVar]public bool authorityAssigned = false;
 
-
+    //komenda do serwera nadająca avatarowi jego numer
     [Command]
     public void CmdSetPlayerNum(int num)
     {
         playerNum = num;
     }
 
+    //komenda do serwera informująca że prawa do obiektu zostały nadane
     [Command]
     public void CmdAuthorityConfirmation()
     {
         authorityAssigned = true;
     }
 
+    //uruchamia się na instancji która ma prawa do obiektu w chwili gdy te prawa otrzymuje
     public override void OnStartAuthority()
     {
         CmdAuthorityConfirmation();
     }
 
+    //oczekuje na nadanie praw którejś z instancji
     IEnumerator WaitForAuthority()
     {
         yield return new WaitWhile(() => !authorityAssigned);
         AvatarNumberSetUp();
     }
-    //
+
+    //oczekuje na nadanie avatarowi numeru
     IEnumerator WaitForSynchronization()
     {
         yield return new WaitWhile(() => playerNum == 0);
@@ -52,10 +59,9 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         StartCoroutine(WaitForSynchronization());
     }
 
+    //konfigurauje avatara nr1 w grze lokalnej lub każdego z gry sieciowej
     void AvatarSetUp()
     {
-        //if (isServer) playerNum = NetworkManager.singleton.numPlayers;//.connections.Count;
-        Debug.Log("playernum " + playerNum);
         PC.playerNum = playerNum;
         ControlsSetUp(GameData.p1);
         SetPlayerUI();
@@ -73,18 +79,22 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         if (!secondLocalAvatar)//aby ustalic numer avatara potrzebna jest wartosc hasAuthority która tu jest jeszcze nie ustalona
         {
             StartCoroutine(WaitForAuthority());
+            //uaktywnia obiekt którego szuka bot
+            if (GameData.ai == true) transform.Find("AITarget").gameObject.SetActive(true);
         }
         else
         {
+            //konfiguracja drugiego avatara w grze lokalnej
             ControlsSetUp(GameData.p2);
             playerNum = 2;
+            PC.playerNum = 2;
             SetPlayerUI();
-            if ((bool)GameData.ai) transform.Find("AITarget").gameObject.SetActive(true);
             PC.networkSetUpDone = true;
         }
         
     }
 
+    //przypisuje wcześniej ustwione klawisze, null oznacza że przypisany jest klawisz pojawiający się w menu opcji przy starcie gry
     void ControlsSetUp(GameData.Controls player)
     {
         if(player.attack.key != null)
@@ -113,7 +123,6 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         }
     }
 
-
     //przypisuje odpowiedni interfejs gracza
     void SetPlayerUI()
     {
@@ -122,15 +131,17 @@ public class NetworkAvatarSetUp : NetworkBehaviour {
         Image weaponDurability = playerInterface.Find("WeaponDurability").GetComponent<Image>();
         SetPlayerHealthBar(healthBar);
         SetPlayerWeaponUI(weaponDurability);
-
+        //resetuje jego wartość (kolejna runda)
         healthBar.fillAmount = 1;
     }
     
+    //przypisuje avatarowi odpowiedni obraz paska zdrowia z UI
     void SetPlayerHealthBar(Image img)
     {
         PC.healthBar = img;
     }
 
+    //przypisuje avatarowi odpowiedni obraz noszonej broni z UI
     void SetPlayerWeaponUI(Image img)
     {
         PC.weaponDurability = img;

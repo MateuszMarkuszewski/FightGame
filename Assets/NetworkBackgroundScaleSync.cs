@@ -9,13 +9,14 @@ public class NetworkBackgroundScaleSync : NetworkBehaviour {
     [SyncVar] public float scaleX;
     [SyncVar] public float scaleY;
 
-    
+       
     public void SetScale(float x, float y)
     {
         scaleX = x;
         scaleY = y;
     }
 
+    //ustalenie skali gdy obiekt jest tworzony
     public override void OnStartClient()
     {
         transform.localScale = new Vector2(scaleX,scaleY);

@@ -2555,7 +2555,7 @@ MonoBehaviour:
   heroSpeed: 10
   jumpForce: 14
   throwSpeed: 200
-  maxHealth: 11
+  maxHealth: 110
   currentHealth: 0
   left: 276
   right: 275
@@ -2583,6 +2583,7 @@ MonoBehaviour:
   attackEnable: 1
   networkSetUpDone: 0
   horizontalMove: 0
+  ragdoll: 0
   AI: 0
   networkPC: {fileID: 114409583794030510}
   getDownFromPlatform: 0
@@ -2663,6 +2664,7 @@ MonoBehaviour:
   - {fileID: 1508586023919216}
   - {fileID: 1171520038318634}
   - {fileID: 1355002392101564}
+  authorityAssigned: 0
 --- !u!114 &114704550461631720
 MonoBehaviour:
   m_ObjectHideFlags: 1

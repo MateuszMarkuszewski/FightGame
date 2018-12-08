@@ -12,18 +12,21 @@ public class IntEvent : UnityEvent<int>
 {
 }
 
-    public class GameManager : NetworkBehaviour {
+public class GameManager : NetworkBehaviour {
 
+    //event wywoływany w przypadku śmierci jednego z avatarów, 
     public static IntEvent deadEvent;
     public static bool paused = false;
+    public SceneSetup arenaData;
+    //obiekty na arenie których aktywnością skrypt zarządza
     public GameObject pauseMenu;
-    public List<GameObject> aiGameObjects;
     public GameObject connectionWaitMenu;
     public GameObject secondAvatarPrefab;
-    GameObject secondAvatar;
+    private GameObject secondAvatar;
     public GameObject endGameMenu;
     public GameObject winnerTextSpot;
-
+    
+    //zapisywana referencja do tego skryptu aby prawa do niego mogły zostać przekazane
     public override void OnStartServer()
     {
         NetworkManager.singleton.GetComponent<CustomNetworkManager>().gameManager = this;
@@ -35,34 +38,37 @@ public class IntEvent : UnityEvent<int>
 
         if (deadEvent == null)
             deadEvent = new IntEvent();
-
+        
         deadEvent.AddListener(GameOver);
 
-        if (GameData.ai == null)
+        if (GameData.ai == null)//gra przez sieć
         {
             return;
         }
         else//gra jest lokalna
         {
-            secondAvatar = Instantiate(secondAvatarPrefab);
-            secondAvatar.transform.position = new Vector2(1f,1f);           
+            //SpawnSecondLocalAvatar();
+            StartCoroutine(WaitForArena());
         }
-        if((bool)GameData.ai)
-        {
-            secondAvatar.transform.Find("AI").gameObject.SetActive(true);
-        }
-        WaitingMenuActive(false);
-        NetworkServer.Spawn(secondAvatar);
     }
+
+    //oczekiwanie aż siatka pokoo zostanie stworzona
+    IEnumerator WaitForArena()
+    {
+        yield return new WaitWhile(() => !arenaData.gridDone);
+        SpawnSecondLocalAvatar();
+    }
+
     private void Update()
     {
-        //Debug.Log(NetworkServer.dontListen);
+        //kontrola oczekiwania na drugiego gracza
         if (isServer && GameData.ai == null)
-        {//zeby ciagle nie zmienialo
+        {
             if (!GameData.secondClientConnected)
             {
                 if (!connectionWaitMenu.activeSelf)
                 {
+                    if(paused)CmdResumeGame();
                     Time.timeScale = 0f;
                     WaitingMenuActive(true);
                 }            
@@ -74,19 +80,16 @@ public class IntEvent : UnityEvent<int>
             }
         }
         
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !connectionWaitMenu.activeSelf)
         {
             if (!paused)
             {
-                //PauseGame();
                 CmdPauseGame();
             }
             else
             {
-                // ResumeGame();
                 CmdResumeGame();
-            }
-            
+            }            
         }
     }
 
@@ -95,6 +98,8 @@ public class IntEvent : UnityEvent<int>
     {
         RpcPauseGame();
     }
+
+    //pauzowanie gry
     [ClientRpc]
     void RpcPauseGame()
     {
@@ -108,6 +113,8 @@ public class IntEvent : UnityEvent<int>
     {
         RpcResumeGame();
     }
+
+    //wznowienie gry po pauzie
     [ClientRpc]
     void RpcResumeGame()
     {
@@ -116,22 +123,10 @@ public class IntEvent : UnityEvent<int>
         pauseMenu.SetActive(false);
     }
 
-    void PauseGame()
-    {
-        paused = !paused;
-        Time.timeScale = 0f;
-        pauseMenu.SetActive(true);
-    }
-
-    public void ResumeGame()
-    {
-        paused = !paused;
-        Time.timeScale = 1f;
-        pauseMenu.SetActive(false);
-    }
-
+    //wyjście z gry, przypisane do klawisza "menu" w menu pauzy
     public void LoadMenu()
     {
+        //resetowanie ustawień
         GameData.ai = null;
         GameData.sizeMap = null;
         Time.timeScale = 1f;
@@ -143,39 +138,32 @@ public class IntEvent : UnityEvent<int>
         }
         else
         {
-            //NetworkServer.Reset();
             NetworkManager.singleton.StopClient();
         }
     }
 
+    //ustawienie aktywności oczekiwania na drugiego gracza
     void WaitingMenuActive(bool set)
     {
         if(connectionWaitMenu.activeSelf != set) connectionWaitMenu.SetActive(set);
     }
 
+    //wywoływane w przypadku wystąpienia zdarzenia deadEvent
     void GameOver(int i)
     {
-        Debug.Log("GameOver" + i);
         endGameMenu.SetActive(true);
-        //Time.timeScale = 0f;
         winnerTextSpot.GetComponent<TextMeshProUGUI>().SetText("Game Over \nPlayer" + i + " won");
     }
 
     public void RestartGame()
     {
-        /* NetworkServer.dontListen = true;
-         GameData.secondClientConnected = false;*/
-
-        //NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
-        CmdRestartGame();
-        
+        CmdRestartGame();       
     }
 
     [Command]
     public void CmdRestartGame()
     {
         RpcRespawnPlayer();
-       // NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
     }
 
     //usunięcie avatara i stworzenie nowego
@@ -189,5 +177,26 @@ public class IntEvent : UnityEvent<int>
         ClientScene.AddPlayer(NetworkManager.singleton.client.connection, playerId);
 
         endGameMenu.SetActive(false);
+        //gra jest lokalna więc reset drugiego avatara
+        if (GameData.ai != null)
+        {
+            NetworkServer.Destroy(secondAvatar);
+            SpawnSecondLocalAvatar();
+        }
+    }
+
+    //tworzenie drugiego avatara w grze lokalnej
+    public void SpawnSecondLocalAvatar()
+    {
+        secondAvatar = Instantiate(secondAvatarPrefab);
+        secondAvatar.transform.position = NetworkManager.singleton.startPositions[1].position;
+        if ((bool)GameData.ai)//włączenie bota
+        {
+            GameObject AI = secondAvatar.transform.Find("AI").gameObject;
+            AI.GetComponent<AIControler>().arenaData = arenaData;
+            AI.GetComponent<AIControler>().enemy = NetworkManager.singleton.client.connection.playerControllers[0].gameObject;
+            AI.SetActive(true);
+        }
+        NetworkServer.Spawn(secondAvatar);
     }
 }

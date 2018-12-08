@@ -9,9 +9,11 @@ public class OptionsMenu : MonoBehaviour {
 
     public Toggle fullscreenButton;
     GameObject namePlaceHolder;
+    //czy zmieniany jest jakiś klawisz
     bool setUpKey = false;
+    //zmieniany klawisz, wartości tylko ze słownika buttons
     string setKey;
-    Dictionary<string, GameData.Key> buttons = new Dictionary<string, GameData.Key>()
+    public Dictionary<string, GameData.Key> buttons = new Dictionary<string, GameData.Key>()
     { { "attackP1", GameData.p1.attack },
       { "pickUpP1", GameData.p1.pickUp },
       { "upP1", GameData.p1.up },
@@ -38,38 +40,30 @@ public class OptionsMenu : MonoBehaviour {
 
     private void OnGUI()
     {
+        //gdy został naciśnięty któryś z przycisków zmiany klawiszy
+        //oczekuje na wciśnięcie klawisza który zostanie przypisany do akcji odpowiadającej wcześniej wciśniętemu przuciskowi w menu
         if (setUpKey)
         {
             Event e = Event.current;
             if (e.isKey)
             {
                 buttons[setKey].key = e.keyCode;
-                Debug.Log("Setted key code: " + buttons[setKey].key);
                 setUpKey = false;
                 namePlaceHolder.GetComponent<TMP_InputField>().text = buttons[setKey].key.ToString();
-                Debug.Log(GameData.p1.attack.key);
             }
         }
     }
 
+    //przypisywane do przycisków zmiany klawisza w menu
     public void SetUpKey(string key)
     {
         setKey = key;
         setUpKey = true;
     }
+
+    //przypisaywe zostaje miejsce na text z menu opcji gdy odpowiadający jej przycisk zostanie wciśnięty
     public void ButtonNamePlaceHolder(GameObject placeHolder)
     {
         namePlaceHolder = placeHolder;
-    }
-
-
-    public void SetAttack()
-    {
-    
-        Event e = Event.current;
-        if (e.isKey)
-        {
-            Debug.Log("Detected key code: " + e.keyCode);
-        }
     }
 }

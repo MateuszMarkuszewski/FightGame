@@ -7,75 +7,58 @@ using UnityEngine.Networking;
 
 public class SceneSetup : NetworkBehaviour
 {
+    //rozmiar mapy
     [SyncVar] public float size;
+    //obiekty składające się na arenę
     public GameObject ground;
     public GameObject wallLeft;
     public GameObject wallRight;
     public GameObject ceiling;
     public GameObject platform;
-
-    public Camera mainCamera;
-
-    [SyncVar]
-    public float cameraAspect;
     public GameObject background;
+    public Camera mainCamera;
+    public GameObject node;
+    public GameObject[] weapons;
 
+    [SyncVar] public float cameraAspect;
+    
     private float width;
     private float height;
+    
+    //tablica reprezentująca pokoje
     public Node[,] rooms;
-
-    public GameObject[] weapons;
+    
+    //wykorzystywane do zrzutu broni
     private int maxWeaponsNum;
-    //wykorzystywane do dropu
     public int currentWeaponNum = 0;
     private float[] weaponProbability;
     public LayerMask antyDropCollisionMask;
 
-    //info dla AI
-    //public bool AI = false;
-    public GameObject[,] grid;
-    public GameObject node;
     //wykorzystywane do ai
     public List<GameObject> weaponsOnArena;
     public List<Node> nodes;
     [SyncVar]public bool gridDone = false;
 
+    //rozmiary pokoju
     public static float roomSizeX;
     public static float roomSizeY;
-    
-    /*
-    void OnAspectChange(float a)
-    {
-        if (!isServer)
-        {
-            cameraAspect = a;
-            mainCamera.aspect = a;
-        }
-    }*/
+
 
     //wywolywane tylko na serwerze
     public override void OnStartServer()
     {
         cameraAspect = mainCamera.aspect;
-        //AI = (bool)GameData.ai;
         //ustawienie sceny
-        //to wczesnie wyslane
         size = (float)GameData.sizeMap;
-        SetupCamera(size);/////
+        SetupCamera(size);
         width = 2 * size * cameraAspect;
         height = 2 * size;
         SetBackgroundSize();
         SetupMainGround();
         GeneratePlatforms();
         maxWeaponsNum = (int)size/2;
-        //AI
-
         MakeGraph();
         gridDone = true;
-
-        //SetupPlayers();
-
-        //bronie
         CalculateProbability();
         StartCoroutine(WeaponDropMenager());
         //oznacza to ze gra nie jest lokalna i czeka na polaczenie
@@ -94,9 +77,7 @@ public class SceneSetup : NetworkBehaviour
         Debug.DrawLine(new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y, 0), new Vector3(roomSizeX * x + roomSizeX, roomSizeY * y + roomSizeY, 0), Color.red, 200, false);
     }
 
-    /// <summary>
-    /// Tworzenie grafu dla AI
-    /// </summary>
+    //tworzony jest obiekt Node i przypisywany do odpowiedniego miejsca w tablicy pokoi
     void MakeNode(int i, int j, float posX, float posY, int num)
     {
         GameObject n = Instantiate(node, new Vector3(posX, posY, 0), Quaternion.identity);
@@ -106,109 +87,26 @@ public class SceneSetup : NetworkBehaviour
         nodes.Add(n.GetComponent<Node>());
     }
 
+    //tworzenie krawędzi pomiędzy wierzchołami
     void MakeGraph()
     {
-        //tablica
-        //x w graph
-        for (int j = 0; j < rooms.GetLength(1) + 1; j++)
+        for (int j = 0; j < rooms.GetLength(1) ; j++)
         {
             for (int i = 0; i < rooms.GetLength(0); i++)
             {
-                //łapane wyjątki bo może wyjść poza siatkę
-                try
+                if (rooms[i, j] != null)
                 {
-                    if (rooms[i - 1, j] != null)
+                    MakeEdge(i, j, i - 1, j);
+                    MakeEdge(i, j, i + 1, j);
+                    MakeEdge(i, j, i, j + 1);
+                    MakeEdge(i, j, i - 1, j - 1);
+                    MakeEdge(i, j, i + 1, j - 1);
+                    MakeEdge(i, j, i - 2, j + 1);
+                    MakeEdge(i, j, i + 2, j + 1);
+                    //dodanie każdej platformy poniżej obecnej
+                    for (int z = 1; z < rooms.GetLength(1) + 1; z++)
                     {
-                        MakeEdge(rooms[i, j], rooms[i - 1, j]);
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (rooms[i + 1, j] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i + 1, j]);
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (rooms[i, j + 1] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i, j + 1]);
-                    }
-                }
-                catch
-                {
-                }
-                /*try
-                {
-                    if (grid[i, j - 1] != null)
-                    {
-                        MakeEdge(grid[i, j], grid[i, j - 1]);
-                    }
-                }
-                catch
-                {
-
-                }*/
-                try
-                {
-                    if (rooms[i - 1, j - 1] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i - 1, j - 1]);
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (rooms[i + 1, j - 1] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i + 1, j - 1]);
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (rooms[i - 2, j + 1] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i - 2, j + 1]);
-                    }
-                }
-                catch
-                {
-                }
-                try
-                {
-                    if (rooms[i + 2, j + 1] != null)
-                    {
-                        MakeEdge(rooms[i, j], rooms[i + 2, j + 1]);
-                    }
-                }
-                catch
-                {
-                }
-                //dodanie każdej platformy poniżej obecnej
-                for (int z = 1; z < rooms.GetLength(1) + 1; z++)
-                {
-                    try
-                    {
-                        if (rooms[i, j - z] != null)
-                        {
-                            MakeEdge(rooms[i, j], rooms[i, j - z]);
-                        }
-                    }
-                    catch
-                    {
-
+                        MakeEdge(i, j, i, j - z);
                     }
                 }
             }
@@ -216,11 +114,19 @@ public class SceneSetup : NetworkBehaviour
 
     }
 
-    void MakeEdge(Node node1, Node node2)
+    //sprawdza czy istnieją pokoje o tych indeksach i jeśli tak to tworzy wierzchołek
+    void MakeEdge(int room1x, int room1y, int room2x, int room2y)
     {
-        node1.neighbours.Add(node2.GetComponent<Node>());
-        node1.distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
-       // Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
+        if(room1x >= 0 && room1x < rooms.GetLength(0) && room1y >= 0 && room1y < rooms.GetLength(1) &&
+           room2x >= 0 && room2x < rooms.GetLength(0) && room2y >= 0 && room2y < rooms.GetLength(1) &&
+           rooms[room2x,room2y] != null)
+        {
+            Node node1 = rooms[room1x, room1y];
+            Node node2 = rooms[room2x, room2y];
+            node1.neighbours.Add(node2.GetComponent<Node>());
+            node1.distances.Add(Distance(node1.transform.position.x, node1.transform.position.y, node2.transform.position.x, node2.transform.position.y));
+            //Debug.DrawLine(new Vector3(node1.transform.position.x, node1.transform.position.y), new Vector3(node2.transform.position.x, node2.transform.position.y), Color.blue, 200, false);
+        }
     }
 
     float Distance(float x1, float y1, float x2, float y2)
@@ -228,9 +134,7 @@ public class SceneSetup : NetworkBehaviour
         return Mathf.Sqrt(Mathf.Pow((x2 - x1), 2) + Mathf.Pow((y2 - y1), 2));
     }
 
-    /// <summary>
-    /// Zrzuty broni
-    /// </summary>
+    //usunięcie broni z danych areny
     public void DecreaseWeaponNum(GameObject w)
     {
         //dostepne do podniesienia
@@ -239,6 +143,7 @@ public class SceneSetup : NetworkBehaviour
         currentWeaponNum--;
     }
 
+    //uruchomiona przez całą rozgrywkę, zarządza pojawianiem się broni
     IEnumerator WeaponDropMenager()
     {
         while (true)
@@ -248,12 +153,14 @@ public class SceneSetup : NetworkBehaviour
             {
                 yield return null;
             }
+            //losuje co określony czas
             yield return new WaitForSeconds(1f);
 
             RandomWeapon();
         }
     }
 
+    //losowanie która broń ma się pojawić na arenie
     private void RandomWeapon()
     {
         //porownuje wylosowana liczbe z prawdopodobienstwem wylosowania broni
@@ -284,6 +191,8 @@ public class SceneSetup : NetworkBehaviour
         }
     }
 
+    //losowany jest numer wierzchołka(Node) w którym ma pojawić się broń a następnie ją tworzy
+    //jeżeli w wylosowanym wierzchołku znajduje się gracz lub inna broń to losowany jest inny do skutku
     public void DropWeapon(GameObject weapon)
     {
         while (true)
@@ -301,9 +210,7 @@ public class SceneSetup : NetworkBehaviour
         }
     }
 
-    /// <summary>
-    /// Wygenerowanie areny
-    /// </summary>
+    //tworzony jest obiekt tła i nadawane są mu rozmiary
     public void SetBackgroundSize()
     {
         GameObject BG = Instantiate(background);
@@ -314,6 +221,7 @@ public class SceneSetup : NetworkBehaviour
         CmdSpawnGameObjectOnClient(BG);
     }
 
+    //generowanie areny
     public void GeneratePlatforms()
     {
         //rozmiar pojedynczego pokoju 
@@ -322,6 +230,7 @@ public class SceneSetup : NetworkBehaviour
         //ustalanie ilosci pokoi
         rooms = new Node[(int)size, (int)(2 * size / 3)];
         
+        //tworzone są obiekty Node w każdym pokoju przy podłodze
         int num = 0;
         for (int i = 0; i < rooms.GetLength(0); i++)
         {
@@ -331,7 +240,7 @@ public class SceneSetup : NetworkBehaviour
         //losowanie pokoju z pierwszego rzędu 
         int x = Random.Range(0, rooms.GetLength(0));
         int y = 1;
-
+        //przekazanie obiektowi platformy informacji aby ten mógł podczas tworzenia się przeskalować
         platform.GetComponent<NetworkPlatformScaleSync>().roomSizeX = roomSizeX;
         //losowanie kierunku
         int[] way = { 1, -1 };
@@ -341,15 +250,11 @@ public class SceneSetup : NetworkBehaviour
         {
             //DrawRoomBounds(x, y);
             //tworzona jest platforma
-            GameObject go = Instantiate(platform, new Vector2(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY), Quaternion.Euler(0f, 0f, 0f));
-           // go.transform.position = new Vector3(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY);
-            //przeskalowanie objektu platformy aby pokrywał pokój
-            
+            GameObject go = Instantiate(platform, new Vector2(x * roomSizeX + (roomSizeX / 2f), y * roomSizeY), Quaternion.Euler(0f, 0f, 0f));            
             CmdSpawnGameObjectOnClient(go);
-            //RpcAdjustScale(go, roomSizeX / go.GetComponent<SpriteRenderer>().sprite.bounds.size.x, go.transform.localScale.y);
+            //w wylosowanym pokoju tworzony jest wierzchołek (obiekt Node)
             MakeNode(x, y, x * roomSizeX + (roomSizeX / 2f), y * roomSizeY + (roomSizeY / 2f), num);
             num++;
-
             //losowane jest gdzie bedzie następny pokoj
             if (Random.Range(0, 10) == 3)
             {
@@ -375,37 +280,33 @@ public class SceneSetup : NetworkBehaviour
         }
     }
 
+    //Tworzona jest podłoga, sufit i ściany   
     public void SetupMainGround()
     {
-        //Tworzy podłogę i ściany   
         float y;
         float x;
         for (y = 0f; y < (2 * size) + 1; y++)
         {
             CmdSpawnGameObjectOnPosition(wallLeft, 0f, y);
-            //Instantiate(wallLeft).transform.position = new Vector2(0f, y);
         }
         x = 2 * size * cameraAspect;
         for (y = 0f; y < (2 * size) + 1; y++)
         {
             CmdSpawnGameObjectOnPosition(wallRight, x, y);
-            //Instantiate(wallRight).transform.position = new Vector2(x, y);
         }
         for (x = 0f; x < 2 * size * cameraAspect; x++)
         {
             CmdSpawnGameObjectOnPosition(ground, x, 0f);
-            //Instantiate(ground).transform.position = new Vector2(x, 0f);
         }
         for (x = 0; x < 2 * size * cameraAspect; x++)
         {
             CmdSpawnGameObjectOnPosition(ceiling, x, y);
-            //Instantiate(ceiling).transform.position = new Vector2(x, y);
         }
     }
 
+    //zmiana rozmiaru kamery w zależności od rozmiaru areny tak aby ich krawędzie się pokrywały
     public void SetupCamera(float size)
     {
-        //zmiana rozmiaru kamery w zależności od rozmiaru areny
         mainCamera.orthographicSize = size;
         mainCamera.transform.position = new Vector3(size * cameraAspect, size, -10f);
     }
@@ -431,10 +332,7 @@ public class SceneSetup : NetworkBehaviour
         //modyfikuje kamere klienta aby dopasowac do areny
         if (isClient && !isServer)
         {
-
-            Debug.Log("scenesetupclient");
             SetupClientCamera();
-            //StartCoroutine(WaitForArenaMake());
         }
     }
     
@@ -442,11 +340,5 @@ public class SceneSetup : NetworkBehaviour
     {
         mainCamera.aspect = cameraAspect;
         SetupCamera(size);
-    }
-
-    IEnumerator WaitForArenaMake()
-    {
-        yield return new WaitWhile(() => !gridDone);
-        SetupClientCamera();
     }
 }
